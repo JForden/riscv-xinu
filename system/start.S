@@ -45,6 +45,9 @@ reset_handler:
 	li a3, 8196
 	add sp, a1, a3
 
+	la a4, memheap
+	sw sp, 0(a4)
+
 	/* Branch to nulluser function, located in xinu/system/initialize.c
 	/* The function will initialize the system and become the null thread. */
 	j	nulluser
