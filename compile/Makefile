@@ -159,10 +159,10 @@ STRIP    := $(COMPILER_ROOT)strip
 OBJCOPY  := $(COMPILER_ROOT)objcopy
 
 # Sanity check: does 'gcc' actually exist?
-ifneq ($(shell if $(CC) --version &> /dev/null; then echo 1; fi),1)
-  $(warning $(CC) not found; try overriding COMPILER_ROOT \
-	    (see README.compiling))
-endif
+#ifneq ($(shell if $(CC) --version &> /dev/null; then echo 1; fi),1)
+#  $(warning $(CC) not found; try overriding COMPILER_ROOT \
+#	    (see README.compiling))
+#endif
 
 # Did platformVars add -lgcc to LDLIBS?  If so, we need to do the linking with
 # gcc rather than with ld so that the appropriate libgcc can be found.  However,
@@ -245,7 +245,7 @@ export
 
 xinu.elf: $(COMP_OBJ) $(MAIN_OBJ) \
 	  $(LIB_ARC) $(USRTHRS_OBJ)
-	@echo -e "\tLinking" $@
+	@echo "\tLinking" $@
 	$(KERNEL_LD) -o $@ $(LDFLAGS) $^ $(LDLIBS)
 
 # Special case: Handle automatically generating the version.h header.  Note:
@@ -266,21 +266,21 @@ $(TOPDIR)/include/version.h:
 objects: $(COMP_OBJ)
 
 %.o: %.c
-	@echo -e "\tCompiling" $@
+	@echo "\tCompiling" $@
 	$(CC) $(DEPFLAGS) $(CFLAGS) -o $@ $<
 
 %.o: %.S
-	@echo -e "\tAssembling" $@
+	@echo "\tAssembling" $@
 	$(CC) $(DEPFLAGS) $(ASFLAGS) -o $@ $<
 
 clean:
-	@echo -e "\tCleaning all objects"
+	@echo "\tCleaning all objects"
 	rm -f *.o $(COMP_OBJ) $(MAIN_OBJ) $(DATA_OBJ) $(USRTHRS_OBJ)
 	rm -f $(DEPFILES) $(MAIN_DEP)
 	rm -f xinu.boot xinu.bin xinu.elf
 
 indent:
-	@echo -e "\tIndenting sources"
+	@echo "\tIndenting sources"
 	$(INDENT) $(INDENT_ARGS) $(INDENT_TYPES) $(INDENT_FILES)
 	rm -f $(INDENT_FILES:%=%~)
 
@@ -291,7 +291,7 @@ ifneq ($(filter uart-%,$(DEVICES)),)
 endif
 
 debug:
-	@echo -e "\tBuilding debug mode"
+	@echo "\tBuilding debug mode"
 	$(MAKE) DEBUG="-DDEBUG $(BUGFLAG)"
 
 help:
@@ -299,7 +299,7 @@ help:
 
 
 realclean: clean $(PLATCLEAN)
-	@echo -e "\tCleaning EVERYTHING"
+	@echo "\tCleaning EVERYTHING"
 	rm -f vn version $(TOPDIR)/include/version.h
 	rm -f Makefile.bak
 
@@ -309,7 +309,7 @@ realclean: clean $(PLATCLEAN)
 $(MAIN_OBJ): $(MAIN_SRC)
 
 $(COMPS):
-	@echo -e "\tBuilding" $@
+	@echo "\tBuilding" $@
 	$(MAKE) COMPS="$@" objects
 
 # Include generated dependency information for C and assembly files, if it
