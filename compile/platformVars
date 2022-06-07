@@ -30,7 +30,7 @@ PLATFORM_NAME := RISC-V 64-bit
 
 # GCC options at https://gcc.gnu.org/onlinedocs/gcc/RISC-V-Options.html
 # Extra compiler and assembler flags to specifically target the RISC-V architecture
-CFLAGS   += -march=rv64g
+CFLAGS   += -march=rv64g -fno-stack-protector -mcmodel=medany
 ASFLAGS  += -march=rv64g
 
 # Extra compiler flag that disables gcc from generating unaligned memory accesses

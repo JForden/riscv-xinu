@@ -126,7 +126,7 @@ include platformVars
 ASFLAG_PREFIX := -Wa,
 ASFLAGS       := $(addprefix $(ASFLAG_PREFIX),$(ASFLAGS))
 ASFLAGS       += $(INCLUDE) $(DEFS) -c
-CFLAGS        += $(INCLUDE) $(DEFS) -Wno-unused-but-set-variable -fno-stack-protector
+CFLAGS        += $(INCLUDE) $(DEFS) -Wno-unused-but-set-variable
 
 # Make the presence of the testsuite available to the C code.
 ifneq ($(filter test, $(APPCOMPS)),)
