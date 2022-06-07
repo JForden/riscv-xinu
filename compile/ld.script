@@ -26,30 +26,24 @@ SECTIONS {
 
   .text : {
     *(.txt .text.*)
+        *(.rodata .rodata.*)
     }
 
-  .rodata : {
-    . = ALIGN(16);
-    *(.srodata .srodata.*)
-    . = ALIGN(16);
-    *(.rodata .rodata.*)
-  }
+    . = ALIGN(64);
 
-  .data : {
-    . = ALIGN(16);
-    *(.sdata .sdata.*)
-    . = ALIGN(16);
-    *(.data .data.*)
-  }
+    .data : {
+        *(.data .data.*)
+    }
 
-  .bss : {
-    . = ALIGN(16);
-    *(.sbss .sbss.*)
-    . = ALIGN(16);
-    *(.bss .bss.*)
-  }
+    . = ALIGN(64);
 
-  PROVIDE(end = .);
+    _bss = . ;
+    .bss : {
+        *(.bss .bss.*)
+    }
+
+    . = ALIGN(64);
+    _end = .;
 
     /* Discard comment and note (but not debugging) sections.  Some
      * versions of GNU ld would otherwise automatically place the
