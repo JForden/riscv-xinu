@@ -24,6 +24,12 @@ _start:
 	.endfunc
 
 .section .text
+    .func clear_bss
+clear_bss:
+	sw t0, 0(t2)
+	addi t0, t0, 1
+	bltu t0, t1, clear_bss
+	.endfunc
 
 	/* reset_handler: Reset handler routine executed to start up the kernel,
 	 * when the processor is reset, or (currently) when an unhandled
@@ -33,7 +39,10 @@ reset_handler:
     // Disable interrupts
     csrrsi x0, mstatus, RISCV_MSTATUS_MEI_BIT  
     // Clear bss
-	// Setup null stack
+	la t0, _bss
+	la t1, _end
+	li t2, 0
+	jal clear_bss
 
     // Debug
     ebreak
