@@ -25,10 +25,10 @@ _start:
 
 .section .text
     .func clear_bss
-clear_bss:
-	sw t0, 0(t2)
-	addi t0, t0, 1
-	bltu t0, t1, clear_bss
+clear_bss: // block starting symbol
+	sw t0, 0(t2) // store word, dereferences t0, stores into t2+0    (t0 is temp/alt link reg) (t2 is a temp reg)
+	addi t0, t0, 1 // adds value of t0, to 1 and stores in t0
+	bltu t0, t1, clear_bss //branch if less then, if t0>t1 
 	.endfunc
 
 	/* reset_handler: Reset handler routine executed to start up the kernel,
@@ -44,9 +44,9 @@ reset_handler:
 	//li t2, 0
 	//jal clear_bss
 
-	la t1, _end
-	li t3, 4096
-	add a0, t1, t3
+	la t1, _end //load address, moves _end into t1
+	li t3, 4096 //load immediate, moves 4096 into t3 
+	add a0, t1, t3 //stores value in a0 (a0 is the first function argument)
 
 	/* Branch to nulluser function, located in xinu/system/initialize.c
 	/* The function will initialize the system and become the null thread. */
