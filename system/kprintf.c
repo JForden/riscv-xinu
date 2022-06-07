@@ -8,10 +8,10 @@ syscall kgetc()
     uchar c;
 
     /* Wait until a character is ready to be received.  */
-    //while (!(regptr->lsr & UART_LSR_DR))
-    //{
+    while (!(regptr->lsr & UART_LSR_DR))
+    {
         /* Do nothing */
-    //}
+    }
 
     /* Get the next character from the UART by reading it from the Receiving
      * Holding Register.  */
@@ -26,13 +26,12 @@ syscall kputc(uchar c)
     regptr = (struct ns16550_uart_csreg *)UART_BASE;
 
     /* Wait until UART is ready for another character  */
-    //while ((regptr->lsr & UART_LSR_TEMT) != UART_LSR_TEMT)
-    //{
+    while ((regptr->lsr & UART_LSR_TEMT) != UART_LSR_TEMT)
+    {
         /* Do nothing */
-    //}
+    }
 
     /* Send character. */
-    //WriteUARTReg(UART_THR, 'H');
-    //regptr->buffer = c;
+    regptr->buffer = c;
     return 'A';
 }

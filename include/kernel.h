@@ -13,7 +13,7 @@
 #include <stddef.h>
 
 /* Kernel function prototypes */
-void nulluser(void);
+void nulluser(int, int);
 
 /* Kernel function prototypes */
 syscall kputc(uchar);

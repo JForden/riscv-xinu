@@ -24,6 +24,12 @@ ENTRY(_start)
 SECTIONS {
   . = 0x80000000;
 
+  .init : {
+    *(.init .init.*)
+  }
+
+  . = ALIGN(64);
+
   .text : {
     *(.txt .text.*)
         *(.rodata .rodata.*)

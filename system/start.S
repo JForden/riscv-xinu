@@ -16,10 +16,7 @@
 
 	.func _start
 _start:
-    // Disable paging?
-
 	/* Continue at reset handler. */
-	
 	j reset_handler
 	.endfunc
 
@@ -39,14 +36,14 @@ reset_handler:
     // Disable interrupts
     csrrsi x0, mstatus, RISCV_MSTATUS_MEI_BIT  
     // Clear bss
-	//la t0, _bss
-	//la t1, _end
-	//li t2, 0
+	//la a0, _bss
+	//la a1, _end
+	//li a2, 0
 	//jal clear_bss
 
-	la t1, _end //load address, moves _end into t1
-	li t3, 4096 //load immediate, moves 4096 into t3 
-	add a0, t1, t3 //stores value in a0 (a0 is the first function argument)
+	la a1, _end
+	li a3, 8196
+	add sp, a1, a3
 
 	/* Branch to nulluser function, located in xinu/system/initialize.c
 	/* The function will initialize the system and become the null thread. */
