@@ -4,3 +4,11 @@
 #include <version.h>
 #include <stddef.h>
 #include <serial.h>
+#include <compiler.h>
+#include <ctype.h>
+#include <device.h>
+#include <memory.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>

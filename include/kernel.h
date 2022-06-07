@@ -11,14 +11,26 @@
 #define _KERNEL_H_
 
 #include <stddef.h>
+#include <stdarg.h>
+#include <compiler.h>
 
 /* Kernel function prototypes */
-void nulluser(int, int);
+void nulluser(void);
 
 /* Kernel function prototypes */
+syscall kprintf(const char *fmt, ...);
 syscall kputc(uchar);
-syscall kgetc(void);
+syscall kgetc();
+syscall kvprintf(const char *fmt, va_list va);
 
-extern void *_end;              /* linker provides end of image       */
+/* Scheduler function prototypes */
+syscall create(void *, ulong, ulong, char *, ulong, ...);
+syscall kill(pid_typ);
+syscall ready(pid_typ, bool, uint);
+syscall resched(void);
+
+/* Assertions */
+#define ASSERT(cond)              if ( !(cond) ) return SYSERR
+#define ASSERTFUNC(func_call)     ASSERT((func_call) == OK)
 
 #endif                          /* _KERNEL_H_ */

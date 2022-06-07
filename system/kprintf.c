@@ -1,5 +1,4 @@
 #include <xinu.h>
-#include <serial.h>
 
 syscall kgetc()
 {
@@ -33,5 +32,16 @@ syscall kputc(uchar c)
 
     /* Send character. */
     regptr->buffer = c;
-    return 'A';
+    return c;
+}
+
+syscall kprintf(const char *format, ...)
+{
+    int retval;
+    va_list ap;
+
+    va_start(ap, format);
+    retval = _doprnt(format, ap, (int (*)(int, int))kputc, 0);
+    va_end(ap);
+    return retval;
 }

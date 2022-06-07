@@ -113,7 +113,7 @@ DEFS    := $(DETAIL)
 #
 # platformVars can add additional libraries to $(LIBS); however the C library
 # (libxc) is always included by default.
-#LIBS    := libxc
+LIBS    := libxc
 
 ###############################################################################
 
@@ -126,7 +126,7 @@ include platformVars
 ASFLAG_PREFIX := -Wa,
 ASFLAGS       := $(addprefix $(ASFLAG_PREFIX),$(ASFLAGS))
 ASFLAGS       += $(INCLUDE) $(DEFS) -c
-CFLAGS        += $(INCLUDE) $(DEFS)
+CFLAGS        += $(INCLUDE) $(DEFS) -Wno-unused-but-set-variable -fno-stack-protector
 
 # Make the presence of the testsuite available to the C code.
 ifneq ($(filter test, $(APPCOMPS)),)
@@ -216,6 +216,8 @@ include $(COMPS:%=$(TOPDIR)/%/Makerules)
 COMP_OBJ := $(patsubst %.S,%.o,$(filter %.S,$(COMP_SRC))) \
             $(patsubst %.c,%.o,$(filter %.c,$(COMP_SRC)))
 
+CONF_OBJ := $(CONFC:%.c=%.o)
+
 LIB_ARC  := $(LIBS:%=$(LIBDIR)/%.a)
 
 MAIN_OBJ := $(MAIN_SRC:%.c=%.o)
@@ -297,8 +299,9 @@ debug:
 help:
 	$(PAGER) README.compiling
 
+libclean: $(LIBS:%=%-clean)
 
-realclean: clean $(PLATCLEAN)
+realclean: clean libclean $(PLATCLEAN)
 	@echo "\tCleaning EVERYTHING"
 	rm -f vn version $(TOPDIR)/include/version.h
 	rm -f Makefile.bak
@@ -311,6 +314,18 @@ $(MAIN_OBJ): $(MAIN_SRC)
 $(COMPS):
 	@echo "\tBuilding" $@
 	$(MAKE) COMPS="$@" objects
+
+$(LIBS): $(CONF_OBJ)
+	@echo -e "\tBuilding" $@
+	$(MAKE) -C $(LIBDIR)/$@
+
+$(LIB_ARC): $(CONF_OBJ)
+	@echo -e "\tInstalling" $@
+	$(MAKE) -C $(@:%.a=%) install
+
+$(LIBS:%=%-clean):
+	@echo -e "\tCleaning" $@
+	$(MAKE) -C $(LIBDIR)/$(@:%-clean=%) clean
 
 # Include generated dependency information for C and assembly files, if it
 # exists.

@@ -1,6 +1,6 @@
 #include <xinu.h>
 
-void nulluser(int bss, int end)
+void nulluser()
 {
     volatile struct ns16550_uart_csreg *regptr;
     regptr = (struct ns16550_uart_csreg *)UART_BASE;
@@ -24,6 +24,7 @@ void nulluser(int bss, int end)
     kputc('!');
     kputc('\n');
     kputc('T');
+    kprintf("Test123");
 
     /* null process has nothing else to do but cannot exit  */
     while (1)
