@@ -11,3 +11,10 @@ gethartid:
 	csrr a0, mhartid
 	ret
 	.endfunc
+
+.globl getmisa
+getmisa:
+	.func getmisa
+	csrr a0, misa
+	ret
+	.endfunc

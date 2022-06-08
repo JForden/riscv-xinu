@@ -61,9 +61,8 @@ static void welcome(void)
     kprintf("\r\n\r\n");
 
     /* Output detected platform. */
-    //kprintf("Detected platform as: [%s] %s, %s (rev %d)\r\n\r\n",
-    //        platform.manufacturer, platform.family,
-    //        platform.type, platform.revision);
+    kprintf("Detected platform as: [%s] %s (ver %d) RV%dI %s \r\n\r\n",
+            platform.manufacturer, platform.family, platform.revision, platform.architecture, platform.extensions);
 
     /* Output Xinu memory layout */
     kprintf("%10d bytes physical memory.\r\n",

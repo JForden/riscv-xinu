@@ -60,6 +60,9 @@ struct platform
     /** High word of the board's serial number.  Setting this is optional; it's
      * currently only used by the SMSC LAN9512 driver.  */
     uint serial_high;
+
+    uchar architecture;
+    char extensions[27];
 };
 
 extern struct platform platform;
