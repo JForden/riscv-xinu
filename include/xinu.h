@@ -3,7 +3,6 @@
 #include <ns16550.h>
 #include <version.h>
 #include <stddef.h>
-#include <serial.h>
 #include <compiler.h>
 #include <ctype.h>
 #include <device.h>
