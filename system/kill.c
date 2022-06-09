@@ -21,12 +21,8 @@ syscall kill(int pid)
         || (cpuid != proctab[pid].core)
         || (PRFREE == (ppcb = &proctab[pid])->state))
     {
-        kprintf("TEST\r\n");
         return SYSERR;
     }
-
-
-    kprintf("IN HERE!!!!!!");
 
     ppcb = &proctab[pid];
 

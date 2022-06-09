@@ -35,7 +35,7 @@ process main(void)
     kprintf("PID is %d!\r\n", pid);
 
     ready(pid, RESCHED_YES);
-    kprintf("Exiting main!\r\n");
+    kprintf("Process completed!\r\n");
 
     return 0;
 }
