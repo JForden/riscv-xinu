@@ -13,3 +13,5 @@
 #include <string.h>
 #include <hart.h>
 #include <platform.h>
+#include <proc.h>
+#include <queue.h>

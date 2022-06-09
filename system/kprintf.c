@@ -20,7 +20,6 @@ syscall kgetc()
 
 syscall kputc(uchar c)
 {
-    //WriteUARTReg(UART_THR, 'H');
     volatile struct ns16550_uart_csreg *regptr;
     regptr = (struct ns16550_uart_csreg *)UART_BASE;
 
