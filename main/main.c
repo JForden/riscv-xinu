@@ -6,17 +6,19 @@
 #include <xinu.h>
 
 
-void testbigargs(int a, int b, int c, int d, int e, int f, int g, int h)
+void testbigargs(ulong a, ulong b, ulong c, ulong d, ulong e, ulong f, ulong g, ulong h, ulong i, ulong j)
 {
     kprintf("Testing bigargs...\r\n");
-    kprintf("a = 0x%08X\r\n", a);
-    kprintf("b = 0x%08X\r\n", b);
-    kprintf("c = 0x%08X\r\n", c);
-    kprintf("d = 0x%08X\r\n", d);
-    kprintf("e = 0x%08X\r\n", e);
-    kprintf("f = 0x%08X\r\n", f);
-    kprintf("g = 0x%08X\r\n", g);
-    kprintf("h = 0x%08X\r\n", h);
+    kprintf("a = 0x%016lX\r\n", a);
+    kprintf("b = 0x%016lX\r\n", b);
+    kprintf("c = 0x%016lX\r\n", c);
+    kprintf("d = 0x%016lX\r\n", d);
+    kprintf("e = 0x%016lX\r\n", e);
+    kprintf("f = 0x%016lX\r\n", f);
+    kprintf("g = 0x%016lX\r\n", g);
+    kprintf("h = 0x%016lX\r\n", h);
+    kprintf("i = 0x%016lX\r\n", i);
+    kprintf("j = 0x%016lX\r\n", j);
 }
 
 /**
@@ -27,11 +29,13 @@ void testbigargs(int a, int b, int c, int d, int e, int f, int g, int h)
 process main(void)
 {
     kprintf("Hello, Xinu World, from hart %d!\r\n", gethartid());
+
     int pid = 0;
 
-    pid = create((void *)testbigargs, INITSTK, "MAIN1", 8,
-                     0x11111111, 0x22222222, 0x33333333, 0x44444444,
-                     0x55555555, 0x66666666, 0x77777777, 0x88888888);
+    pid = create((void *)testbigargs, INITSTK, "MAIN1", 10,
+                     0x1111111111111111UL, 0x2222222222222222UL, 0x3333333333333333UL, 0x4444444444444444UL,
+                     0x5555555555555555UL, 0x6666666666666666UL, 0x7777777777777777UL, 0x8888888888888888UL, 
+                     0x9999999999999999UL, 0x1010101010101010UL);
     kprintf("PID is %d!\r\n", pid);
 
     ready(pid, RESCHED_YES);

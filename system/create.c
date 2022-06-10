@@ -61,13 +61,31 @@ syscall create(void *funcaddr, ulong ssize, char *name,
     *--saddr = ppcb->stklen;
     *--saddr = (ulong)ppcb->stkbase;
 
+	/* Handle variable number of arguments passed to starting function   */
+	if (nargs)
+	{
+		pads = ((nargs - 1) / 8) * 8;
+	}
+
+    /* If more than 4 args, pad record size to multiple of native memory */
+	/*  transfer size.  Reserve space for extra args                     */
+	for (i = 0; i < pads; i++)
+	{
+		*--saddr = 0;
+	}
+
     va_start(ap, nargs);
 
     if (nargs)
     {
         for (i = 0; i < nargs; i++)
         {
-            ppcb->regs[i] = va_arg(ap, int);
+            if(i <= 7){
+			    ppcb->regs[i] = va_arg(ap, ulong);
+		    } else {
+			    //Add to stack
+			    *(saddr + (i - 8)) = va_arg(ap, ulong);
+		    }
         }
     }
 

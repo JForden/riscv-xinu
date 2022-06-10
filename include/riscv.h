@@ -13,21 +13,20 @@
 #define PREG_A5 5
 #define PREG_A6 6
 #define PREG_A7 7
-#define PREG_A8 8
-#define PREG_S0 9
-#define PREG_S1 10
-#define PREG_S2 11
-#define PREG_S3 12
-#define PREG_S4 13
-#define PREG_S5 14
-#define PREG_S6 15
-#define PREG_S7 16
-#define PREG_S8 17
-#define PREG_S9 18
-#define PREG_S10 19
-#define PREG_S11 20
-#define PREG_RA 21
-#define PREG_SP 22
-#define PREG_PC 23
+#define PREG_S0 8
+#define PREG_S1 9
+#define PREG_S2 10
+#define PREG_S3 11
+#define PREG_S4 12
+#define PREG_S5 13
+#define PREG_S6 14
+#define PREG_S7 15
+#define PREG_S8 16
+#define PREG_S9 17
+#define PREG_S10 18
+#define PREG_S11 19
+#define PREG_RA 20
+#define PREG_SP 21
+#define PREG_PC 22
 
 #endif                          /* _RISCV_H_ */
