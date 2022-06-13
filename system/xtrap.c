@@ -29,7 +29,7 @@ void xtrap(long *frame, ulong cause, ulong address)
         kprintf("Faulting address: 0x%016lX\r\n", address);
     }
 
-    kprintf("[0x%016lX]  t4:0x%016lX   t5:0x%016lX  t6:0x%016lX",
+    kprintf("[0x%016lX]  t4:0x%016lX   t5:0x%016lX  t6:0x%016lX\r\n",
             frame + PREG_T4,
             frame[PREG_T4], frame[PREG_T5], frame[PREG_T6]); 
     kprintf("[0x%016lX]  s9:0x%016lX   s10:0x%016lX  s11:0x%016lX  t3:0x%016lX\r\n",
