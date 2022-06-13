@@ -2,8 +2,10 @@
 #define  _RISCV_H_
 
 #define RISCV_MSTATUS_MEI_BIT   1<<3 /* IRQs globally disabled on all privilege levels when set to 1. */
+#define RISCV_MPP_TO_S_MODE     1<<11 /* Set the previous mode to S-mode so XINU can switch to S-Mode when completed. */
+#define RISCV_MDELEG_ALL_S_MODE 0xFFFFFFFFFFFFFFFF
 
-#define PREGS   24
+#define PREGS   32
 
 #define PREG_A0 0
 #define PREG_A1 1
@@ -28,5 +30,15 @@
 #define PREG_RA 20
 #define PREG_SP 21
 #define PREG_PC 22
+
+#define PREG_GP 23
+#define PREG_TP 24
+#define PREG_T0 25
+#define PREG_T1 26
+#define PREG_T2 27
+#define PREG_T3 28
+#define PREG_T4 29
+#define PREG_T5 30
+#define PREG_T6 31
 
 #endif                          /* _RISCV_H_ */

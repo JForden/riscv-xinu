@@ -41,6 +41,9 @@ reset_handler:
 	//li a2, 0
 	//jal clear_bss
 
+	la t1, interrupt
+	csrrw x0, mtvec, t1
+
 	la a1, _end
 	li a3, 8196
 	add sp, a1, a3

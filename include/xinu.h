@@ -15,3 +15,4 @@
 #include <platform.h>
 #include <proc.h>
 #include <queue.h>
+#include <interrupt.h>
