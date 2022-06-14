@@ -33,7 +33,7 @@ clear_bss: // block starting symbol
 	 * exception occurs.  */
     .func reset_handler
 reset_handler:
-    // Disable interrupts
+    // Enables interrupts
     csrrsi x0, mstatus, RISCV_MSTATUS_MEI_BIT  
     // Clear bss
 	//la a0, _bss
@@ -41,7 +41,9 @@ reset_handler:
 	//li a2, 0
 	//jal clear_bss
 
+	// Loads address of the function interrupt in t1
 	la t1, interrupt
+	// Sets mtvec to the address of interrupt
 	csrrw x0, mtvec, t1
 
 	la a1, _end

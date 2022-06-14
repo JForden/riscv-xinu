@@ -46,8 +46,9 @@ interrupt:
     sd t5, PREG_T5*8(sp)
     sd t6, PREG_T6*8(sp)
     
-    csrr a0, mcause
+    csrr a0, mcause 
     csrr a1, mtval
+    csrr a3, mepc
     mv a2, sp
     call dispatch
 

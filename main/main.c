@@ -8,17 +8,10 @@
 
 void testbigargs(ulong a, ulong b, ulong c, ulong d, ulong e, ulong f, ulong g, ulong h, ulong i, ulong j)
 {
-    kprintf("Testing bigargs...\r\n");
-    kprintf("a = 0x%016lX\r\n", a);
-    kprintf("b = 0x%016lX\r\n", b);
-    kprintf("c = 0x%016lX\r\n", c);
-    kprintf("d = 0x%016lX\r\n", d);
-    kprintf("e = 0x%016lX\r\n", e);
-    kprintf("f = 0x%016lX\r\n", f);
-    kprintf("g = 0x%016lX\r\n", g);
-    kprintf("h = 0x%016lX\r\n", h);
-    kprintf("i = 0x%016lX\r\n", i);
-    kprintf("j = 0x%016lX\r\n", j);
+    // Test user_none
+    kprintf("This is a test of ...");
+    user_none();
+    kprintf("user_none() syscall\r\n");
 }
 
 /**
