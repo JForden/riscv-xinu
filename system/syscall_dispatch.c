@@ -19,10 +19,10 @@
 
 
 /* syscall wrapper prototypes */
-syscall sc_none(int *);
-syscall sc_yield(int *);
-syscall sc_getc(int *);
-syscall sc_putc(int *);
+syscall sc_none(ulong *);
+syscall sc_yield(ulong *);
+syscall sc_getc(ulong *);
+syscall sc_putc(ulong *);
 
 /* table for determining how to call syscalls */
 const struct syscall_info syscall_table[] = {
@@ -50,7 +50,7 @@ int nsyscall = sizeof(syscall_table) / sizeof(struct syscall_info);
  * @param code syscall code to execute
  * @param args pointer to arguments for syscall
  */
-int syscall_dispatch(int code, int *args)
+int syscall_dispatch(int code, ulong *args)
 {
     if (0 <= code && code < nsyscall)
     {
@@ -64,7 +64,7 @@ int syscall_dispatch(int code, int *args)
  * syscall wrapper for *no* function, just a test/demo.
  * @param args expands to: none.
  */
-syscall sc_none(int *args)
+syscall sc_none(ulong *args)
 {
     return OK;
 }
@@ -78,7 +78,7 @@ syscall user_none(void)
  * syscall wrapper for yield().
  * @param args expands to: none.
  */
-syscall sc_yield(int *args)
+syscall sc_yield(ulong *args)
 {
     /* this may change thread of execution, allow exceptions */
     // exlreset();
@@ -95,7 +95,7 @@ syscall user_yield(void)
  * syscall wrapper for getc().
  * @param args expands to: int descrp
  */
-syscall sc_getc(int *args)
+syscall sc_getc(ulong *args)
 {
     int descrp = SCARG(int, args);
     if (0 == descrp)
@@ -114,7 +114,7 @@ syscall user_getc(int descrp)
  * syscall wrapper for putc().
  * @param args expands to: int descrp, char character
  */
-syscall sc_putc(int *args)
+syscall sc_putc(ulong *args)
 {
     int descrp = SCARG(int, args);
     char character = SCARG(char, args);

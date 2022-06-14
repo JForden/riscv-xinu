@@ -10,7 +10,7 @@ void testbigargs(ulong a, ulong b, ulong c, ulong d, ulong e, ulong f, ulong g, 
 {
     // Test user_none
     kprintf("This is a test of ...");
-    user_none();
+    user_putc(0, 'h');
     kprintf("user_none() syscall\r\n");
 }
 

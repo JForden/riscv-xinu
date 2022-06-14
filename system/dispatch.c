@@ -12,8 +12,7 @@ void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
             ulong swi_opcode;
             swi_opcode = frame[PREG_A7];
             setpc((ulong)program_counter + 4);
-            frame[PREG_A0] = syscall_dispatch(swi_opcode,(int *)frame[PREG_A0]);        
-            return;
+            frame[PREG_A0] = syscall_dispatch(swi_opcode, (ulong *)&frame[PREG_A0]);        
         } else {
             xtrap(frame, cause, val);
         }

@@ -8,12 +8,12 @@
 #define _SYSCALL_H_
 
 exchandler syscall_entry(void);
-int syscall_dispatch(int, int *);
+int syscall_dispatch(int, ulong *);
 
 struct syscall_info
 {
     int nargs;                     /**< Number of arguments required    */
-    syscall (*handler)(int *);     /**< Function handler                */
+    syscall (*handler)(ulong *);     /**< Function handler                */
 };
 
 #define SYSCALL_NONE        0 /**< Perform no operation             */
