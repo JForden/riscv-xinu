@@ -5,7 +5,7 @@
 #include <stdarg.h>
 
 //I_interupts
-//E_exception
+//E_exceptions
 
 #define I_RESERVED 0
 #define I_SUPER_SOFTWARE 1
