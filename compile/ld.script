@@ -49,7 +49,7 @@ SECTIONS {
     }
 
     . = ALIGN(64);
-    _end = .;
+    _end = . ;
 
     /* Discard comment and note (but not debugging) sections.  Some
      * versions of GNU ld would otherwise automatically place the

@@ -33,13 +33,18 @@ clear_bss: // block starting symbol
 	 * exception occurs.  */
     .func reset_handler
 reset_handler:
-    // Disable interrupts
+    // Enables interrupts
     csrrsi x0, mstatus, RISCV_MSTATUS_MEI_BIT  
     // Clear bss
 	//la a0, _bss
 	//la a1, _end
 	//li a2, 0
 	//jal clear_bss
+
+	// Loads address of the function interrupt in t1
+	la t1, interrupt
+	// Sets stvec to the address of interrupt
+	csrrw x0, stvec, t1
 
 	la a1, _end
 	li a3, 8196
@@ -48,7 +53,33 @@ reset_handler:
 	la a4, memheap
 	sw sp, 0(a4)
 
-	/* Branch to nulluser function, located in xinu/system/initialize.c
-	/* The function will initialize the system and become the null thread. */
-	j	nulluser
+	// Set the previous mode to S-Mode
+	li t1, RISCV_MPP_TO_S_MODE
+	csrrs x0, mstatus, t1
+
+	// Tell the CPU to handle all exceptions in S-Mode 
+	li t1, RISCV_MDELEG_ALL_S_MODE
+	csrrs x0, medeleg, t1
+	
+	// Tell the CPU to handle all interrupts in S-Mode
+	li t1, RISCV_MDELEG_ALL_S_MODE
+	csrrs x0, mideleg, t1
+
+	// Tell the CPU to handle all exceptions in S-Mode
+	li t1, RISCV_ENABLE_ALL_SMODE_INTR
+	csrrs x0, sie, t1
+
+	// Allow S-Mode to access all of memory
+	li t1, RISCV_MAX_ADDR	
+	csrw pmpaddr0, t1
+
+	li t1, RISCV_ALL_PERM
+	csrw pmpcfg0, t1
+
+	// Set the program counter to nulluser so when we run mret, it runs nulluser
+	la t1, nulluser
+	csrw mepc, t1
+
+	// Jump to null user
+	mret
 	.endfunc

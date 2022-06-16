@@ -8,7 +8,7 @@
 .globl gethartid
 gethartid:
 	.func gethartid
-	csrr a0, mhartid
+	li a0, 0
 	ret
 	.endfunc
 

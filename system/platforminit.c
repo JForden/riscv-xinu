@@ -52,7 +52,10 @@ int platforminit(void)
     strlcpy(platform.family, "Virt", PLT_STRMAX);
     platform.revision = 7;
 
-    set_extensions();
+    platform.maxaddr = (void *)((ulong)QEMU_START_ADDR + 0x8000000);
+    platform.minaddr = (void *)((ulong)QEMU_START_ADDR);
+
+    //set_extensions();
 
     volatile struct ns16550_uart_csreg *regptr;
     regptr = (struct ns16550_uart_csreg *)UART_BASE;

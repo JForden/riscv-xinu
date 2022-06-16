@@ -14,6 +14,10 @@
  * null-terminator.  */
 #define PLT_STRMAX 18
 
+#define QEMU_START_ADDR 0x80000000
+
+#define PERIPHERALS_BASE 0x0
+
 /**
  * Various platform-specific parameters filled in at boot time by
  * platforminit().  When platforminit() is called this structure will initially

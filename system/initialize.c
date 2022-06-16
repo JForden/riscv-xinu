@@ -14,6 +14,12 @@ static void welcome(void);      /* Print inital O/S data                 */
 extern process main(void);      /* main is the first process created     */
 
 /* Declarations of major kernel variables */
+pcb proctab[NPROC];             /* Process table                         */
+qid_typ readylist;              /* List of READY processes               */
+
+/* Active system status */
+int numproc;                    /* Number of live user processes         */
+int currpid;                    /* Id of currently running process       */
 
 /* Params set by startup.S */
 void *memheap;                  /* Bottom of heap (top of O/S stack)     */
@@ -33,7 +39,7 @@ struct platform platform;       /* Platform specific configuration       */
  */
 void nulluser(void)
 {
-    int hartid = gethartid();
+    int hartid = 0;
     if (hartid == 0) {
         /* Platform-specific initialization */
         platforminit();
@@ -84,6 +90,10 @@ static void welcome(void)
             (ulong)memheap - (ulong)&_end);
     kprintf("           [0x%08X to 0x%08X]\r\n",
             (ulong)&_end, (ulong)memheap - 1);
+    kprintf("%10d bytes heap space.\r\n",
+            (ulong)platform.maxaddr - (ulong)memheap);
+    kprintf("           [0x%08X to 0x%08X]\r\n\r\n",
+            (ulong)memheap, (ulong)platform.maxaddr - 1);
 
     /*if (PERIPHERALS_BASE < (ulong)platform.maxaddr)
     {
@@ -112,5 +122,28 @@ static void welcome(void)
  */
 static int sysinit(void)
 {
+    int i = 0;
+    pcb *ppcb = NULL;           /* process control block pointer */
+
+    /* Initialize system variables */
+    /* Count this NULLPROC as the first process in the system. */
+    numproc = 1;
+
+    /* Initialize process table */
+    for (i = 0; i < NPROC; i++)
+    {
+        proctab[i].state = PRFREE;
+    }
+
+    /* initialize null process entry */
+    ppcb = &proctab[NULLPROC];
+    ppcb->state = PRCURR;
+    strncpy(ppcb->name, "prnull", 7);
+    ppcb->stkbase       = (void *)&_end;
+    ppcb->stklen = (ulong)memheap - (ulong)&_end;
+    currpid = NULLPROC;
+
+    readylist = newqueue();
+
     return OK;
 }

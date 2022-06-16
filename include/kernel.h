@@ -20,13 +20,14 @@ void nulluser(void);
 /* Kernel function prototypes */
 syscall kprintf(const char *fmt, ...);
 syscall kputc(uchar);
-syscall kgetc();
+syscall kungetc(uchar);
+syscall kgetc(void);
+syscall kcheckc(void);
 syscall kvprintf(const char *fmt, va_list va);
 
-/* Scheduler function prototypes */
-syscall create(void *, ulong, ulong, char *, ulong, ...);
+syscall create(void *, ulong, char *, ulong, ...);
 syscall kill(pid_typ);
-syscall ready(pid_typ, bool, uint);
+syscall ready(pid_typ, bool);
 syscall resched(void);
 
 /* Assertions */
