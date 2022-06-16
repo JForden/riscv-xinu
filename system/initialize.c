@@ -39,7 +39,7 @@ struct platform platform;       /* Platform specific configuration       */
  */
 void nulluser(void)
 {
-    int hartid = gethartid();
+    int hartid = 0;
     if (hartid == 0) {
         /* Platform-specific initialization */
         platforminit();

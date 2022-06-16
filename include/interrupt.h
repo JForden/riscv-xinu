@@ -43,7 +43,7 @@ void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter);
 static inline void
 setpc(ulong x)
 {
-  asm volatile("csrw mepc, %0" : : "r" (x));
+  asm volatile("csrw sepc, %0" : : "r" (x));
 }
 
-#endif                          /* _INTERTUPT_H_ */
+#endif                          /* _INTERRUPT_H_ */

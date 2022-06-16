@@ -5,6 +5,14 @@
 #define RISCV_MPP_TO_S_MODE     1<<11 /* Set the previous mode to S-mode so XINU can switch to S-Mode when completed. */
 #define RISCV_MDELEG_ALL_S_MODE 0xFFFFFFFFFFFFFFFF
 
+#define RISCV_SIE_SEIE 1<<9
+#define RISCV_SIE_STIE 1<<5
+#define RISCV_SIE_SSIE 1<<1
+
+#define RISCV_ENABLE_ALL_SMODE_INTR (RISCV_SIE_SEIE | RISCV_SIE_STIE | RISCV_SIE_SSIE)
+#define RISCV_MAX_ADDR 0x3FFFFFFFFFFFFFull
+#define RISCV_ALL_PERM 0xF
+
 #define PREGS   32
 
 #define PREG_A0 0

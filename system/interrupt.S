@@ -46,9 +46,9 @@ interrupt:
     sd t5, PREG_T5*8(sp)
     sd t6, PREG_T6*8(sp)
     
-    csrr a0, mcause 
-    csrr a1, mtval
-    csrr a3, mepc
+    csrr a0, scause 
+    csrr a1, stval
+    csrr a3, sepc
     mv a2, sp
     call dispatch
 
@@ -85,6 +85,7 @@ interrupt:
     ld t6, PREG_T6*8(sp)
 
     addi sp, sp, PREGS*8
-    mret
+    
+    sret
 
 .endfunc

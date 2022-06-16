@@ -55,7 +55,7 @@ int platforminit(void)
     platform.maxaddr = (void *)((ulong)QEMU_START_ADDR + 0x8000000);
     platform.minaddr = (void *)((ulong)QEMU_START_ADDR);
 
-    set_extensions();
+    //set_extensions();
 
     volatile struct ns16550_uart_csreg *regptr;
     regptr = (struct ns16550_uart_csreg *)UART_BASE;
