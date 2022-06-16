@@ -27,6 +27,8 @@ ulong cpuid;                    /* Processor id                          */
 
 struct platform platform;       /* Platform specific configuration       */
 
+spinlock_t serial_lock;         /* spinlock for serial port (kprintf)  */
+
 /*
  * Intializes the system and becomes the null process.
  * This is where the system begins after the C environment has been

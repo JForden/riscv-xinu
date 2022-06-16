@@ -40,7 +40,9 @@ syscall kprintf(const char *format, ...)
     va_list ap;
 
     va_start(ap, format);
+    lock_acquire(serial_lock);
     retval = _doprnt(format, ap, (int (*)(int, int))kputc, 0);
+    lock_release(serial_lock);
     va_end(ap);
     return retval;
 }

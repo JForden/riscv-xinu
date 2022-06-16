@@ -5,4 +5,4 @@ COMP = system
 
 # Add the files to the compile source path
 DIR = ${TOPDIR}/${COMP}
-COMP_SRC += ${DIR}/start.S $(wildcard ${DIR}/*.S) ${DIR}/initialize.c $(wildcard ${DIR}/*.c)
+COMP_SRC += ${DIR}/start.S ${DIR}/atomic_utils.S $(wildcard ${DIR}/*.S) ${DIR}/initialize.c $(wildcard ${DIR}/*.c)

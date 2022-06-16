@@ -17,3 +17,4 @@
 #include <queue.h>
 #include <interrupt.h>
 #include <syscall.h>
+#include <spinlock.h>
