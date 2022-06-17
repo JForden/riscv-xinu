@@ -8,7 +8,7 @@
 .globl gethartid
 gethartid:
 	.func gethartid
-	li a0, 0
+	mv a0, gp
 	ret
 	.endfunc
 

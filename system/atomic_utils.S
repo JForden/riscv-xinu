@@ -36,10 +36,12 @@ again:
     bnez t1, again # Retry if held.
     amoswap.w.aq t1, t0, (a0) # Attempt to acquire lock.
     bnez t1, again # Retry if held.
+    ret
     .endfunc
 
 .globl _lock_release
 _lock_release:
     .func _lock_release
     amoswap.w.rl x0, x0, (a0) # Release lock by storing 0.
+    ret
     .endfunc

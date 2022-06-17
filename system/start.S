@@ -44,7 +44,7 @@ reset_handler:
 	// Loads address of the function interrupt in t1
 	la t1, interrupt
 	// Sets stvec to the address of interrupt
-	csrrw x0, stvec, t1
+	csrw stvec, t1
 
 	la a1, _end
 	li a3, 8196
@@ -79,6 +79,8 @@ reset_handler:
 	// Set the program counter to nulluser so when we run mret, it runs nulluser
 	la t1, nulluser
 	csrw mepc, t1
+
+	csrr gp, mhartid
 
 	// Jump to null user
 	mret

@@ -67,8 +67,8 @@ syscall lock_acquire(spinlock_t lock)
 		return SYSERR;
 	}
 	
-	//_lock_acquire(&(locktab[lock].lock));
-	locktab[lock].core = 0;	
+	_lock_acquire(&(locktab[lock].lock));
+	locktab[lock].core = gethartid();	
 
 	return OK;
 }
@@ -84,7 +84,7 @@ syscall lock_release(spinlock_t lock)
 		return SYSERR;
 
 	locktab[lock].core = -1;
-	//_lock_release(&(locktab[lock].lock));
+	_lock_release(&(locktab[lock].lock));
 	
 	return OK;
 }

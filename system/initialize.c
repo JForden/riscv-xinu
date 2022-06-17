@@ -41,7 +41,7 @@ spinlock_t serial_lock;         /* spinlock for serial port (kprintf)  */
  */
 void nulluser(void)
 {
-    int hartid = 0;
+    int hartid = gethartid();
     if (hartid == 0) {
         /* Platform-specific initialization */
         platforminit();

@@ -17,6 +17,7 @@
 #define QEMU_START_ADDR 0x80000000
 
 #define PERIPHERALS_BASE 0x0
+#define NCORES 1
 
 /**
  * Various platform-specific parameters filled in at boot time by

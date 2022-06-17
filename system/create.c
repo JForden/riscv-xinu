@@ -105,7 +105,14 @@ syscall create(void *funcaddr, ulong ssize, char *name,
  */
 static pid_typ newpid(void)
 {
-    return 1;
+    pid_typ pid;                /* process id to return     */
+
+    for (pid = NCORES; pid < NPROC; pid++)
+    {                           /* check all NPROC slots    */
+        if (_atomic_compareAndSwapWeak(&(proctab[pid].state), PRFREE, PRSUSP))
+            return pid;
+    }
+    return SYSERR;
 }
 
 /**
