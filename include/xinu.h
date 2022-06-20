@@ -18,3 +18,4 @@
 #include <interrupt.h>
 #include <syscall.h>
 #include <spinlock.h>
+#include <clock.h>

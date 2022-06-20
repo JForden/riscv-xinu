@@ -21,7 +21,7 @@ void *getstk(ulong);
  * @param nargs    number of arguments that follow
  * @return the new process id
  */
-syscall create(void *funcaddr, ulong ssize, char *name,
+syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
                ulong nargs, ...)
 {
     ulong *saddr;               /* stack address                */
@@ -54,6 +54,7 @@ syscall create(void *funcaddr, ulong ssize, char *name,
     ppcb->stklen = ssize;
     strncpy(ppcb->name, name, PNMLEN);
     ppcb->core = -1;            // this will be set in ready()
+    ppcb->priority = priority;
 
     /* Initialize stack with accounting block. */
     *saddr = STACKMAGIC;
@@ -120,6 +121,7 @@ static pid_typ newpid(void)
  */
 void userret(void)
 {
+    uint cpuid = gethartid();
     //kprintf("Killing %d!\r\n", currpid);
-    kill(currpid);
+    kill(currpid[cpuid]);
 }

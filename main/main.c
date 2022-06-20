@@ -25,7 +25,7 @@ process main(void)
 
     int pid = 0;
 
-    pid = create((void *)testbigargs, INITSTK, "MAIN1", 10,
+    pid = create((void *)testbigargs, INITSTK, PRIO_HIGH, "MAIN1", 10,
                      0x1111111111111111UL, 0x2222222222222222UL, 0x3333333333333333UL, 0x4444444444444444UL,
                      0x5555555555555555UL, 0x6666666666666666UL, 0x7777777777777777UL, 0x8888888888888888UL, 
                      0x9999999999999999UL, 0x1010101010101010UL);

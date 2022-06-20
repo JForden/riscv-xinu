@@ -29,6 +29,10 @@
 #define PRRECV	    4	    /**< process is blocked pending a send	 */
 #define PRSEND 	    5	    /**< process is blocked pending a recv	 */
 
+#define PRIO_LOW	0       /**< low process priority		*/
+#define PRIO_MED	1       /**< medium process priority		*/
+#define PRIO_HIGH	2       /**< high process priority		*/
+
 /* miscellaneous process definitions                                     */
 
 #define PNMLEN      16      /**< length of process "name"                */
@@ -76,7 +80,7 @@ typedef struct pentry
 
 
 extern struct pentry proctab[];
-extern int numproc;      /**< currently active processes              */
-extern int currpid;    /**< currently executing process             */
+extern int numproc;         /**< currently active processes              */
+extern int currpid[];         /**< currently executing process             */
 
 #endif                          /* _PROC_H_ */

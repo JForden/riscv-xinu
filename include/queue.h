@@ -26,6 +26,8 @@
 #ifndef _QUEUE_H_
 #define _QUEUE_H_
 
+#include <stddef.h>
+
 #ifndef NQENT
 #define NQENT   NPROC   /**< one for each process                        */ \
           + 2           /**< plus two for each list (ready list)         */
@@ -40,7 +42,7 @@ struct qentry
 };
 
 extern struct qentry queuetab[];
-extern qid_typ readylist;
+extern qid_typ readylist[][3];
 
 /* inline list manipulation procedures                                   */
 

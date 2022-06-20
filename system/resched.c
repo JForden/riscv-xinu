@@ -19,20 +19,75 @@ syscall resched(void)
 {
     pcb *oldproc;               /* pointer to old process entry */
     pcb *newproc;               /* pointer to new process entry */
+    int highest_prio;
+    uint cpuid = gethartid();
 
-    oldproc = &proctab[currpid];
+    oldproc = &proctab[currpid[cpuid]];
 
-    /* place current process at end of ready queue */
-    if (PRCURR == oldproc->state)
-    {
-        oldproc->state = PRREADY;
-        enqueue(currpid, readylist);
-    }
+    #if AGING
+	// Decrement promote_medium quanta.
+	// If it gets down to 0, promote a medium
+	// priority process to a high priority.
+	if (--promote_medium[cpuid] <= 0)
+	{
+		// move process from medium priority queue to a higher priority one,
+		// if available.
+		if (nonempty(readylist[cpuid][PRIO_MED]))
+		{
+			enqueue(dequeue(readylist[cpuid][PRIO_MED]), readylist[cpuid][PRIO_HIGH]);
+		}
+		
+		// Decrement promote_low quanta,
+		// if it gets down to 0, promote a low
+		// priority process to a medium priority.
+		if (--promote_low[cpuid] <= 0)
+		{
+			// Move process from low priority to medium priority queue.
+			if (nonempty(readylist[cpuid][PRIO_LOW]))
+			{
+				enqueue(dequeue(readylist[cpuid][PRIO_LOW]), readylist[cpuid][PRIO_MED]);
+			}
+			
+			// Reset promote_low quantum
+			promote_low[cpuid] = QUANTUM;
+		}
 
-    /* remove first process in ready queue */
-    currpid = dequeue(readylist);
-    newproc = &proctab[currpid];
-    newproc->state = PRCURR;    /* mark it currently running    */
+		// Reset promote_medium quantum
+		promote_medium[cpuid] = QUANTUM;
+		
+	}
+#endif
+
+	/* place current process at end of ready queue */
+	if (PRCURR == oldproc->state)
+	{
+		oldproc->state = PRREADY;
+		enqueue(currpid[cpuid], readylist[cpuid][oldproc->priority]);
+	}
+
+	/* remove first process in highest priority ready queue */
+	// determine queue to pick from
+	if (nonempty(readylist[cpuid][PRIO_HIGH]))
+	{
+		highest_prio = PRIO_HIGH;
+	}
+	else if (nonempty(readylist[cpuid][PRIO_MED]))
+	{
+		highest_prio = PRIO_MED;
+	}
+	else
+	{
+		highest_prio = PRIO_LOW;
+	}
+
+	currpid[cpuid] = dequeue(readylist[cpuid][highest_prio]);
+	newproc = &proctab[currpid[cpuid]];
+	newproc->state = PRCURR;    /* mark it currently running    */
+
+#if PREEMPT
+	preempt[cpuid] = QUANTUM;
+#endif
+
 
     ctxsw(&oldproc->regs, &newproc->regs);
 

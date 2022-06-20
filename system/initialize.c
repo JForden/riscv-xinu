@@ -15,11 +15,11 @@ extern process main(void);      /* main is the first process created     */
 
 /* Declarations of major kernel variables */
 pcb proctab[NPROC];             /* Process table                         */
-qid_typ readylist;              /* List of READY processes               */
+qid_typ readylist[NCORES][3];	/* List of READY processes			   */
 
 /* Active system status */
-int numproc;                    /* Number of live user processes         */
-int currpid;                    /* Id of currently running process       */
+int numproc;				/* Number of live user processes       */
+int currpid[NCORES];			/* Id of currently running proccesses  */
 
 /* Params set by startup.S */
 void *memheap;                  /* Bottom of heap (top of O/S stack)     */
@@ -28,6 +28,9 @@ ulong cpuid;                    /* Processor id                          */
 struct platform platform;       /* Platform specific configuration       */
 
 spinlock_t serial_lock;         /* spinlock for serial port (kprintf)  */
+
+volatile ulong promote_medium[NCORES];
+volatile ulong promote_low[NCORES];
 
 /*
  * Intializes the system and becomes the null process.
@@ -125,6 +128,7 @@ static void welcome(void)
 static int sysinit(void)
 {
     int i = 0;
+    int j = 0;
     pcb *ppcb = NULL;           /* process control block pointer */
 
     /* Initialize system variables */
@@ -143,9 +147,23 @@ static int sysinit(void)
     strncpy(ppcb->name, "prnull", 7);
     ppcb->stkbase       = (void *)&_end;
     ppcb->stklen = (ulong)memheap - (ulong)&_end;
-    currpid = NULLPROC;
+    ppcb->priority = INITPRIO;
+    currpid[0] = NULLPROC;
 
-    readylist = newqueue();
+    /* Initialize ready lists */
+    for (i = 0; i < NCORES; i++)
+    {
+        for (j = 0; j < 3; j++)
+        {
+            readylist[i][j] = newqueue();
+        }
+    }
+
+    for (i = 0; i < NCORES; i++)
+    {
+        promote_medium[i] = QUANTUM;
+        promote_low[i] = QUANTUM;
+    }
 
     return OK;
 }

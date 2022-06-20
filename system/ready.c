@@ -29,7 +29,7 @@ syscall ready(pid_typ pid, bool resch)
 		ppcb->core = hart;
 	}
     
-    enqueue(pid, readylist);
+    enqueue(pid, readylist[ppcb->core][ppcb->priority]);
     
     if (resch)
     {
