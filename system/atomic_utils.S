@@ -1,5 +1,6 @@
 #include <riscv.h>
 
+.globl _atomic_compareAndSwapStrong
 _atomic_compareAndSwapStrong:    
     .func _atomic_compareAndSwapStrong
     lr.w    t0, (a0)
@@ -45,3 +46,31 @@ _lock_release:
     amoswap.w.rl x0, x0, (a0) # Release lock by storing 0.
     ret
     .endfunc
+
+.globl enable
+.globl disable
+.globl restore
+
+/**
+ * @fn void enable(void)
+ *
+ * Enable interrupts globally for S-Mode.
+ */
+enable:
+	.func enable
+	csrrsi x0, sstatus, RISCV_SIE_ENABLE
+    ret
+	.endfunc
+/**
+ * @fn irqmask disable(void)
+ *
+ * Disable interrupts globally and returns the old state.
+ * @return state of interrupts before they were disabled
+ */
+disable:
+	.func disable
+	csrr a0, sstatus
+	csrrsi x0, sstatus, RISCV_SIE_DISABLE
+	ret
+	.endfunc
+    

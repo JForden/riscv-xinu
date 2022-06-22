@@ -39,6 +39,10 @@ const struct syscall_info syscall_table[] = {
     { 2, (void *)sc_none },     /* SYSCALL_SEEK      = 10 */
     { 4, (void *)sc_none },     /* SYSCALL_CONTROL   = 11 */
     { 1, (void *)sc_none },     /* SYSCALL_GETDEV    = 12 */
+    { 4, (void *)sc_create },   /* SYSCALL_CREATE    = 13 */
+    { 2, (void *)sc_join },     /* SYSCALL_JOIN      = 14 */
+    { 1, (void *)sc_lock },     /* SYSCALL_LOCK      = 15 */
+    { 1, (void *)sc_unlock },   /* SYSCALL_UNLOCK    = 16 */
 };
 
 int nsyscall = sizeof(syscall_table) / sizeof(struct syscall_info);
@@ -127,4 +131,25 @@ syscall sc_putc(ulong *args)
 syscall user_putc(int descrp, char character)
 {
     SYSCALL(PUTC);
+}
+
+syscall pthread_mutex_lock(pthread_mutex_t * mutex)
+{
+    SYSCALL(PTLOCK);
+}
+
+syscall pthread_mutex_unlock(pthread_mutex_t * mutex)
+{
+    SYSCALL(PTUNLOCK);
+}
+
+syscall pthread_create(pthread_t * thread, pthread_attr_t * attr,
+                       void *(*start_routine)(void *), void *arg)
+{
+    SYSCALL(PTCREATE);
+}
+
+syscall pthread_join(pthread_t thread, void **retval)
+{
+    SYSCALL(PTJOIN);
 }

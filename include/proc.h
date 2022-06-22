@@ -26,8 +26,8 @@
 #define PRCURR      1       /**< process is currently running            */
 #define PRSUSP      2       /**< process is suspended                    */
 #define PRREADY     3       /**< process is on ready queue               */
-#define PRRECV	    4	    /**< process is blocked pending a send	 */
-#define PRSEND 	    5	    /**< process is blocked pending a recv	 */
+#define PRJOIN      4       /**< process is on a join queue              */
+#define PRWAIT      5       /**< process is waiting on semaphore         */
 
 #define PRIO_LOW	0       /**< low process priority		*/
 #define PRIO_MED	1       /**< medium process priority		*/
@@ -63,9 +63,12 @@ typedef struct pentry
     void *stkbase;       /**< base of run time stack                  */
     int stklen;          /**< stack length                            */
     int core;            /**< core affinity                           */
+    uint joinq; 
     char name[PNMLEN];   /**< process name                            */
     ulong regs[PREGS];     /**< stored process registers                */
 } pcb;
+
+
 
 #define PRIO_LOW	0       /**< low process priority		*/
 #define PRIO_MED	1       /**< medium process priority		*/

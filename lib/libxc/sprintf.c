@@ -26,6 +26,7 @@ static int sprntf(int, int);
  * @return
  *      the number of characters written, excluding the null terminator.
  */
+
 int sprintf(char *str, const char *format, ...)
 {
     va_list ap;

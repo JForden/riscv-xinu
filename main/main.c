@@ -14,6 +14,25 @@ void testbigargs(ulong a, ulong b, ulong c, ulong d, ulong e, ulong f, ulong g, 
     kprintf("user_none() syscall\r\n");
 }
 
+void *jointhread(void *arg)
+{
+    pthread_t target = (int) arg;
+    kprintf("Thread %d calling pthread_join(%d, NULL)\r\n", currpid, target);
+    pthread_join(target, NULL);
+    kprintf("Thread %d has awakened!\r\n", currpid);
+    kprintf("Target thread %d has state %d [0]\r\n", 
+		    target, proctab[target].state);
+    return NULL;
+}
+
+void *joinee(void *arg)
+{
+	kprintf("Target thread %d\r\n", currpid);
+	while (1)
+		resched();
+	return NULL;
+}
+
 /**
  * Main Process.  You can modify this routine to customize what Embedded Xinu
  * does when it starts up.  The default is designed to do something reasonable
@@ -24,12 +43,33 @@ process main(void)
     kprintf("Hello, Xinu World, from hart %d!\r\n", gethartid());
 
     int pid = 0;
-
-    pid = create((void *)testbigargs, INITSTK, PRIO_HIGH, "MAIN1", 10,
-                     0x1111111111111111UL, 0x2222222222222222UL, 0x3333333333333333UL, 0x4444444444444444UL,
-                     0x5555555555555555UL, 0x6666666666666666UL, 0x7777777777777777UL, 0x8888888888888888UL, 
-                     0x9999999999999999UL, 0x1010101010101010UL);
     kprintf("PID is %d!\r\n", pid);
+
+    char test;
+	int rc = 0;
+
+	pthread_t testida = -1;
+	pthread_t testidb = -1;
+	pthread_mutex_t mutex = PTHREAD_MUTEX_UNLOCKED;
+
+
+    rc = pthread_create(&testida, NULL, joinee, (void *)0);
+		resched();
+		rc = pthread_create(&testidb, NULL, jointhread, 
+				(void *)testida);
+		rc = pthread_create(&testidb, NULL, jointhread, 
+				(void *)testida);
+		rc = pthread_create(&testidb, NULL, jointhread, 
+				(void *)testida);
+		resched();
+		resched(); // Lottery scheduler.  Just yield a bunch.
+		resched();
+		resched();
+		resched();
+		kprintf("Killing target thread %d\r\n", testida);
+		kill(testida);
+		while (numproc > 2)
+            resched();
 
     ready(pid, RESCHED_YES);
     kprintf("Process completed!\r\n");
