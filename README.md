@@ -1,10 +1,4 @@
-# riscv-xinu
-
-Embedded Xinu, Copyright (C) 2008, 2009, 2010. All rights reserved.
-
-Version: 2.01
-
-#What is Embedded Xinu?
+# What is Embedded Xinu?
 
 Xinu ("Xinu is not unix", a recursive acronym) is a UNIX-like operating system originally developed by Douglas Comer for instructional purposes at Purdue University in the 1980s.
 
