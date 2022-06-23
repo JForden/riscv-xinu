@@ -63,11 +63,10 @@ typedef struct pentry
     void *stkbase;       /**< base of run time stack                  */
     int stklen;          /**< stack length                            */
     int core;            /**< core affinity                           */
-    uint joinq; 
+    uint joinq;          /**< JoinQ stuff                             */
     char name[PNMLEN];   /**< process name                            */
     ulong regs[PREGS];     /**< stored process registers                */
 } pcb;
-
 
 
 #define PRIO_LOW	0       /**< low process priority		*/

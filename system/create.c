@@ -2,7 +2,6 @@
  * @file create.c
  * @provides create, newpid, userret
  *
- * COSC 3250 / COEN 4820 Assignment 4
  */
 /* Embedded XINU, Copyright (C) 2008.  All rights reserved. */
 
@@ -14,9 +13,11 @@ void userret(void);
 void *getstk(ulong);
 
 /**
+ * @ingroup process
  * Create a new process to start running a function.
  * @param funcaddr address of function that will begin in new process
  * @param ssize    stack size in bytes
+ * @param priority The priority given to the process(high,medium,low)
  * @param name     name of the process, used for debugging
  * @param nargs    number of arguments that follow
  * @return the new process id
@@ -101,6 +102,7 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
 }
 
 /**
+ * @ingroup process
  * Obtain a new (free) process id.
  * @return a free process id, SYSERR if all ids are used
  */
@@ -117,11 +119,11 @@ static pid_typ newpid(void)
 }
 
 /**
+ * @ingroup process
  * Entered when a process exits by return.
  */
 void userret(void)
 {
     uint cpuid = gethartid();
-    //kprintf("Killing %d!\r\n", currpid);
     kill(currpid[cpuid]);
 }

@@ -1,8 +1,28 @@
+/**
+ * @file dispatch.c
+ * @provides create, newpid, userret
+ *
+ */
+/* Embedded XINU, Copyright (C) 2008.  All rights reserved. */
+
+
+
+
 #include <xinu.h>
 #include <interrupt.h>
 #define SOFTWARE 1
 
 
+
+/**
+ * 
+ * @ingroup process
+ * Dispatch the trap or exception handler, called via interrupt.S
+ * @param cause  The value of the scause register 
+ * @param stval  The value of the stval register  
+ * @param frame  The stack pointer of the process that caused the interupt 
+ * @param program_counter  The value of the sepc register 
+ */
 
 void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
     if((long)cause > 0) {

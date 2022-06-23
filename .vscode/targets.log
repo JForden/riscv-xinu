@@ -1,6 +1,4 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-make: *** No rule to make target 'all'.  Stop.
-
 # GNU Make 4.3
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
@@ -8,7 +6,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Jun 20 10:51:05 2022
+# Make data base, printed on Thu Jun 23 11:03:34 2022
 
 # Variables
 
@@ -23,7 +21,7 @@ SSH_AGENT_LAUNCHER = gnome-keyring
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-1aaf9226-0e91-430b-ba15-038109341763.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-31978523-9e29-442b-8d73-6edab9f7abf0.sock
 # environment
 MANDATORY_PATH = /usr/share/gconf/ubuntu.mandatory.path
 # environment
@@ -93,13 +91,13 @@ MAKEFILE_LIST :=
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 50709
+VSCODE_PID = 44668
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-SESSION_MANAGER = local/alge-LXLAPTOP:@/tmp/.ICE-unix/6142,unix/alge-LXLAPTOP:/tmp/.ICE-unix/6142
+SESSION_MANAGER = local/alge-LXLAPTOP:@/tmp/.ICE-unix/5364,unix/alge-LXLAPTOP:/tmp/.ICE-unix/5364
 # automatic
 *F = $(notdir $*)
 # environment
@@ -135,7 +133,7 @@ MAKEFILES :=
 # automatic
 ^F = $(notdir $^)
 # environment
-INVOCATION_ID = 84bcdfac81e946bdbc46f3817ebbc5b0
+INVOCATION_ID = a766decc5996436792703a9022a19e20
 # environment
 VSCODE_LOG_NATIVE = false
 # environment
@@ -163,7 +161,7 @@ GIO_LAUNCHED_DESKTOP_FILE = /usr/share/applications/code.desktop
 # makefile
 .DEFAULT_GOAL := 
 # environment
-SYSTEMD_EXEC_PID = 6168
+SYSTEMD_EXEC_PID = 5390
 # environment
 DISPLAY = :1
 # environment
@@ -175,9 +173,9 @@ DEFAULTS_PATH = /usr/share/gconf/ubuntu.default.path
 # default
 MAKE_VERSION := 4.3
 # environment
-MANAGERPID = 5347
+MANAGERPID = 4653
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 50709
+GIO_LAUNCHED_DESKTOP_FILE_PID = 44668
 # environment
 _ = /usr/share/code/code
 # environment
@@ -185,7 +183,7 @@ XDG_RUNTIME_DIR = /run/user/1000
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-JOURNAL_STREAM = 8:37741
+JOURNAL_STREAM = 8:40301
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -219,7 +217,7 @@ GDMSESSION = ubuntu
 
 # Directories
 
-# . (device 40, inode 689204): 10 files, no impossibilities.
+# . (device 41, inode 792720): 10 files, no impossibilities.
 
 # 10 files, no impossibilities in 1 directories.
 
@@ -277,6 +275,8 @@ GNUmakefile:
 # strcache performance: lookups = 21 / hit rate = 14%
 # hash-table stats:
 # Load=18/8192=0%, Rehash=0, Collisions=0/21=0%
-# Finished Make data base on Mon Jun 20 10:51:05 2022
+# Finished Make data base on Thu Jun 23 11:03:34 2022
 
  
+make: *** No rule to make target 'all'.  Stop.
+
