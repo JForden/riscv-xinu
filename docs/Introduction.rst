@@ -132,9 +132,9 @@ These are all the platforms on which Embedded Xinu currently runs.
       - ``arm-none-eabi``
     * - :doc: `riscv-qemu </riscv/riscv-qemu>`
       - Supported
+      - Core operating system is functional
       - ``riscv-xinu``
       - ``riscv64-unknown-elf``
-      - Core operating system is functional
 .. _Xinu:
 
 The original Xinu
