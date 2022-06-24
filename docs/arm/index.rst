@@ -1,4 +1,4 @@
-ARM ports (including Raspberry Pi)
+ARM ports (including Raspberry Pie)
 ==================================
 
 .. toctree::
