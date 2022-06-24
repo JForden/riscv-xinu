@@ -6,6 +6,3 @@ RISC-V Ports
    :maxdepth: 2
 
    *
-   context-switch
-   process
-   modes
