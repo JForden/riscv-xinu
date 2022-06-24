@@ -8,6 +8,7 @@ Embedded Xinu documentation contents
    :glob:
 
    Introduction
+   riscV
    Getting-Started
    features/index
    mips/index
