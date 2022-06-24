@@ -1,3 +1,5 @@
+modes 1.1
+=========
 Xinu uses a three ring structure for process management. Machine, supervisor, and user mode provide adequate methods of interrupt handling and system protection.  The operating system is only in machine mode for a limited time.  
 
 Machine mode:

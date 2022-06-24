@@ -8,3 +8,4 @@ RISC-V Ports
    *
    context-switch
    process
+   modes
