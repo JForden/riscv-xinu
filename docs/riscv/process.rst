@@ -1,5 +1,5 @@
 Process Control Block
-==============
+=====================
 PCB:
 
     The process control block (PCB) is used in the management of an operating systems’ individual processes. XINU’s PCB is defined in proc.h with a struct called pentry (as shown below).  XINU is limited to the number of processes defined as NPROC at the top of proc.h.  For most platforms, NPROC is 50.  All process information is stored in the global variable proctab.  The process ID can be used as an index in the proctab array to get the PCB for that process.
