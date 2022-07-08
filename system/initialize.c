@@ -60,6 +60,8 @@ void nulluser(void)
 
     /* Call the main program */
     sprintf(pname, "MAIN%d", hartid);
+    kprintf(pname);
+    kprintf("\r\n");
     ready(create((void *)main, INITSTK, INITPRIO, pname, 0),
           RESCHED_NO);
 

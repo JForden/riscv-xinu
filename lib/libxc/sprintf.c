@@ -6,7 +6,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-static int sprntf(int, int);
+static int sprntf(ulong, ulong);
 
 /**
  * @ingroup libxc
@@ -34,7 +34,7 @@ int sprintf(char *str, const char *format, ...)
 
     s = str;
     va_start(ap, format);
-    _doprnt(format, ap, sprntf, (int)&s);
+    _doprnt(format, ap, sprntf, (ulong)&s);
     va_end(ap);
     *s = '\0';
 
@@ -44,12 +44,17 @@ int sprintf(char *str, const char *format, ...)
 /*
  * Routine called by _doprnt() to output each character.
  */
-static int sprntf(int c, int _sptr)
+static int sprntf(ulong c, ulong _sptr)
 {
+    // Gets pointer to string from _sptr
     char **sptr = (char **)_sptr;
+    // Gets the string
     char *s = *sptr;
 
+    // Adds character to string?
     *s++ = c;
+
+    // Updates memory location to the string
     *sptr = s;
     return (unsigned char)c;
 }

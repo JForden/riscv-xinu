@@ -21,7 +21,7 @@
  *      char</code> cast to an @c int.  On write error or invalid device,
  *      returns @c EOF.
  */
-int fputc(int c, int dev)
+int fputc(long c, long dev)
 {
     int ret;
 
