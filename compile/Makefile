@@ -14,7 +14,7 @@
 #
 # $ make PLATFORM=arm-rpi
 #
-PLATFORM := riscv-virt
+PLATFORM := nezha
 
 # Filename of boot image to create (platform can override it if really needed)
 BOOTIMAGE := xinu.boot
@@ -118,7 +118,7 @@ LIBS    := libxc
 ###############################################################################
 
 # Include the platform-specific Makefile.
-include platformVars
+include platforms/$(PLATFORM)/platformVars
 
 ###############################################################################
 
@@ -141,8 +141,23 @@ else
   CFLAGS += -DHAVE_SHELL=0
 endif
 
-LDSCRIPT := ld.script
-LDFLAGS += -T$(LDSCRIPT)
+# Set linker script.  A script in platforms/ overrides the one in arch/, if
+# present.
+ifneq ($(TEMPLATE_ARCH),)
+  ifeq ($(shell if [ -e arch/$(TEMPLATE_ARCH)/ld.script ]; then echo 1; fi),1)
+    LDSCRIPT := arch/$(TEMPLATE_ARCH)/ld.script
+  endif
+endif
+
+ifeq ($(shell if [ -e platforms/$(PLATFORM)/ld.script ]; then echo 1; fi),1)
+  LDSCRIPT := platforms/$(PLATFORM)/ld.script
+endif
+
+ifeq ($(LDSCRIPT),)
+  $(warning ld.script not found)
+else
+  LDFLAGS += -T$(LDSCRIPT)
+endif
 
 # Set the location of the architecture-specific cross-compiler and binutils.
 # This can be overridden on the command line; e.g.
