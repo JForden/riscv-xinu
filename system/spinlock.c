@@ -5,13 +5,13 @@
  */
 /* Embedded Xinu, Copyright (C) 2008. All rights reserved. */
 
-#include <spinlock.h>
+#include <xinu.h>
 
 struct lockent locktab[NLOCK];	/* spinlock table */
 
 /* Assembly helper functions in spinlock_util.S */
-extern void _lock_acquire(unsigned int *);	
-extern void _lock_release(unsigned int *);	
+extern void _lock_acquire(volatile unsigned int *);	
+extern void _lock_release(volatile unsigned int *);	
 
 static spinlock_t lock_alloc(void);
 

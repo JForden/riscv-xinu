@@ -6,13 +6,8 @@
 /* Embedded XINU, Copyright (C) 2008.  All rights reserved. */
 
 
-
-
 #include <xinu.h>
 #include <interrupt.h>
-#define SOFTWARE 1
-
-
 
 /**
  * 
@@ -43,7 +38,5 @@ void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
         cause = cause << 1;
         cause = cause >> 1;
         //TODO
-        //TODO2
     }
-
 }

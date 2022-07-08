@@ -14,7 +14,7 @@
 #
 # $ make PLATFORM=arm-rpi
 #
-PLATFORM := nezha
+PLATFORM := riscv-qemu
 
 # Filename of boot image to create (platform can override it if really needed)
 BOOTIMAGE := xinu.boot

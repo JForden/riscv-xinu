@@ -4,9 +4,20 @@
 #include <stddef.h>
 #include <stdarg.h>
 
-//I_interupts
-//E_exceptions
+typedef interrupt (*interrupt_handler_t)(void);
 
+extern interrupt_handler_t interruptVector[];
+
+typedef unsigned long irqmask;  /**< machine status for disable/restore  */
+
+
+void enable(void);
+irqmask disable(void);
+irqmask restore(irqmask);
+void enable_irq(irqmask);
+void disable_irq(irqmask);
+
+// Interrupts
 #define I_RESERVED 0
 #define I_SUPER_SOFTWARE 1
 #define I_MACHINE_SOFTWARE 3
@@ -14,6 +25,8 @@
 #define I_MACHINE_TIMER 7
 #define I_SUPERVISOR_EXTERNAL 9
 #define I_MACHINE_EXTERNAL 11
+
+// Exceptions
 #define E_INSTRUCTION_ADR_MISALIGNED 0
 #define E_INSTRUCTION_ACCESS_FAULT 1
 #define E_ILLEGAL_INSTRUCTION 2

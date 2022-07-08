@@ -50,7 +50,7 @@ syscall sc_join(ulong *args)
     }
     ppcb = &proctab[currpid[gethartid()]];
     ppcb->state = PRJOIN;
-    enqueue(currpid, proctab[thread].joinq);
+    enqueue(currpid[gethartid()], proctab[thread].joinq);
     resched();
     enable();
     return OK;
