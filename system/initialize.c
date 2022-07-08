@@ -45,6 +45,8 @@ volatile ulong promote_low[NCORES];
 void nulluser(void)
 {
     int hartid = gethartid();
+    char pname[PNMLEN];
+
     if (hartid == 0) {
         /* Platform-specific initialization */
         platforminit();
@@ -57,12 +59,14 @@ void nulluser(void)
     }
 
     /* Call the main program */
-    main();
+    sprintf(pname, "MAIN%d", hartid);
+    ready(create((void *)main, INITSTK, INITPRIO, pname, 0),
+          RESCHED_NO);
 
     /* null process has nothing else to do but cannot exit  */
     while (1)
     {
-
+        resched();
     }
 }
 
