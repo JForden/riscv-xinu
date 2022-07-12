@@ -2,11 +2,10 @@
  * @file sprintf.c
  */
 /* Embedded Xinu, Copyright (C) 2009, 2013.  All rights reserved. */
-
 #include <stdarg.h>
 #include <stdio.h>
 
-static int sprntf(ulong, ulong);
+static ulong sprntf(ulong, ulong);
 
 /**
  * @ingroup libxc
@@ -44,7 +43,7 @@ int sprintf(char *str, const char *format, ...)
 /*
  * Routine called by _doprnt() to output each character.
  */
-static int sprntf(ulong c, ulong _sptr)
+static ulong sprntf(ulong c, ulong _sptr)
 {
     // Gets pointer to string from _sptr
     char **sptr = (char **)_sptr;

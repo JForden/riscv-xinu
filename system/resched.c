@@ -80,14 +80,23 @@ syscall resched(void)
 		highest_prio = PRIO_LOW;
 	}
 
-	currpid[cpuid] = dequeue(readylist[cpuid][highest_prio]);
+	kprintf("Old process is %d\r\n", currpid[cpuid]);
+	int i = 0;
+
+
+
+	i = dequeue(readylist[cpuid][highest_prio]);
+	kprintf("Prio is %d\r\n", highest_prio);
+	kprintf("I %d\r\n", i);
+	currpid[cpuid] = i;
 	newproc = &proctab[currpid[cpuid]];
 	newproc->state = PRCURR;    /* mark it currently running    */
+
+	kprintf("New process is %d\r\n", currpid[cpuid]);
 
 #if PREEMPT
 	preempt[cpuid] = QUANTUM;
 #endif
-
 
     ctxsw(&oldproc->regs, &newproc->regs);
 
