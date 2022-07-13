@@ -7,7 +7,7 @@
 
 #include <xinu.h>
 
-struct pgtblent *pgtbl = NULL;      /**< system page table address */
+struct pgmemblk *pgfreelist = NULL;      /**< system page table address */
 uint pgtbl_nents = 0;               /**< number of entries in page table */
 
 /**
@@ -19,24 +19,26 @@ void safeInit(void)
     // This function should set up initial page table.
 
     /* number of pages in memory */
-    pgtbl_nents = roundpage((ulong)platform.maxaddr - (ulong)_end) / PAGE_SIZE;
+    pgtbl_nents = roundpage((ulong)platform.maxaddr - (ulong)memheap) / PAGE_SIZE;
 
     /* allocate memory system page table */
     //pgtbl = (struct pgtblent *)memget(nbytes);
 
     /* clear page table */
-    bzero(pgtbl, 4096);
+    //bzero(pgtbl, 4096);
+    pgfreerange(memheap, platform.maxaddr);
 }
 
 int pgfreerange(void *start, void* end) {
-    if(end > platform.maxaddr || (char *)start < (char *)_end || (char *)end < (char *)start) {
+    if(end > platform.maxaddr || (char *)start < (char *)memheap || (char *)end < (char *)start) {
         return SYSERR;
     }
 
     char *pgstart = (char *)roundpage(start);
-    for(; pgstart + PAGE_SIZE < (char *)end; pgstart += PAGE_SIZE)
+    for(; pgstart + PAGE_SIZE < (char *)end; pgstart += PAGE_SIZE){
         if(SYSERR == pgfree(pgstart))
             return SYSERR;
+    }
 
     return OK;
 }

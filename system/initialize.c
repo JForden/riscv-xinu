@@ -56,6 +56,9 @@ void nulluser(void)
 
         /* Standard Embedded Xinu processor and memory info */
         welcome();
+
+        // Initialize memory protection
+        safeInit();
     }
 
     /* Call the main program */
@@ -87,7 +90,6 @@ static void welcome(void)
     kprintf("           [0x%08X to 0x%08X]\r\n",
             (ulong)platform.minaddr, (ulong)(platform.maxaddr - 1));
 
-    extern void _start(void);
     kprintf("%10lu bytes reserved system area.\r\n",
             (ulong)_start - (ulong)platform.minaddr);
     kprintf("           [0x%08X to 0x%08X]\r\n",
@@ -169,6 +171,12 @@ static int sysinit(void)
     {
         promote_medium[i] = QUANTUM;
         promote_low[i] = QUANTUM;
+    }
+
+    for(i = 0; i < NLOCK; i++){
+        locktab[i].state = SPINLOCK_FREE;
+        locktab[i].lock = SPINLOCK_UNLOCKED;
+        locktab[i].core = -1;
     }
 
     return OK;

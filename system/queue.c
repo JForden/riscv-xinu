@@ -63,6 +63,7 @@ pid_typ dequeue(qid_typ q)
 
     if (isbadqueue(q))
     {
+        kprintf("BAD QUEUE\r\n");
         return SYSERR;
     }
 

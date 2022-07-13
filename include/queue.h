@@ -30,7 +30,7 @@
 
 #ifndef NQENT
 #define NQENT   NPROC   /**< one for each process                        */ \
-          + 2           /**< plus two for each list (ready list)         */
+          + 24           /**< plus two for each list (ready list)         */
 #endif
 
 typedef unsigned long qid_typ;

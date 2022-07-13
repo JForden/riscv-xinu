@@ -55,8 +55,23 @@ struct pgmemblk
 };
 
 extern struct pgmemblk *pgfreelist;      /**< system page table */
-extern struct pgtblent *pgtbl;      /**< system page table */
 extern uint pgtbl_nents;            /**< number of pages in page table */
+
+typedef void *pgtbl;
+
+#define PTE_V 1
+#define PTE_R 1 << 1
+#define PTE_W 1 << 2
+#define PTE_X 1 << 3
+#define PTE_U 1 << 4
+#define PTE_G 1 << 5
+#define PTE_A 1 << 6
+#define PTE_D 1 << 7
+
+#define PGOFFSET 12 //every page is offset by 12 bits
+#define PTEMASK 0x1FF //the virtual addr is masked into 3 sections of 9 bits. these correlate to lvl2,1,0 
+#define PXSHIFT(level)  (PGOFFSET+(9*(level)))
+#define PX(level, addr) ((((ulong) (addr)) >> PXSHIFT(level)) & PTEMASK)
 
 /* Prototypes for memory protection functions */
 void safeInit(void);
