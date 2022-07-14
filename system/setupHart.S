@@ -18,3 +18,11 @@ getmisa:
 	csrr a0, misa
 	ret
 	.endfunc
+
+.globl set_satp
+set_satp:
+	.func set_satp
+	csrw satp, a0
+	sfence.vma zero, zero
+	ret
+	.endfunc

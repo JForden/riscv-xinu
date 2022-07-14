@@ -57,7 +57,7 @@ struct pgmemblk
 extern struct pgmemblk *pgfreelist;      /**< system page table */
 extern uint pgtbl_nents;            /**< number of pages in page table */
 
-typedef void *pgtbl;
+typedef ulong *pgtbl;
 
 #define PTE_V 1
 #define PTE_R 1 << 1
@@ -68,10 +68,29 @@ typedef void *pgtbl;
 #define PTE_A 1 << 6
 #define PTE_D 1 << 7
 
-#define PGOFFSET 12 //every page is offset by 12 bits
-#define PTEMASK 0x1FF //the virtual addr is masked into 3 sections of 9 bits. these correlate to lvl2,1,0 
-#define PXSHIFT(level)  (PGOFFSET+(9*(level)))
-#define PX(level, addr) ((((ulong) (addr)) >> PXSHIFT(level)) & PTEMASK)
+
+//SATP Register
+// +------+--------------------------+----------------------+
+// | MODE | Address Space Identifier | Physical Page Number |
+// +------+--------------------------+----------------------+
+// |    4 |                       16 |                   44 |
+// +------+--------------------------+----------------------+
+
+
+//This sets the SATP registers's mode to 1000(8 in decimal)
+//This enables Page-based 39-bit virtual addressing
+#define SATP_SV39_ON (0x8L << 60)
+//This disables SATP by setting mode to 0000(0 in decimal)
+#define SATP_SV39_OFF (0x0L <<60)
+
+#define MAKE_SATP(pagetable) (SATP_SV39_ON | (((ulong)pagetable) >> 12))
+
+#define PTE2PA(pte)  ((pte >> 10) * PAGE_SIZE) // Remove the first 10 bits (the flags and RSW).  Then multiply it by 4096 (page size)
+#define PA2PTE(pa)   (((ulong)pa / PAGE_SIZE) << 10) // Opposite of PTE2PA. Divide by the page size and then make room for flags
+#define VAOFFSET 12 //Every virtual address is offset by 12 bits 
+#define PXMASK 0x1FF //the virtual addr is masked into 3 sections of 9 bits. these correlate to lvl2,1,0 
+#define PXSHIFT(level)  (VAOFFSET+(9*(level)))
+#define PX(level, addr) ((((ulong) (addr)) >> PXSHIFT(level)) & PXMASK)
 
 /* Prototypes for memory protection functions */
 void safeInit(void);
@@ -84,5 +103,8 @@ void safeKmapInit(void);
 int pgfree(void *);
 void *pgalloc(void);
 int pgfreerange(void *start, void* end);
+int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong length, int attr);
+ulong *pgTraverseAndCreate(pgtbl pagetable,  ulong virtualaddr);
+void printPageTable(pgtbl pagetable);
 
 #endif                          /* _SAFEMEM_H_ */

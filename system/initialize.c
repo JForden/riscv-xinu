@@ -59,12 +59,16 @@ void nulluser(void)
 
         // Initialize memory protection
         safeInit();
+
+        safeKmapInit();
+
     }
 
     /* Call the main program */
     sprintf(pname, "MAIN%d", hartid);
     kprintf(pname);
     kprintf("\r\n");
+    kprintf("Here\r\n");
     ready(create((void *)main, INITSTK, INITPRIO, pname, 0),
           RESCHED_NO);
 
