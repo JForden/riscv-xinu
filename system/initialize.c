@@ -46,6 +46,7 @@ void nulluser(void)
 {
     int hartid = gethartid();
     char pname[PNMLEN];
+    char dest[12];
 
     if (hartid == 0) {
         /* Platform-specific initialization */
@@ -58,9 +59,9 @@ void nulluser(void)
         welcome();
 
         // Initialize memory protection
-        safeInit();
+        //safeInit();
 
-        safeKmapInit();
+        //safeKmapInit();
 
     }
 
@@ -69,13 +70,18 @@ void nulluser(void)
     kprintf(pname);
     kprintf("\r\n");
     kprintf("Here\r\n");
-    ready(create((void *)main, INITSTK, INITPRIO, pname, 0),
-          RESCHED_NO);
+
+    kprintf("Data starts at 0x%08lX\r\n", _binary_data_test_txt_start);
+    memcpy((char *)&dest, (char *)_binary_data_test_txt_start, 10);
+    kprintf("0x%08X\r\n", dest);
+    //kprintf(dest);
+    //ready(create((void *)main, INITSTK, INITPRIO, pname, 0),
+    //      RESCHED_NO);
 
     /* null process has nothing else to do but cannot exit  */
     while (1)
     {
-        resched();
+        //resched();
     }
 }
 
@@ -91,25 +97,25 @@ static void welcome(void)
     /* Output Xinu memory layout */
     kprintf("%10d bytes physical memory.\r\n",
             (ulong)platform.maxaddr - (ulong)platform.minaddr);
-    kprintf("           [0x%08X to 0x%08X]\r\n",
+    kprintf("           [0x%016lX to 0x%016lX]\r\n",
             (ulong)platform.minaddr, (ulong)(platform.maxaddr - 1));
 
     kprintf("%10lu bytes reserved system area.\r\n",
             (ulong)_start - (ulong)platform.minaddr);
-    kprintf("           [0x%08X to 0x%08X]\r\n",
+    kprintf("           [0x%016lX to 0x%016lX]\r\n",
             (ulong)platform.minaddr, (ulong)_start - 1);
 
     kprintf("%10d bytes Xinu code.\r\n", (ulong)&_end - (ulong)_start);
-    kprintf("           [0x%08X to 0x%08X]\r\n",
+    kprintf("           [0x%016lX to 0x%016lX]\r\n",
             (ulong)_start, (ulong)&_end - 1);
 
     kprintf("%10d bytes kernel stack space.\r\n",
             (ulong)memheap - (ulong)&_end);
-    kprintf("           [0x%08X to 0x%08X]\r\n",
+    kprintf("           [0x%016lX to 0x%016lX]\r\n",
             (ulong)&_end, (ulong)memheap - 1);
     kprintf("%10d bytes heap space.\r\n",
             (ulong)platform.maxaddr - (ulong)memheap);
-    kprintf("           [0x%08X to 0x%08X]\r\n\r\n",
+    kprintf("           [0x%016lX to 0x%016lX]\r\n\r\n",
             (ulong)memheap, (ulong)platform.maxaddr - 1);
 
     /*if (PERIPHERALS_BASE < (ulong)platform.maxaddr)

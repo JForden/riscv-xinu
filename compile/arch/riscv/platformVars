@@ -25,3 +25,6 @@ ASFLAGS  += -march=rv64g
 
 # Extra compiler flag that disables gcc from generating unaligned memory accesses
 CFLAGS	 += -mstrict-align
+
+# Objcopy flags, used for including data files in the resulting binary.
+OCFLAGS       := -I binary -O elf64-littleriscv -B riscv

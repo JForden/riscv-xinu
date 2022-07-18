@@ -22,3 +22,4 @@
 #include <pthread.h>
 #include <atomic.h>
 #include <safemem.h>
+#include <elf.h>

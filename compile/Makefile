@@ -238,6 +238,14 @@ LIB_ARC  := $(LIBS:%=$(LIBDIR)/%.a)
 MAIN_OBJ := $(MAIN_SRC:%.c=%.o)
 MAIN_DEP := $(MAIN_SRC:%.c=%.d)
 
+# Data is relative to the compile directory
+DATA     := data
+
+DATA_SRC :=
+include $(DATA:%=%/Makerules)
+
+DATA_OBJ := $(patsubst %,%.o,$(DATA_SRC))
+
 # Flags to get GCC to generate dependency information (in .d files) as a side
 # effect of compilation or assembly.
 DEPFLAGS := -MMD -MP
@@ -261,7 +269,7 @@ export
 # "platformVars".  But it will depend on "xinu.elf".
 
 xinu.elf: $(COMP_OBJ) $(MAIN_OBJ) \
-	  $(LIB_ARC) $(USRTHRS_OBJ)
+	  $(DATA_OBJ) $(LIB_ARC) $(USRTHRS_OBJ)
 	@echo "\tLinking" $@
 	$(KERNEL_LD) -o $@ $(LDFLAGS) $^ $(LDLIBS)
 
@@ -329,6 +337,10 @@ $(MAIN_OBJ): $(MAIN_SRC)
 $(COMPS):
 	@echo "\tBuilding" $@
 	$(MAKE) COMPS="$@" objects
+	
+$(DATA_OBJ):
+	@echo -e "\tObject Copy" $@
+	$(OBJCOPY) $(OCFLAGS) $(@:%.o=%) $@
 
 $(LIBS): $(CONF_OBJ)
 	@echo -e "\tBuilding" $@
