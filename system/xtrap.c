@@ -24,7 +24,7 @@ void xtrap(long *frame, ulong cause, ulong address, ulong pc)
 {
     /* If not an interrupt or syscall, fall through to generic exception handler */
     kprintf("\r\n\r\nXINU Exception [%s]\r\n", trap_names[cause]);
-    kprintf("Faulting address: 0x%016lX\r\n", pc);
+    kprintf("Faulting code: 0x%016lX\r\n", pc);
 
     if (address != 0){
         kprintf("Faulting address: 0x%016lX\r\n", address);

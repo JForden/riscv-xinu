@@ -32,6 +32,8 @@ CFLAGS  += -c
 # Optimize for size.
 CFLAGS  += -Os
 
+CFLAGS  += -g -gdwarf
+
 # Enable most useful compiler warnings.
 CFLAGS  += -Wall
 

@@ -15,8 +15,12 @@ void safeKmapInit(void)
     mapAddress(pagetable, UART_BASE, UART_BASE, 0x100, PTE_R | PTE_W);
 
     // Map kernel code
-    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)&_end - (ulong)_start), PTE_R | PTE_X);
+    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)_datas - (ulong)_start), PTE_R | PTE_X | PTE_W);
 
+    // Map global kernel structures
+    mapAddress(pagetable, (ulong)_datas, (ulong)_datas, ((ulong)_bss - (ulong)_datas), PTE_R | PTE_W);
+
+    // Map kernel stack
     mapAddress(pagetable, (ulong)&_end, (ulong)&_end, ((ulong)memheap - (ulong)&_end), PTE_R | PTE_W);
 
     printPageTable(pagetable);

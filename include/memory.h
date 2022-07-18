@@ -43,6 +43,8 @@ extern memhead freelist[];      /* heads of free memory lists         */
 /* Other memory data */
 
 extern void *_end;              /* linker provides end of image       */
+extern void *_bss;              /* linker provides start of bss       */
+extern void *_datas;            /* linker provides start of data       */
 extern void *memheap;           /* bottom of heap                     */
 
 /* Memory function prototypes */

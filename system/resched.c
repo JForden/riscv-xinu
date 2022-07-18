@@ -61,8 +61,11 @@ syscall resched(void)
 	/* place current process at end of ready queue */
 	if (PRCURR == oldproc->state)
 	{
+		//kprintf("ADDING OLD PROC BACK\r\n");
 		oldproc->state = PRREADY;
-		enqueue(currpid[cpuid], readylist[cpuid][oldproc->priority]);
+		//kprintf("HERE 1\r\n");
+		enqueue(currpid[cpuid], readylist[cpuid][oldproc->priority]); 
+		//kprintf("HERE 2\r\n");
 	}
 
 	/* remove first process in highest priority ready queue */
