@@ -46,7 +46,7 @@ void nulluser(void)
 {
     int hartid = gethartid();
     char pname[PNMLEN];
-    char dest[12];
+    char *data = &_binary_data_elf_start;
 
     if (hartid == 0) {
         /* Platform-specific initialization */
@@ -66,20 +66,16 @@ void nulluser(void)
     }
 
     /* Call the main program */
-    sprintf(pname, "MAIN%d", hartid);
-    kprintf(pname);
-    kprintf("\r\n");
-    kprintf("Here\r\n");
-
-
-    //kprintf("Data starts at 0x%08X\r\n", _datas);
-    kprintf("Data starts at 0x%016lX\r\n", &_binary_data_elf_start);
-    memcpy(&dest, &_binary_data_elf_start, 20);
-    for (int i = 0; i < 16; i++)
-        kprintf("0x%02X ", dest[i]);
-    //kprintf(dest);
     //ready(create((void *)main, INITSTK, INITPRIO, pname, 0),
     //      RESCHED_NO);
+
+    kprintf("Data starts at 0x%016lX\r\n", &_binary_data_elf_start);
+    
+    for (int i = 0; i < 16; i++) {
+        kprintf("0x%02X ", data[i]);
+        if ((i+1) % 8 == 0)
+            kprintf("\r\n");
+    }
 
     /* null process has nothing else to do but cannot exit  */
     while (1)
