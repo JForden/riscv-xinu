@@ -59,9 +59,9 @@ void nulluser(void)
         welcome();
 
         // Initialize memory protection
-        safeInit();
+        //safeInit();
 
-        safeKmapInit();
+        //safeKmapInit();
 
     }
 
@@ -72,10 +72,10 @@ void nulluser(void)
     kprintf("Here\r\n");
 
 
-    kprintf("Data starts at 0x%08X\r\n", _datas);
-    //kprintf("Data starts at 0x%08lX\r\n", _binary_data_test_txt_start);
-    //memcpy((char *)&dest, (char *)_binary_data_test_txt_start, 10);
-    //kprintf("0x%08X\r\n", dest);
+    //kprintf("Data starts at 0x%08X\r\n", _datas);
+    kprintf("Data starts at 0x%016lX\r\n", &_binary_data_test_txt_start);
+    memcpy(&dest, &_binary_data_test_txt_start, 20);
+    kprintf("%s\r\n", dest);
     //kprintf(dest);
     //ready(create((void *)main, INITSTK, INITPRIO, pname, 0),
     //      RESCHED_NO);

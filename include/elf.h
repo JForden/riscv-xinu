@@ -6,6 +6,6 @@
 #ifndef _ELF_H_
 #define _ELF_H_
 
-extern int _binary_data_test_txt_start;
+extern const ulong _binary_data_test_txt_start[];
 
 #endif                          /* _ELF_H_ */
