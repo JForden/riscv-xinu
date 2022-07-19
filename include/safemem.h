@@ -105,6 +105,6 @@ void *pgalloc(void);
 int pgfreerange(void *start, void* end);
 int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong length, int attr);
 ulong *pgTraverseAndCreate(pgtbl pagetable,  ulong virtualaddr);
-void printPageTable(pgtbl pagetable);
+void printPageTable(pgtbl pagetable, int spaces);
 
 #endif                          /* _SAFEMEM_H_ */

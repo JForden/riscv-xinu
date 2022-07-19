@@ -23,7 +23,7 @@ void safeKmapInit(void)
     // Map kernel stack
     mapAddress(pagetable, (ulong)&_end, (ulong)&_end, ((ulong)memheap - (ulong)&_end), PTE_R | PTE_W);
 
-    printPageTable(pagetable);
+    printPageTable(pagetable, 0);
 
     set_satp(MAKE_SATP(pagetable));
 }
@@ -92,17 +92,24 @@ ulong *pgTraverseAndCreate(pgtbl pagetable,  ulong virtualaddr){
     return &pagetable[PX(0, virtualaddr)];
 }
 
-void printPageTable(pgtbl pagetable){
+static void printSpaces(int spaces) {
+    for(int i = 0; i < spaces; i++) {
+        kprintf(" ");
+    }
+}
+
+void printPageTable(pgtbl pagetable, int spaces){
+    printSpaces(spaces);
     kprintf("Table at 0x%08X:\r\n", (ulong)pagetable);
     for(int i = 0; i < 512; i++){
         if(pagetable[i] & PTE_V) {
+            printSpaces(spaces + 2);
             if(!(pagetable[i] & (PTE_R | PTE_W | PTE_X))){
                 kprintf("Link PTE (0x%08X)| Address 0x%08X\r\n", pagetable[i], (pgtbl)PTE2PA(pagetable[i]));
-                printPageTable((pgtbl)PTE2PA(pagetable[i]));
+                printPageTable((pgtbl)PTE2PA(pagetable[i]), spaces + 2);
             } else {
                 kprintf("Leaf PTE (0x%08X)| Address 0x%08X\r\n", pagetable[i], (pgtbl)PTE2PA(pagetable[i]));
             }
         }
     }
 }
-
