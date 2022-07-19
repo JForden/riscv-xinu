@@ -4,7 +4,7 @@
 COMP = data
 
 # text files
-TXT_FILES = test.txt
+TXT_FILES = elf
 
 # Muster all the needed files together
 FILES = ${TXT_FILES}

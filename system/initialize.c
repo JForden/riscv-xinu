@@ -73,9 +73,10 @@ void nulluser(void)
 
 
     //kprintf("Data starts at 0x%08X\r\n", _datas);
-    kprintf("Data starts at 0x%016lX\r\n", &_binary_data_test_txt_start);
-    memcpy(&dest, &_binary_data_test_txt_start, 20);
-    kprintf("%s\r\n", dest);
+    kprintf("Data starts at 0x%016lX\r\n", &_binary_data_elf_start);
+    memcpy(&dest, &_binary_data_elf_start, 20);
+    for (int i = 0; i < 16; i++)
+        kprintf("0x%02X ", dest[i]);
     //kprintf(dest);
     //ready(create((void *)main, INITSTK, INITPRIO, pname, 0),
     //      RESCHED_NO);
