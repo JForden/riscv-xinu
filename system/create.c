@@ -25,7 +25,6 @@ void *getstk(ulong);
 syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
                ulong nargs, ...)
 {
-    ulong *saddr;               /* stack address                */
     ulong pid;                  /* stores new process id        */
     pcb *ppcb;                  /* pointer to proc control blk  */
     ulong i;
@@ -36,8 +35,14 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     if (ssize < MINSTK)
         ssize = MINSTK;
     ssize = (ulong)(ssize + 3) & 0xFFFFFFFC;
+    pgtbl saddr = pgalloc();
+    pgtbl pagetable = pgalloc();
+
+    saddr = (ulong)saddr + PAGE_SIZE;
     /* round up to even boundary    */
-    saddr = (ulong *)getstk(ssize);     /* allocate new stack and pid   */
+    kprintf("HERE\r\n");
+    ulong *virtsp = vmcreate(pagetable, ssize, saddr);     /* allocate new stack and pid   */
+    kprintf("HERE 44444\r\n");
     pid = newpid();
     /* a little error checking      */
     if ((((ulong *)SYSERR) == saddr) || (SYSERR == pid))
@@ -55,13 +60,16 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     ppcb->stklen = ssize;
     strncpy(ppcb->name, name, PNMLEN);
     ppcb->core = -1;            // this will be set in ready()
+    ppcb->pagetable = pagetable;
     ppcb->priority = priority;
+    kprintf("HERE 5555\r\n");
 
     /* Initialize stack with accounting block. */
     *saddr = STACKMAGIC;
     *--saddr = pid;
     *--saddr = ppcb->stklen;
     *--saddr = (ulong)ppcb->stkbase;
+    kprintf("HERE 6666\r\n");
 
 	/* Handle variable number of arguments passed to starting function   */
 	if (nargs)
@@ -93,7 +101,7 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
 
     ppcb->regs[PREG_PC] = (ulong)funcaddr;
     ppcb->regs[PREG_RA] = (ulong)userret;
-    ppcb->regs[PREG_SP] = (ulong)saddr;
+    ppcb->regs[PREG_SP] = (ulong)virtsp;
 
     va_end(ap);
 

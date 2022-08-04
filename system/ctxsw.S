@@ -37,6 +37,7 @@ ctxsw:
     sd ra, PREG_PC*8(a0)
 
     mv t1, a1
+    mv t2, a2
 
     ld a0, PREG_A0*8(t1)
     ld a1, PREG_A1*8(t1)
@@ -62,6 +63,9 @@ ctxsw:
     ld s10, PREG_S10*8(t1)
     ld s11, PREG_S11*8(t1)
     ld t0, PREG_PC*8(t1)
+
+    csrw satp, t2
+	sfence.vma zero, zero
 	
     jalr x0, 0(t0)
 

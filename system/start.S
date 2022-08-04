@@ -40,6 +40,9 @@ reset_handler:
 	//la a1, _end
 	//li a2, 0
 	//jal clear_bss
+	// save dtb arrdess from a1
+	la   t0, dtb_addr
+	sd   a1, 0(t0)
 
 	// Loads address of the function interrupt in t1
 	la t1, interrupt

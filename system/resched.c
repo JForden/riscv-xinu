@@ -8,7 +8,7 @@
 
 #include <xinu.h>
 
-extern void ctxsw(void *, void *);
+extern void ctxsw(void *, void *, void *);
 /**
  * Reschedule processor to next ready process.
  * Upon entry, currpid gives current process id.  Proctab[currpid].pstate 
@@ -101,7 +101,8 @@ syscall resched(void)
 	preempt[cpuid] = QUANTUM;
 #endif
 
-    ctxsw(&oldproc->regs, &newproc->regs);
+	kprintf("SWITCHING\r\n");
+    ctxsw(&oldproc->regs, &newproc->regs, newproc->pagetable);
 
     /* The OLD process returns here when resumed. */
     return OK;

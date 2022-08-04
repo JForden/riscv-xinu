@@ -12,9 +12,5 @@
  */
 process main(void)
 {
-    kprintf("Hello, Xinu World, from hart %d!\r\n", gethartid());
-
-    kprintf("Process completed!\r\n");
-
     return 0;
 }

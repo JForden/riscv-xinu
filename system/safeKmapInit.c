@@ -23,7 +23,10 @@ void safeKmapInit(void)
     // Map kernel stack
     mapAddress(pagetable, (ulong)&_end, (ulong)&_end, ((ulong)memheap - (ulong)&_end), PTE_R | PTE_W);
 
-    printPageTable(pagetable, 0);
+    // Map entire address space
+    mapAddress(pagetable, (ulong)memheap, (ulong)memheap, ((ulong)platform.maxaddr - (ulong)memheap), PTE_R | PTE_W);
+
+    //printPageTable(pagetable, 0);
 
     set_satp(MAKE_SATP(pagetable));
 }
@@ -48,6 +51,38 @@ int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong len
             return SYSERR;
         }
         *pte = PA2PTE(physicaladdr) | attr | PTE_V;
+    }
+
+    return OK;
+}
+
+int mapVAddress(pgtbl pagetable, pgtbl toppage, ulong virtualaddr, ulong length, int attr){
+    ulong *pte = NULL;
+    ulong addr, end, numofpages;
+
+    if(length==0){ 
+        return SYSERR;
+    }
+
+    length = roundpage(length);
+    addr = (ulong)truncpage(virtualaddr);
+    end = addr + length;
+    numofpages = length / PAGE_SIZE;
+    
+    for (int i = 0; addr < end; addr += PAGE_SIZE, i++)
+    {
+        pgtbl page = NULL;
+        if(i != numofpages - 1)
+            page = pgalloc();
+        else
+            page = toppage;
+            
+        if(page == SYSERR)
+            return SYSERR;
+        if((pte = pgTraverseAndCreate(pagetable, addr)) == (ulong *)SYSERR){
+            return SYSERR;
+        }
+        *pte = PA2PTE(page) | attr | PTE_V;
     }
 
     return OK;
@@ -78,11 +113,15 @@ ulong *pgTraverseAndCreate(pgtbl pagetable,  ulong virtualaddr){
     ulong *pte = NULL;
 
     for(int level = 2; level > 0; level--){
+        //kprintf("VAL is %d\r\n", PX(level, virtualaddr));
+        //kprintf("PTE ADDR IS 0x%08X\r\n", &pagetable);
         pte = &pagetable[PX(level, virtualaddr)];
+        //kprintf("HERE 5555\r\n");
         if(*pte & PTE_V){
             pagetable = (pgtbl)PTE2PA(*pte);
         }
         else {
+            //kprintf("HERE 4444");
             if((pagetable = (ulong *)pgalloc()) == (ulong *)SYSERR)
                 return (ulong *)SYSERR;
             *pte = PA2PTE(pagetable) | PTE_V; 

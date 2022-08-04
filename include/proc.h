@@ -10,6 +10,7 @@
 #define _PROC_H_
 
 #include <hart.h>
+#include <safemem.h>
 
 /* process table declarations and defined constants                      */
 
@@ -65,6 +66,7 @@ typedef struct pentry
     int core;            /**< core affinity                           */
     uint joinq;          /**< JoinQ stuff                             */
     char name[PNMLEN];   /**< process name                            */
+    pgtbl pagetable;
     ulong regs[PREGS];     /**< stored process registers                */
 } pcb;
 

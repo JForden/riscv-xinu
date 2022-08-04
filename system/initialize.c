@@ -24,6 +24,7 @@ int currpid[NCORES];			/* Id of currently running proccesses  */
 /* Params set by startup.S */
 void *memheap;                  /* Bottom of heap (top of O/S stack)     */
 ulong cpuid;                    /* Processor id                          */
+void *dtb_addr;
 
 struct platform platform;       /* Platform specific configuration       */
 
@@ -59,23 +60,17 @@ void nulluser(void)
         welcome();
 
         // Initialize memory protection
-        //safeInit();
+        safeInit();
 
-        //safeKmapInit();
+        safeKmapInit();
 
     }
 
     /* Call the main program */
-    //ready(create((void *)main, INITSTK, INITPRIO, pname, 0),
-    //      RESCHED_NO);
+    ready(create((void *)main, INITSTK, INITPRIO, pname, 0),
+          RESCHED_NO);
 
-    kprintf("Data starts at 0x%016lX\r\n", &_binary_data_elf_start);
-    
-    for (int i = 0; i < 16; i++) {
-        kprintf("0x%02X ", data[i]);
-        if ((i+1) % 8 == 0)
-            kprintf("\r\n");
-    }
+    //parseDtb();
 
     /* null process has nothing else to do but cannot exit  */
     while (1)
@@ -189,4 +184,10 @@ static int sysinit(void)
     }
 
     return OK;
+}
+
+int generic_dtb_handler(char *nname, char *pname, uchar *pval, uint plen){
+    if(strcmp(nname, "")){
+        //kprintf("%s\r\n", pname);
+    }
 }

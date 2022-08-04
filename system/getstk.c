@@ -41,3 +41,18 @@ void *getstk(ulong nbytes)
 
     return ((void *)newstk);
 }
+
+void *vmcreate(pgtbl pagetable, ulong nbytes, pgtbl page){
+    // Get a page to start a page table via pgalloc
+    void *addr = (void *)(0x1000+nbytes);
+
+    // Map process stack
+    mapVAddress(pagetable, page, 0x1000, nbytes, PTE_R | PTE_W | PTE_U);
+    kprintf("HERE 222\r\n");
+
+    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)_datas - (ulong)_start), PTE_R | PTE_X | PTE_U);
+    kprintf("HERE 333\r\n");
+    // Map code
+
+    return addr;
+}
