@@ -25,6 +25,8 @@ void safeKmapInit(void)
 
     printPageTable(pagetable, 0);
     // Map entire address space
+    kprintf("Memheap is at 0x%08X\r\n", memheap);
+    kprintf("End is at 0x%08X\r\n", &_end);
     mapAddress(pagetable, (ulong)memheap, (ulong)memheap, ((ulong)platform.maxaddr - (ulong)memheap), PTE_R | PTE_W);
 
     set_satp(MAKE_SATP(pagetable));
