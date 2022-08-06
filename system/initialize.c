@@ -63,12 +63,12 @@ void nulluser(void)
         safeInit();
 
         safeKmapInit();
-
+        kprintf("TEST 123\r\n");
     }
 
     /* Call the main program */
     ready(create((void *)main, INITSTK, INITPRIO, pname, 0),
-          RESCHED_NO);
+          RESCHED_YES);
 
     //parseDtb();
 

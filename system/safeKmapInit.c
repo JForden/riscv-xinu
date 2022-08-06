@@ -18,17 +18,17 @@ void safeKmapInit(void)
     mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)_datas - (ulong)_start), PTE_R | PTE_X | PTE_W);
 
     // Map global kernel structures
-    mapAddress(pagetable, (ulong)_datas, (ulong)_datas, ((ulong)_bss - (ulong)_datas), PTE_R | PTE_W);
+    mapAddress(pagetable, (ulong)_datas, (ulong)_datas, ((ulong)&_end - (ulong)_datas), PTE_R | PTE_W);
 
     // Map kernel stack
     mapAddress(pagetable, (ulong)&_end, (ulong)&_end, ((ulong)memheap - (ulong)&_end), PTE_R | PTE_W);
 
+    printPageTable(pagetable, 0);
     // Map entire address space
     mapAddress(pagetable, (ulong)memheap, (ulong)memheap, ((ulong)platform.maxaddr - (ulong)memheap), PTE_R | PTE_W);
 
-    //printPageTable(pagetable, 0);
-
     set_satp(MAKE_SATP(pagetable));
+    kprintf("Test 123\r\n");
 }
 
 int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong length, int attr){
@@ -47,8 +47,12 @@ int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong len
 
     for (; addr < end; addr += PAGE_SIZE, physicaladdr += PAGE_SIZE)
     {
+        //kprintf("MAPPED 0x%08X\r\n", addr);
         if((pte = pgTraverseAndCreate(pagetable, addr)) == (ulong *)SYSERR){
             return SYSERR;
+        }
+        if(*pte & PTE_V) {
+            kprintf("REMAPPED 0x%08X!!!\r\n", addr);
         }
         *pte = PA2PTE(physicaladdr) | attr | PTE_V;
     }
