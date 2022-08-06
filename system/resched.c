@@ -101,8 +101,7 @@ syscall resched(void)
 	preempt[cpuid] = QUANTUM;
 #endif
 
-	kprintf("SWITCHING\r\n");
-    ctxsw(&oldproc->regs, &newproc->regs, newproc->pagetable);
+    ctxsw(&oldproc->regs, &newproc->regs, MAKE_SATP(newproc->pagetable));
 
     /* The OLD process returns here when resumed. */
     return OK;

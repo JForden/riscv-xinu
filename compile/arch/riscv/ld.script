@@ -28,28 +28,28 @@ SECTIONS {
     *(.init .init.*)
   }
 
-  . = ALIGN(64);
+  . = ALIGN(4096);
 
   .text : {
     *(.txt .text.*)
         *(.rodata .rodata.*)
     }
 
-    . = ALIGN(64);
+    . = ALIGN(4096);
 
     _datas = .;
     .data : {
         *(.data .data.*)
     }
 
-    . = ALIGN(64);
+    . = ALIGN(4096);
 
     _bss = . ;
     .bss : {
         *(.bss .bss.*)
     }
 
-    . = ALIGN(64);
+    . = ALIGN(4096);
     _end = . ;
 
     /* Discard comment and note (but not debugging) sections.  Some

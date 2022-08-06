@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Aug  4 16:44:51 2022
+# Make data base, printed on Sat Aug  6 14:40:54 2022
 
 # Variables
 
@@ -87,13 +87,13 @@ MAKEFILE_LIST :=
 # environment
 ZSH = /home/agebhard/.oh-my-zsh
 # environment
-VSCODE_PID = 246069
+VSCODE_PID = 10652
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
-SESSION_MANAGER = local/alge-LXLAPTOP:@/tmp/.ICE-unix/9088,unix/alge-LXLAPTOP:/tmp/.ICE-unix/9088
+SESSION_MANAGER = local/alge-LXLAPTOP:@/tmp/.ICE-unix/8076,unix/alge-LXLAPTOP:/tmp/.ICE-unix/8076
 # automatic
 *F = $(notdir $*)
 # environment
@@ -129,7 +129,7 @@ MAKEFILES :=
 # automatic
 ^F = $(notdir $^)
 # environment
-INVOCATION_ID = 5118288386c84ee3b21b1cf31274b2eb
+INVOCATION_ID = f7da1b43bfc34ec49b1bca52f6deed21
 # environment
 USERNAME = agebhard
 # automatic
@@ -155,7 +155,7 @@ GIO_LAUNCHED_DESKTOP_FILE = /usr/share/applications/code.desktop
 # makefile
 .DEFAULT_GOAL := 
 # environment
-SYSTEMD_EXEC_PID = 9166
+SYSTEMD_EXEC_PID = 8105
 # environment
 DISPLAY = :1
 # environment
@@ -167,9 +167,9 @@ DEFAULTS_PATH = /usr/share/gconf/ubuntu.default.path
 # default
 MAKE_VERSION := 4.3
 # environment
-MANAGERPID = 7561
+MANAGERPID = 7341
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 246069
+GIO_LAUNCHED_DESKTOP_FILE_PID = 10652
 # environment
 PAGER = less
 # environment
@@ -179,7 +179,7 @@ XDG_RUNTIME_DIR = /run/user/1000
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-JOURNAL_STREAM = 8:43499
+JOURNAL_STREAM = 8:42594
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -215,7 +215,7 @@ GDMSESSION = ubuntu
 
 # Directories
 
-# . (device 39, inode 792720): 12 files, no impossibilities.
+# . (device 40, inode 792720): 12 files, no impossibilities.
 
 # 12 files, no impossibilities in 1 directories.
 
@@ -273,7 +273,7 @@ GNUmakefile:
 # strcache performance: lookups = 23 / hit rate = 13%
 # hash-table stats:
 # Load=20/8192=0%, Rehash=0, Collisions=0/23=0%
-# Finished Make data base on Thu Aug  4 16:44:51 2022
+# Finished Make data base on Sat Aug  6 14:40:54 2022
 
  
 make: *** No rule to make target 'all'.  Stop.

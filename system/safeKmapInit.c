@@ -7,6 +7,7 @@
  */
 void safeKmapInit(void)
 {
+    register pcb *ppcb;
     // Get a page to start a page table via pgalloc
     pgtbl pagetable = pgalloc();
 
@@ -17,20 +18,16 @@ void safeKmapInit(void)
     // Map kernel code
     mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)_datas - (ulong)_start), PTE_R | PTE_X | PTE_W);
 
-    // Map global kernel structures
-    mapAddress(pagetable, (ulong)_datas, (ulong)_datas, ((ulong)&_end - (ulong)_datas), PTE_R | PTE_W);
+    // Map global kernel structures and stack
+    mapAddress(pagetable, (ulong)_datas, (ulong)_datas, ((ulong)memheap - (ulong)_datas), PTE_R | PTE_X | PTE_W);
 
-    // Map kernel stack
-    mapAddress(pagetable, (ulong)&_end, (ulong)&_end, ((ulong)memheap - (ulong)&_end), PTE_R | PTE_W);
-
-    printPageTable(pagetable, 0);
-    // Map entire address space
-    kprintf("Memheap is at 0x%08X\r\n", memheap);
-    kprintf("End is at 0x%08X\r\n", &_end);
+    // Map entirety of RAM
     mapAddress(pagetable, (ulong)memheap, (ulong)memheap, ((ulong)platform.maxaddr - (ulong)memheap), PTE_R | PTE_W);
 
+    ppcb = &proctab[currpid[gethartid()]];
+    ppcb->pagetable = pagetable;
+
     set_satp(MAKE_SATP(pagetable));
-    kprintf("Test 123\r\n");
 }
 
 int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong length, int attr){
@@ -75,20 +72,15 @@ int mapVAddress(pgtbl pagetable, pgtbl toppage, ulong virtualaddr, ulong length,
     end = addr + length;
     numofpages = length / PAGE_SIZE;
     
-    for (int i = 0; addr < end; addr += PAGE_SIZE, i++)
+    for (int i = 0; addr < end; addr += PAGE_SIZE)
     {
-        pgtbl page = NULL;
-        if(i != numofpages - 1)
-            page = pgalloc();
-        else
-            page = toppage;
-            
-        if(page == SYSERR)
-            return SYSERR;
         if((pte = pgTraverseAndCreate(pagetable, addr)) == (ulong *)SYSERR){
             return SYSERR;
         }
-        *pte = PA2PTE(page) | attr | PTE_V;
+        if(*pte & PTE_V) {
+            kprintf("REMAPPED 0x%08X!!!\r\n", addr);
+        }
+        *pte = PA2PTE(toppage) | attr | PTE_V;
     }
 
     return OK;

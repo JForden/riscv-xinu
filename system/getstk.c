@@ -42,17 +42,28 @@ void *getstk(ulong nbytes)
     return ((void *)newstk);
 }
 
-void *vmcreate(pgtbl pagetable, ulong nbytes, pgtbl page){
+void *vmcreate(pgtbl pagetable, pgtbl page){
     // Get a page to start a page table via pgalloc
-    void *addr = (void *)(0x1000+nbytes);
+    void *addr = (void *)(0x1000+4096);
 
     // Map process stack
-    mapVAddress(pagetable, page, 0x1000, nbytes, PTE_R | PTE_W | PTE_U);
+    mapVAddress(pagetable, (ulong)page, 0x300000000, 4096, PTE_R | PTE_W);
     kprintf("HERE 222\r\n");
 
-    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)_datas - (ulong)_start), PTE_R | PTE_X | PTE_U);
+    /*mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)_datas - (ulong)_start), PTE_R | PTE_W | PTE_X | PTE_U);
     kprintf("HERE 333\r\n");
-    // Map code
+    // Map code*/
+    mapAddress(pagetable, UART_BASE, UART_BASE, 0x100, PTE_R | PTE_W);
+
+    // Map kernel code
+    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)_datas - (ulong)_start), PTE_R | PTE_X | PTE_W);
+
+    // Map global kernel structures and stack
+    mapAddress(pagetable, (ulong)_datas, (ulong)_datas, ((ulong)memheap - (ulong)_datas), PTE_R | PTE_X | PTE_W);
+
+    printPageTable(pagetable, 0);
+    // Map entirety of RAM
+    //mapAddress(pagetable, (ulong)memheap, (ulong)memheap, ((ulong)platform.maxaddr - (ulong)memheap), PTE_R | PTE_W);
 
     return addr;
 }

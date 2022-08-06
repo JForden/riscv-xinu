@@ -63,7 +63,6 @@ void nulluser(void)
         safeInit();
 
         safeKmapInit();
-        kprintf("TEST 123\r\n");
     }
 
     /* Call the main program */
@@ -73,6 +72,8 @@ void nulluser(void)
     //parseDtb();
 
     /* null process has nothing else to do but cannot exit  */
+    kprintf("HERE 123\r\n");
+
     while (1)
     {
         resched();

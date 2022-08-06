@@ -6,7 +6,7 @@
 
 
 /**
- * @fn void ctxsw(&oldregs, &newregs)
+ * @fn void ctxsw(&oldregs, &newregs, newsatp)
  *
  * Switch context (values in registers) to another process, saving the
  * current processes information. This function will not return as normally
