@@ -56,7 +56,7 @@ void *vmcreate(pgtbl pagetable, pgtbl page){
     mapAddress(pagetable, UART_BASE, UART_BASE, 0x100, PTE_R | PTE_W);
 
     // Map kernel code
-    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)_datas - (ulong)_start), PTE_R | PTE_X | PTE_W);
+    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)_datas - (ulong)_start), PTE_R | PTE_X);
 
     // Map global kernel structures and stack
     mapAddress(pagetable, (ulong)_datas, (ulong)_datas, ((ulong)memheap - (ulong)_datas), PTE_R | PTE_X | PTE_W);

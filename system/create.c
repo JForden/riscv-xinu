@@ -40,9 +40,7 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
 
     saddr = (ulong)saddr + PAGE_SIZE;
     /* round up to even boundary    */
-    kprintf("HERE\r\n");
     ulong *virtsp = vmcreate(pagetable, saddr);     /* allocate new stack and pid   */
-    kprintf("HERE 44444\r\n");
     pid = newpid();
     /* a little error checking      */
     if ((((ulong *)SYSERR) == saddr) || (SYSERR == pid))
@@ -62,14 +60,12 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     ppcb->core = -1;            // this will be set in ready()
     ppcb->pagetable = pagetable;
     ppcb->priority = priority;
-    kprintf("HERE 5555\r\n");
 
     /* Initialize stack with accounting block. */
     *saddr = STACKMAGIC;
     *--saddr = pid;
     *--saddr = ppcb->stklen;
     *--saddr = (ulong)ppcb->stkbase;
-    kprintf("HERE 6666\r\n");
 
 	/* Handle variable number of arguments passed to starting function   */
 	if (nargs)
@@ -102,8 +98,6 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     ppcb->regs[PREG_PC] = (ulong)funcaddr;
     ppcb->regs[PREG_RA] = (ulong)userret;
     ppcb->regs[PREG_SP] = (ulong)0x300000500;
-
-    kprintf("SP is 0x%08X\r\n", ppcb->regs[PREG_SP]);    
 
     va_end(ap);
 
