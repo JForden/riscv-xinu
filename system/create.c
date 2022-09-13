@@ -40,7 +40,6 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
 
     saddr = (ulong)saddr + PAGE_SIZE;
     /* round up to even boundary    */
-    ulong *virtsp = vmcreate(pagetable, saddr);     /* allocate new stack and pid   */
     pid = newpid();
     /* a little error checking      */
     if ((((ulong *)SYSERR) == saddr) || (SYSERR == pid))
@@ -95,8 +94,11 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
         }
     }
 
+    vmcreate(pagetable, saddr);     /* allocate new stack and pid   */
+
     ppcb->regs[PREG_PC] = (ulong)funcaddr;
     ppcb->regs[PREG_RA] = (ulong)userret;
+    ppcb->regs[PREG_SPP] = (ulong)RISCV_SPP_TO_U_MODE;
     ppcb->regs[PREG_SP] = (ulong)0x300000500;
 
     va_end(ap);

@@ -43,15 +43,13 @@ int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong len
     addr = (ulong)truncpage(virtualaddr);
     end = addr + length;
     
-
     for (; addr < end; addr += PAGE_SIZE, physicaladdr += PAGE_SIZE)
     {
-        //kprintf("MAPPED 0x%08X\r\n", addr);
         if((pte = pgTraverseAndCreate(pagetable, addr)) == (ulong *)SYSERR){
             return SYSERR;
         }
         if(*pte & PTE_V) {
-            kprintf("REMAPPED 0x%08X!!!\r\n", addr);
+            kprintf("REMAPPED 0x%16X!!!\r\n", addr);
         }
         *pte = PA2PTE(physicaladdr) | attr | PTE_V;
     }
@@ -71,6 +69,8 @@ int mapVAddress(pgtbl pagetable, pgtbl toppage, ulong virtualaddr, ulong length,
     addr = (ulong)truncpage(virtualaddr);
     end = addr + length;
     numofpages = length / PAGE_SIZE;
+
+    //kprintf("Start: 0x%08X End: 0x%08X\r\n", addr, end);
     
     for (int i = 0; addr < end; addr += PAGE_SIZE)
     {

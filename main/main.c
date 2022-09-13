@@ -12,6 +12,8 @@
  */
 process main(void)
 {
-    kprintf("In main~\r\n");
-    return 0;
+    kprintf("MAIN\r\n");
+    while(1) {
+        
+    }
 }

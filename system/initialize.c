@@ -65,9 +65,10 @@ void nulluser(void)
         safeKmapInit();
     }
 
+    kprintf("HERE 4321\r\n");
     /* Call the main program */
-    ready(create((void *)main, INITSTK, INITPRIO, pname, 0),
-          RESCHED_YES);
+    ready(create((void *)main, INITSTK, INITPRIO, "main", 0),
+          RESCHED_NO);
 
     //parseDtb();
 

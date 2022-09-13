@@ -91,8 +91,10 @@ syscall resched(void)
 	i = dequeue(readylist[cpuid][highest_prio]);
 	//kprintf("Prio is %d\r\n", highest_prio);
 	//kprintf("I %d\r\n", i);
+	kprintf("SWITCHING from %d to %d", currpid[cpuid], i);
 	currpid[cpuid] = i;
 	newproc = &proctab[currpid[cpuid]];
+	kprintf("(%s)\r\n", newproc->name);
 	newproc->state = PRCURR;    /* mark it currently running    */
 
 	//kprintf("New process is %d\r\n", currpid[cpuid]);
@@ -101,6 +103,7 @@ syscall resched(void)
 	preempt[cpuid] = QUANTUM;
 #endif
 
+	kprintf("Page table 0x%016X\r\n", MAKE_SATP(newproc->pagetable));
     ctxsw(&oldproc->regs, &newproc->regs, MAKE_SATP(newproc->pagetable));
 
     /* The OLD process returns here when resumed. */

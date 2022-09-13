@@ -1,5 +1,11 @@
 #include <riscv.h>
 
+loop:
+	.func loop
+    call loop
+    .endfunc
+
+
 .text
 	.align 4
 	.globl	ctxsw
@@ -62,11 +68,24 @@ ctxsw:
     ld s9, PREG_S9*8(t1)
     ld s10, PREG_S10*8(t1)
     ld s11, PREG_S11*8(t1)
-    ld t0, PREG_PC*8(t1)
 
-    csrw satp, t2
+    csrw sscratch, t1
+
+    li t0, RISCV_SPP_TO_U_MODE
+    csrc sstatus, t0
+
+    //call ctxsw
+    // Load the address of the next program
+    ld t0, PREG_PC*8(t1)
+	csrw sepc, t0
+
 	sfence.vma zero, zero
-	
-    jalr x0, 0(t0)
+    csrw satp, t2
+    //call loop
+	sfence.vma zero, zero
+
+    call loop
+
+    sret
 
 	.end ctxsw

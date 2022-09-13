@@ -1,8 +1,10 @@
 #ifndef  _RISCV_H_
 #define  _RISCV_H_
 
+#define RISCV_MSTATUS_SUM       1L<<18
 #define RISCV_MSTATUS_MEI_BIT   1<<3 /* IRQs globally disabled on all privilege levels when set to 1. */
 #define RISCV_MPP_TO_S_MODE     1<<11 /* Set the previous mode to S-mode so XINU can switch to S-Mode when completed. */
+#define RISCV_SPP_TO_U_MODE     1<<8  /* Set the previous mode to U-mode so XINU can switch to U-Mode when completed. */
 #define RISCV_SIE_ENABLE        1<<1
 #define RISCV_SIE_DISABLE       0<<1
 #define RISCV_MDELEG_ALL_S_MODE 0xFFFFFFFFFFFFFFFF
@@ -15,14 +17,11 @@
 #define PREEMPT 0
 #define QUANTUM 3
 
-
-
-
 #define RISCV_ENABLE_ALL_SMODE_INTR (RISCV_SIE_SEIE | RISCV_SIE_STIE | RISCV_SIE_SSIE)
 #define RISCV_MAX_ADDR 0x3FFFFFFFFFFFFFull
 #define RISCV_ALL_PERM 0xF
 
-#define PREGS   32
+#define PREGS   34
 
 #define PREG_A0 0
 #define PREG_A1 1
@@ -57,5 +56,7 @@
 #define PREG_T4 29
 #define PREG_T5 30
 #define PREG_T6 31
+#define PREG_SATP 32
+#define PREG_SPP 33
 
 #endif                          /* _RISCV_H_ */

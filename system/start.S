@@ -79,6 +79,10 @@ reset_handler:
 	li t1, RISCV_ALL_PERM
 	csrw pmpcfg0, t1
 
+	// Allow S mode to access U mode pages
+	li t1, RISCV_MSTATUS_SUM
+	csrrs x0, mstatus, t1
+
 	// Set the program counter to nulluser so when we run mret, it runs nulluser
 	la t1, nulluser
 	csrw mepc, t1
