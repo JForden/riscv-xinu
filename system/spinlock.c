@@ -7,11 +7,11 @@
 
 #include <xinu.h>
 
-struct lockent locktab[NLOCK];	/* spinlock table */
+struct lockent locktab[NLOCK];  /* spinlock table */
 
 /* Assembly helper functions in spinlock_util.S */
-extern void _lock_acquire(volatile unsigned int *);	
-extern void _lock_release(volatile unsigned int *);	
+extern void _lock_acquire(volatile unsigned int *);
+extern void _lock_release(volatile unsigned int *);
 
 static spinlock_t lock_alloc(void);
 
@@ -21,16 +21,16 @@ static spinlock_t lock_alloc(void);
  */
 spinlock_t lock_create()
 {
-	spinlock_t lock;
-	
-	lock = lock_alloc();
-	if (SYSERR == lock)
-	{
-		return SYSERR;
-	}
-	
-	locktab[lock].lock = SPINLOCK_UNLOCKED;
-	return lock;
+    spinlock_t lock;
+
+    lock = lock_alloc();
+    if (SYSERR == lock)
+    {
+        return SYSERR;
+    }
+
+    locktab[lock].lock = SPINLOCK_UNLOCKED;
+    return lock;
 }
 
 /**
@@ -47,12 +47,12 @@ spinlock_t lock_create()
  */
 syscall lock_free(spinlock_t lock)
 {
-	if (isbadlock(lock))
-		return SYSERR;
+    if (isbadlock(lock))
+        return SYSERR;
 
-	locktab[lock].state = SPINLOCK_FREE;
-	
-	return OK;	
+    locktab[lock].state = SPINLOCK_FREE;
+
+    return OK;
 }
 
 /**
@@ -63,14 +63,14 @@ syscall lock_free(spinlock_t lock)
 syscall lock_acquire(spinlock_t lock)
 {
     if (isbadlock(lock))
-	{
-		return SYSERR;
-	}
-	
-	_lock_acquire(&(locktab[lock].lock));
-	locktab[lock].core = gethartid();	
+    {
+        return SYSERR;
+    }
 
-	return OK;
+    _lock_acquire(&(locktab[lock].lock));
+    locktab[lock].core = gethartid();
+
+    return OK;
 }
 
 /**
@@ -81,12 +81,12 @@ syscall lock_acquire(spinlock_t lock)
 syscall lock_release(spinlock_t lock)
 {
     if (isbadlock(lock))
-		return SYSERR;
+        return SYSERR;
 
-	locktab[lock].core = -1;
-	_lock_release(&(locktab[lock].lock));
-	
-	return OK;
+    locktab[lock].core = -1;
+    _lock_release(&(locktab[lock].lock));
+
+    return OK;
 }
 
 /**
@@ -102,7 +102,8 @@ static spinlock_t lock_alloc(void)
     /* check all entries */
     for (i = 0; i < NLOCK; i++)
     {
-        if (_atomic_compareAndSwapWeak(&(locktab[i].state), SPINLOCK_FREE, SPINLOCK_USED))
+        if (_atomic_compareAndSwapWeak
+            (&(locktab[i].state), SPINLOCK_FREE, SPINLOCK_USED))
             return i;
     }
     return SYSERR;

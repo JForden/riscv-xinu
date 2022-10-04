@@ -36,7 +36,7 @@ extern unsigned int getcpuid(void);
 
 /* Formatted input  */
 int _doscan(const char *fmt, va_list ap,
-            int (*getch)(long, long), int (*ungetch)(long, long),
+            int (*getch)(long, long), int(*ungetch)(long, long),
             long arg1, long arg2);
 
 int fscanf(int dev, const char *format, ...);

@@ -9,7 +9,8 @@
 #include <stdio.h>
 #include <string.h>
 
-enum integer_size {
+enum integer_size
+{
     SHORT_SIZE = 0,
     REGULAR_SIZE,
     LONG_SIZE
@@ -20,17 +21,19 @@ enum integer_size {
 
 static int scan_string(char *ptr, int type, uint maxlen,
                        const uchar *stopchar_tab,
-                       int (*getch) (long, long), int (*ungetch) (long, long),
+                       int (*getch)(long, long), int(*ungetch)(long,
+                                                               long),
                        long arg1, long arg2, bool *eofptr);
 
 static int scan_number_or_string(void *ptr, uchar type, uint maxlen,
                                  enum integer_size size,
                                  const uchar *stopchar_tab,
-                                 int (*getch) (long, long),
-                                 int (*ungetch) (long, long),
+                                 int (*getch)(long, long),
+                                 int(*ungetch)(long, long),
                                  long arg1, long arg2, bool *eofptr);
 
-static const uchar *build_stopchar_tab(const uchar *ufmt, uchar *stopchar_tab);
+static const uchar *build_stopchar_tab(const uchar *ufmt,
+                                       uchar *stopchar_tab);
 
 /**
  * @ingroup libxc
@@ -81,7 +84,7 @@ static const uchar *build_stopchar_tab(const uchar *ufmt, uchar *stopchar_tab);
  *      returned.
  */
 int _doscan(const char *fmt, va_list ap,
-            int (*getch) (long, long), int (*ungetch) (long, long),
+            int (*getch)(long, long), int(*ungetch)(long, long),
             long arg1, long arg2)
 {
     int nmatch;
@@ -94,7 +97,7 @@ int _doscan(const char *fmt, va_list ap,
 
     /* Interpret the format string as unsigned to avoid bugs with comparisons.
      * */
-    const uchar *ufmt = (const uchar*)fmt;
+    const uchar *ufmt = (const uchar *)fmt;
 
     nmatch = 0;
     eof = FALSE;
@@ -199,29 +202,31 @@ int _doscan(const char *fmt, va_list ap,
         {
             /* One or more whitespace characters in format string match any
              * amount of whitespace, including none, in the input.  */
-            do         
+            do
             {
-                c = (*getch)(arg1, arg2);
+                c = (*getch) (arg1, arg2);
                 if (c == EOF)
                 {
-                    return (nmatch == 0) ? EOF : nmatch; 
+                    return (nmatch == 0) ? EOF : nmatch;
                 }
-            } while (isspace(c));
+            }
+            while (isspace(c));
 
             (*ungetch) (arg1, arg2);
 
             do
             {
                 ufmt++;
-            } while (isspace(*ufmt));
+            }
+            while (isspace(*ufmt));
         }
         else
         {
             /* Literal character; must match the input exactly.  */
-            c = (*getch)(arg1, arg2);
+            c = (*getch) (arg1, arg2);
             if (c == EOF)
             {
-                return (nmatch == 0) ? EOF : nmatch; 
+                return (nmatch == 0) ? EOF : nmatch;
             }
             if (c != *ufmt)
             {
@@ -234,15 +239,17 @@ int _doscan(const char *fmt, va_list ap,
     return nmatch;
 }
 
-static int scan_string(char *ptr, int type, uint maxlen, const uchar *stopchar_tab,
-                       int (*getch) (long, long), int (*ungetch) (long, long),
-                       long arg1, long arg2, bool *eofptr)
+static int scan_string(char *ptr, int type, uint maxlen,
+                       const uchar *stopchar_tab, int (*getch)(long,
+                                                               long),
+                       int(*ungetch)(long, long), long arg1, long arg2,
+                       bool *eofptr)
 {
     uint len;
     int c;
 
     *eofptr = FALSE;
-    
+
     /* %c defaults to length 1 (a single character) */
     if (type == 'c' && maxlen == UNLIMITED_LENGTH)
     {
@@ -253,7 +260,7 @@ static int scan_string(char *ptr, int type, uint maxlen, const uchar *stopchar_t
      * or EOF or a read error occurs.  */
     for (len = 0; len < maxlen; len++)
     {
-        c = (*getch)(arg1, arg2);
+        c = (*getch) (arg1, arg2);
         if (c == EOF)
         {
             *eofptr = TRUE;
@@ -262,7 +269,7 @@ static int scan_string(char *ptr, int type, uint maxlen, const uchar *stopchar_t
         if ((type == '[' && stopchar_tab[c]) ||
             (type == 's' && isspace(c)))
         {
-            (*ungetch)(arg1, arg2);
+            (*ungetch) (arg1, arg2);
             break;
         }
         if (ptr != NULL)
@@ -290,8 +297,8 @@ static int scan_string(char *ptr, int type, uint maxlen, const uchar *stopchar_t
 static int scan_number_or_string(void *ptr, uchar type, uint maxlen,
                                  enum integer_size size,
                                  const uchar *stopchar_tab,
-                                 int (*getch) (long, long),
-                                 int (*ungetch) (long, long),
+                                 int (*getch)(long, long),
+                                 int(*ungetch)(long, long),
                                  long arg1, long arg2, bool *eofptr)
 {
     int c = EOF;
@@ -309,13 +316,14 @@ static int scan_number_or_string(void *ptr, uchar type, uint maxlen,
     {
         do
         {
-            c = (*getch)(arg1, arg2);
+            c = (*getch) (arg1, arg2);
             if (c == EOF)
             {
                 *eofptr = TRUE;
                 return nmatch;
             }
-        } while (isspace(c));
+        }
+        while (isspace(c));
         if (type == 's')
         {
             (*ungetch) (arg1, arg2);
@@ -411,7 +419,7 @@ static int scan_number_or_string(void *ptr, uchar type, uint maxlen,
         c = getch(arg1, arg2);
     }
 
-num_scanned:
+  num_scanned:
 
     if (c == EOF)
     {
@@ -452,7 +460,8 @@ num_scanned:
  *
  * We support inversion with '^' and specifying ']' in the set by providing it
  * as the first character, but character ranges are unsupported.  */
-static const uchar *build_stopchar_tab(const uchar *ufmt, uchar *stopchar_tab)
+static const uchar *build_stopchar_tab(const uchar *ufmt,
+                                       uchar *stopchar_tab)
 {
     bool first;
     uchar c;
@@ -461,11 +470,11 @@ static const uchar *build_stopchar_tab(const uchar *ufmt, uchar *stopchar_tab)
     if (*ufmt == '^')
     {
         ufmt++;
-        fill_char = 0; /* Inverting, so no characters are stop characters by default. */
+        fill_char = 0;          /* Inverting, so no characters are stop characters by default. */
     }
     else
     {
-        fill_char = 1; /* Not inverting, so all characters are stop characters by default. */
+        fill_char = 1;          /* Not inverting, so all characters are stop characters by default. */
     }
 
     memset(stopchar_tab, fill_char, 256);

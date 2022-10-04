@@ -51,12 +51,12 @@ void disable_irq(irqmask);
 
 
 
-void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter);
+void dispatch(ulong cause, ulong val, ulong *frame,
+              ulong *program_counter);
 
-static inline void
-setpc(ulong x)
+static inline void setpc(ulong x)
 {
-  asm volatile("csrw sepc, %0" : : "r" (x));
+    asm volatile ("csrw sepc, %0"::"r" (x));
 }
 
 #endif                          /* _INTERRUPT_H_ */

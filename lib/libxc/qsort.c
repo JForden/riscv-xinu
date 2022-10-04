@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 static size_t partition(void *base, size_t nmemb, size_t size,
-                        int (*compar)(const void *, const void*));
+                        int (*compar)(const void *, const void *));
 
 static void swap_elements(void *p1, void *p2, size_t size);
 
@@ -31,7 +31,7 @@ static void swap_elements(void *p1, void *p2, size_t size);
 void qsort(void *base, size_t nmemb, size_t size,
            int (*compar)(const void *, const void *))
 {
-    if (nmemb > 1)
+    if(nmemb > 1)
     {
         /* Partition the array around a pivot element, then recurse on parts of
          * the array before and after the pivot.  */
@@ -50,7 +50,7 @@ void qsort(void *base, size_t nmemb, size_t size,
  * resulting 0-based index of the pivot.
  */
 static size_t partition(void *base, size_t nmemb, size_t size,
-                        int (*compar)(const void *, const void*))
+                        int (*compar)(const void *, const void *))
 {
     void *p1, *p2;
     size_t p1_index = 1;
@@ -60,7 +60,7 @@ static size_t partition(void *base, size_t nmemb, size_t size,
     p2 = base + (nmemb * size);
     do
     {
-        if ((*compar)(p1, base) <= 0)
+        if ((*compar) (p1, base) <= 0)
         {
             /* Element at @p1 can go before pivot.  Continue onto next element.
              * */
@@ -76,7 +76,8 @@ static size_t partition(void *base, size_t nmemb, size_t size,
             p2 -= size;
             swap_elements(p1, p2, size);
         }
-    } while (p1 != p2);
+    }
+    while (p1 != p2);
 
     /* Now, p1 == p2, and all elements left of @p1 compare less than or equal to
      * the pivot, while all elements right of or at @p1 compare greater than or

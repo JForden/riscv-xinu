@@ -311,6 +311,9 @@ indent:
 	$(INDENT) $(INDENT_ARGS) $(INDENT_TYPES) $(INDENT_FILES)
 	rm -f $(INDENT_FILES:%=%~)
 
+qemu:
+	qemu-system-riscv64 -machine virt -bios none -kernel xinu.boot -m 128M -smp 1 -nographic
+
 # XXX: Hack to deal with special device directories.
 DEVDOCCOMPS := $(DEVCOMPS)
 ifneq ($(filter uart-%,$(DEVICES)),)

@@ -33,7 +33,7 @@ void *memchr(const void *s, int c, size_t n)
     {
         if (p[i] == byte)
         {
-            return (void*)&p[i]; /* Cast away const */
+            return (void *)&p[i];       /* Cast away const */
         }
     }
     return NULL;

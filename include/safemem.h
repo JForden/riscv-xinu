@@ -51,7 +51,7 @@ struct memregion *memRegionValid(void *);
  */
 struct pgmemblk
 {
-    struct pgmemblk* next;
+    struct pgmemblk *next;
 };
 
 extern struct pgmemblk *pgfreelist;      /**< system page table */
@@ -85,10 +85,10 @@ typedef ulong *pgtbl;
 
 #define MAKE_SATP(pagetable) (SATP_SV39_ON | (((ulong)pagetable) >> 12))
 
-#define PTE2PA(pte)  ((pte >> 10) * PAGE_SIZE) // Remove the first 10 bits (the flags and RSW).  Then multiply it by 4096 (page size)
-#define PA2PTE(pa)   (((ulong)pa / PAGE_SIZE) << 10) // Opposite of PTE2PA. Divide by the page size and then make room for flags
-#define VAOFFSET 12 //Every virtual address is offset by 12 bits 
-#define PXMASK 0x1FF //the virtual addr is masked into 3 sections of 9 bits. these correlate to lvl2,1,0 
+#define PTE2PA(pte)  ((pte >> 10) * PAGE_SIZE)  // Remove the first 10 bits (the flags and RSW).  Then multiply it by 4096 (page size)
+#define PA2PTE(pa)   (((ulong)pa / PAGE_SIZE) << 10)    // Opposite of PTE2PA. Divide by the page size and then make room for flags
+#define VAOFFSET 12             //Every virtual address is offset by 12 bits
+#define PXMASK 0x1FF            //the virtual addr is masked into 3 sections of 9 bits. these correlate to lvl2,1,0
 #define PXSHIFT(level)  (VAOFFSET+(9*(level)))
 #define PX(level, addr) ((((ulong) (addr)) >> PXSHIFT(level)) & PXMASK)
 
@@ -102,9 +102,10 @@ void safeKmapInit(void);
 
 int pgfree(void *);
 void *pgalloc(void);
-int pgfreerange(void *start, void* end);
-int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong length, int attr);
-ulong *pgTraverseAndCreate(pgtbl pagetable,  ulong virtualaddr);
+int pgfreerange(void *start, void *end);
+int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr,
+               ulong length, int attr);
+ulong *pgTraverseAndCreate(pgtbl pagetable, ulong virtualaddr);
 void printPageTable(pgtbl pagetable, int spaces);
 
 #endif                          /* _SAFEMEM_H_ */

@@ -1,8 +1,8 @@
 #ifndef  _RISCV_H_
 #define  _RISCV_H_
 
-#define RISCV_MSTATUS_MEI_BIT   1<<3 /* IRQs globally disabled on all privilege levels when set to 1. */
-#define RISCV_MPP_TO_S_MODE     1<<11 /* Set the previous mode to S-mode so XINU can switch to S-Mode when completed. */
+#define RISCV_MSTATUS_MEI_BIT   1<<3    /* IRQs globally disabled on all privilege levels when set to 1. */
+#define RISCV_MPP_TO_S_MODE     1<<11   /* Set the previous mode to S-mode so XINU can switch to S-Mode when completed. */
 #define RISCV_SIE_ENABLE        1<<1
 #define RISCV_SIE_DISABLE       0<<1
 #define RISCV_MDELEG_ALL_S_MODE 0xFFFFFFFFFFFFFFFF

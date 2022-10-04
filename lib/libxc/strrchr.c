@@ -29,9 +29,10 @@ char *strrchr(const char *s, int c)
     {
         if (*s == ch)
         {
-            r = (char *)s; /* Cast away const. */
+            r = (char *)s;      /* Cast away const. */
         }
-    } while (*s++);
+    }
+    while (*s++);
 
     return r;
 }

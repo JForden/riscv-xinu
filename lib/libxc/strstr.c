@@ -28,7 +28,7 @@ char *strstr(const char *haystack, const char *needle)
     {
         if (strncmp(haystack, needle, needle_len) == 0)
         {
-            return (char*)haystack; /* Cast away const. */
+            return (char *)haystack;    /* Cast away const. */
         }
     }
     return NULL;

@@ -49,7 +49,7 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
 
     ppcb = &proctab[pid];
     /* setup PCB entry for new proc */
-    ppcb->state = PRSUSP;//  NOTE: concurrent newpid() sets state already.
+    ppcb->state = PRSUSP;       //  NOTE: concurrent newpid() sets state already.
 
     ppcb->stkbase = saddr;
     ppcb->stklen = ssize;
@@ -63,18 +63,18 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     *--saddr = ppcb->stklen;
     *--saddr = (ulong)ppcb->stkbase;
 
-	/* Handle variable number of arguments passed to starting function   */
-	if (nargs)
-	{
-		pads = ((nargs - 1) / 8) * 8;
-	}
+    /* Handle variable number of arguments passed to starting function   */
+    if (nargs)
+    {
+        pads = ((nargs - 1) / 8) * 8;
+    }
 
     /* If more than 4 args, pad record size to multiple of native memory */
-	/*  transfer size.  Reserve space for extra args                     */
-	for (i = 0; i < pads; i++)
-	{
-		*--saddr = 0;
-	}
+    /*  transfer size.  Reserve space for extra args                     */
+    for (i = 0; i < pads; i++)
+    {
+        *--saddr = 0;
+    }
 
     va_start(ap, nargs);
 
@@ -82,12 +82,15 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     {
         for (i = 0; i < nargs; i++)
         {
-            if(i <= 7){
-			    ppcb->regs[i] = va_arg(ap, ulong);
-		    } else {
-			    //Add to stack
-			    *(saddr + (i - 8)) = va_arg(ap, ulong);
-		    }
+            if (i <= 7)
+            {
+                ppcb->regs[i] = va_arg(ap, ulong);
+            }
+            else
+            {
+                //Add to stack
+                *(saddr + (i - 8)) = va_arg(ap, ulong);
+            }
         }
     }
 
@@ -112,7 +115,8 @@ static pid_typ newpid(void)
 
     for (pid = NCORES; pid < NPROC; pid++)
     {                           /* check all NPROC slots    */
-        if (_atomic_compareAndSwapWeak(&(proctab[pid].state), PRFREE, PRSUSP))
+        if (_atomic_compareAndSwapWeak
+            (&(proctab[pid].state), PRFREE, PRSUSP))
             return pid;
     }
     return SYSERR;

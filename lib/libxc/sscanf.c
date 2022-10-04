@@ -8,8 +8,8 @@
 #include <stddef.h>
 #include <stdio.h>
 
-static int sgetch(long, ulong*);
-static int sungetch(long, ulong*);
+static int sgetch(long, ulong *);
+static int sungetch(long, ulong *);
 
 /**
  * @ingroup libxc
@@ -45,7 +45,7 @@ int sscanf(const char *str, const char *format, ...)
 /* The first argument to the below functions is ignored, as we only need one
  * argument to specify the current position in the string.  */
 
-static int sgetch(long _ignored, ulong* _str_p)
+static int sgetch(long _ignored, ulong *_str_p)
 {
     const char **str_p = (const char **)_str_p;
     const char *str = *str_p;
@@ -63,9 +63,9 @@ static int sgetch(long _ignored, ulong* _str_p)
     return c;
 }
 
-static int sungetch(long _ignored, ulong* _str_p)
+static int sungetch(long _ignored, ulong *_str_p)
 {
-    const char **str_p = (const char**)_str_p;
+    const char **str_p = (const char **)_str_p;
     const char *str = *str_p;
     int c;
 

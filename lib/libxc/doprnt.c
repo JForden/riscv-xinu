@@ -12,7 +12,8 @@
 static void ulong_to_string(unsigned long num, char *str,
                             unsigned int base, bool alt_digits);
 
-enum integer_size {
+enum integer_size
+{
     SHORT_SHORT_SIZE,
     SHORT_SIZE,
     REGULAR_SIZE,
@@ -84,7 +85,7 @@ enum integer_size {
  *      number of characters written on success, or @c EOF on failure
  */
 int _doprnt(const char *fmt, va_list ap,
-            int (*putc_func) (long, long), long putc_arg)
+            int (*putc_func)(long, long), long putc_arg)
 {
     int chars_written = 0;      /* Number of characters written so far  */
 
@@ -127,9 +128,9 @@ int _doprnt(const char *fmt, va_list ap,
              * 1. Zero or more flags             *
              *************************************/
 
-            pad_char = ' ';    /* Default: space padding    */
-            leftjust = FALSE;  /* Default: right-justified  */
-            for ( ; ; fmt++)
+            pad_char = ' ';     /* Default: space padding    */
+            leftjust = FALSE;   /* Default: right-justified  */
+            for (;; fmt++)
             {
                 /* Switch on next potential flag character  */
                 switch (*fmt)
@@ -151,7 +152,7 @@ int _doprnt(const char *fmt, va_list ap,
                 }
             }
 
-    flags_scanned:
+          flags_scanned:
 
             /*************************************
              * 2. Optional minimum field width   *
@@ -243,10 +244,10 @@ int _doprnt(const char *fmt, va_list ap,
              *************************************/
 
             /* Set defaults  */
-            base = 0;              /* Not numeric          */
-            sign = '\0';           /* No sign              */
-            str = string;          /* Use temporary space  */
-            alt_digits = FALSE;    /* Use normal digits    */
+            base = 0;           /* Not numeric          */
+            sign = '\0';        /* No sign              */
+            str = string;       /* Use temporary space  */
+            alt_digits = FALSE; /* Use normal digits    */
 
             /* Switch on the format specifier character.  */
             switch (*fmt)
@@ -318,7 +319,7 @@ int _doprnt(const char *fmt, va_list ap,
                 base = 2;
                 goto handle_unsigned;
 
-            handle_unsigned:
+              handle_unsigned:
                 if (size == LONG_SIZE)
                 {
                     ularg = va_arg(ap, unsigned long);
@@ -459,7 +460,7 @@ int _doprnt(const char *fmt, va_list ap,
         }
         else
         {
-literal:
+          literal:
             /* Literal character.  */
             if ((*putc_func) (*fmt, putc_arg) == EOF)
             {
@@ -475,9 +476,9 @@ literal:
 static const char digits_lc[16] = "0123456789abcdef";
 static const char digits_uc[16] = "0123456789ABCDEF";
 static const unsigned char base_to_nbits[17] = {
-    [2]  = 1,
-    [4]  = 2,
-    [8]  = 3,
+    [2] = 1,
+    [4] = 2,
+    [8] = 3,
     [16] = 4,
 };
 
@@ -548,5 +549,6 @@ static void ulong_to_string(unsigned long num, char *str,
     do
     {
         *str++ = temp[i--];
-    } while (i >= 0);
+    }
+    while (i >= 0);
 }

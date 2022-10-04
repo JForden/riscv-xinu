@@ -24,7 +24,7 @@
 
 #include <kernel.h>
 #include <riscv.h>
-#include <interrupt.h>	/* for irqmask definition */
+#include <interrupt.h>          /* for irqmask definition */
 
 /* type definition of a "spinlock" */
 typedef unsigned int spinlock_t;

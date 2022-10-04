@@ -15,36 +15,44 @@ void safeKmapInit(void)
     mapAddress(pagetable, UART_BASE, UART_BASE, 0x100, PTE_R | PTE_W);
 
     // Map kernel code
-    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)_datas - (ulong)_start), PTE_R | PTE_X | PTE_W);
+    mapAddress(pagetable, (ulong)&_start, (ulong)&_start,
+               ((ulong)_datas - (ulong)_start), PTE_R | PTE_X | PTE_W);
 
     // Map global kernel structures
-    mapAddress(pagetable, (ulong)_datas, (ulong)_datas, ((ulong)_bss - (ulong)_datas), PTE_R | PTE_W);
+    mapAddress(pagetable, (ulong)_datas, (ulong)_datas,
+               ((ulong)_bss - (ulong)_datas), PTE_R | PTE_W);
 
     // Map kernel stack
-    mapAddress(pagetable, (ulong)&_end, (ulong)&_end, ((ulong)memheap - (ulong)&_end), PTE_R | PTE_W);
+    mapAddress(pagetable, (ulong)&_end, (ulong)&_end,
+               ((ulong)memheap - (ulong)&_end), PTE_R | PTE_W);
 
     printPageTable(pagetable, 0);
 
     set_satp(MAKE_SATP(pagetable));
 }
 
-int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong length, int attr){
+int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr,
+               ulong length, int attr)
+{
     ulong *pte = NULL;
     ulong addr, end;
 
 
-    if(length==0){ 
+    if (length == 0)
+    {
         return SYSERR;
     }
 
     length = roundpage(length);
     addr = (ulong)truncpage(virtualaddr);
     end = addr + length;
-    
+
 
     for (; addr < end; addr += PAGE_SIZE, physicaladdr += PAGE_SIZE)
     {
-        if((pte = pgTraverseAndCreate(pagetable, addr)) == (ulong *)SYSERR){
+        if ((pte =
+             pgTraverseAndCreate(pagetable, addr)) == (ulong *)SYSERR)
+        {
             return SYSERR;
         }
         *pte = PA2PTE(physicaladdr) | attr | PTE_V;
@@ -74,41 +82,55 @@ int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong len
 // +----------+----------------------+-----+---+---+---+---+---+---+---+---+
 
 // Returns the PTE of the specified virtual address.  This will create pages along the way.
-ulong *pgTraverseAndCreate(pgtbl pagetable,  ulong virtualaddr){
+ulong *pgTraverseAndCreate(pgtbl pagetable, ulong virtualaddr)
+{
     ulong *pte = NULL;
 
-    for(int level = 2; level > 0; level--){
+    for (int level = 2; level > 0; level--)
+    {
         pte = &pagetable[PX(level, virtualaddr)];
-        if(*pte & PTE_V){
-            pagetable = (pgtbl)PTE2PA(*pte);
+        if (*pte & PTE_V)
+        {
+            pagetable = (pgtbl) PTE2PA(*pte);
         }
-        else {
-            if((pagetable = (ulong *)pgalloc()) == (ulong *)SYSERR)
+        else
+        {
+            if ((pagetable = (ulong *)pgalloc()) == (ulong *)SYSERR)
                 return (ulong *)SYSERR;
-            *pte = PA2PTE(pagetable) | PTE_V; 
+            *pte = PA2PTE(pagetable) | PTE_V;
         }
     }
 
     return &pagetable[PX(0, virtualaddr)];
 }
 
-static void printSpaces(int spaces) {
-    for(int i = 0; i < spaces; i++) {
+static void printSpaces(int spaces)
+{
+    for (int i = 0; i < spaces; i++)
+    {
         kprintf(" ");
     }
 }
 
-void printPageTable(pgtbl pagetable, int spaces){
+void printPageTable(pgtbl pagetable, int spaces)
+{
     printSpaces(spaces);
     kprintf("Table at 0x%08X:\r\n", (ulong)pagetable);
-    for(int i = 0; i < 512; i++){
-        if(pagetable[i] & PTE_V) {
+    for (int i = 0; i < 512; i++)
+    {
+        if (pagetable[i] & PTE_V)
+        {
             printSpaces(spaces + 2);
-            if(!(pagetable[i] & (PTE_R | PTE_W | PTE_X))){
-                kprintf("Link PTE (0x%08X)| Address 0x%08X\r\n", pagetable[i], (pgtbl)PTE2PA(pagetable[i]));
-                printPageTable((pgtbl)PTE2PA(pagetable[i]), spaces + 2);
-            } else {
-                kprintf("Leaf PTE (0x%08X)| Address 0x%08X\r\n", pagetable[i], (pgtbl)PTE2PA(pagetable[i]));
+            if (!(pagetable[i] & (PTE_R | PTE_W | PTE_X)))
+            {
+                kprintf("Link PTE (0x%08X)| Address 0x%08X\r\n",
+                        pagetable[i], (pgtbl) PTE2PA(pagetable[i]));
+                printPageTable((pgtbl) PTE2PA(pagetable[i]), spaces + 2);
+            }
+            else
+            {
+                kprintf("Leaf PTE (0x%08X)| Address 0x%08X\r\n",
+                        pagetable[i], (pgtbl) PTE2PA(pagetable[i]));
             }
         }
     }

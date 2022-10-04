@@ -27,8 +27,9 @@ char *strchr(const char *s, int c)
     {
         if (*s == ch)
         {
-            return (char*)s; /* Cast away const. */
+            return (char *)s;   /* Cast away const. */
         }
-    } while (*s++);
+    }
+    while (*s++);
     return NULL;
 }

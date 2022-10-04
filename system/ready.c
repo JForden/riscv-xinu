@@ -23,14 +23,14 @@ syscall ready(pid_typ pid, bool resch)
 
     ppcb = &proctab[pid];
     ppcb->state = PRREADY;
-    
+
     if (-1 == ppcb->core)
-	{
-		ppcb->core = hart;
-	}
-    
+    {
+        ppcb->core = hart;
+    }
+
     enqueue(pid, readylist[ppcb->core][ppcb->priority]);
-    
+
     if (resch)
     {
         resched();
