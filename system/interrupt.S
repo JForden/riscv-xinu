@@ -12,6 +12,7 @@
  */
 interrupt:
 	.func interrupt
+
     addi sp, sp, PREGS*-8
 
     sd ra, PREG_RA*8(sp)
