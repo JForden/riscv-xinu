@@ -6,6 +6,8 @@
 #ifndef _ELF_H_
 #define _ELF_H_
 
+#define ELFCLASS64 2
+
 #define EI_NIDENT 16
 #define EI_MAG0   0
 #define EI_MAG1   1
@@ -24,6 +26,7 @@ typedef ulong Elf64_Addr;
 typedef ushort Elf64_Half;
 typedef ulong Elf64_Off;
 typedef uint Elf64_Word;
+typedef ulong Elf64_Xword;
 
 typedef struct
 {
@@ -42,5 +45,18 @@ typedef struct
     Elf64_Half e_shnum;
     Elf64_Half e_shstrndx;
 } Elf64_Ehdr;
+
+typedef struct
+{
+  Elf64_Word	p_type;			/* Segment type */
+  Elf64_Word	p_flags;		/* Segment flags */
+  Elf64_Off	p_offset;		/* Segment file offset */
+  Elf64_Addr	p_vaddr;		/* Segment virtual address */
+  Elf64_Addr	p_paddr;		/* Segment physical address */
+  Elf64_Xword	p_filesz;		/* Segment size in file */
+  Elf64_Xword	p_memsz;		/* Segment size in memory */
+  Elf64_Xword	p_align;		/* Segment alignment */
+} Elf64_Phdr;
+
 
 #endif                          /* _ELF_H_ */

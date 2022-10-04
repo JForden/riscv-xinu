@@ -77,9 +77,18 @@ void nulluser(void)
     if (e_header->e_ident[EI_MAG0] != 0x7F ||
         e_header->e_ident[EI_MAG1] != 'E' ||
         e_header->e_ident[EI_MAG2] != 'L' ||
-        e_header->e_ident[EI_MAG3] != 'F')
+        e_header->e_ident[EI_MAG3] != 'F' ||
+        e_header->e_ident[EI_VERSION] != 1)
     {
         kprintf("Invalid ELF header!\r\n");
+    }
+
+    if(e_header->e_ident[EI_CLASS] != ELFCLASS64) {
+        kprintf("This ELF file is not compiled for 64-bit!\r\n");
+    }
+
+    if(e_header->e_type != 2) {
+        kprintf("This ELF file is not an executable!\r\n");
     }
 
     for (int i = 0; i < 16; i++)
@@ -88,6 +97,8 @@ void nulluser(void)
         if ((i + 1) % 8 == 0)
             kprintf("\r\n");
     }
+
+    kprintf("POFF: %d\r\n", e_header->e_phoff);
 
     /* null process has nothing else to do but cannot exit  */
     while (1)
