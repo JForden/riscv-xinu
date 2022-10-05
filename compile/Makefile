@@ -314,6 +314,9 @@ indent:
 qemu:
 	qemu-system-riscv64 -machine virt -bios none -kernel xinu.boot -m 128M -smp 1 -nographic
 
+qemu-debug:
+	qemu-system-riscv64 -machine virt -bios none -kernel xinu.boot -m 128M -smp 1 -nographic -s -S
+
 # XXX: Hack to deal with special device directories.
 DEVDOCCOMPS := $(DEVCOMPS)
 ifneq ($(filter uart-%,$(DEVICES)),)

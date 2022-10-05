@@ -39,10 +39,10 @@ const struct syscall_info syscall_table[] = {
     { 2, (void *)sc_none },     /* SYSCALL_SEEK      = 10 */
     { 4, (void *)sc_none },     /* SYSCALL_CONTROL   = 11 */
     { 1, (void *)sc_none },     /* SYSCALL_GETDEV    = 12 */
-    { 4, (void *)sc_create },   /* SYSCALL_CREATE    = 13 */
-    { 2, (void *)sc_join },     /* SYSCALL_JOIN      = 14 */
-    { 1, (void *)sc_lock },     /* SYSCALL_LOCK      = 15 */
-    { 1, (void *)sc_unlock },   /* SYSCALL_UNLOCK    = 16 */
+    { 4, (void *)sc_none },   /* SYSCALL_CREATE    = 13 */
+    { 2, (void *)sc_none },     /* SYSCALL_JOIN      = 14 */
+    { 1, (void *)sc_none },     /* SYSCALL_LOCK      = 15 */
+    { 1, (void *)sc_none },   /* SYSCALL_UNLOCK    = 16 */
 };
 
 int nsyscall = sizeof(syscall_table) / sizeof(struct syscall_info);

@@ -27,7 +27,7 @@ ctxsw:
 	.func ctxsw
 
 	sd ra, PREG_RA*8(a0)
-    sd sp, PREG_SP*8(a0)
+    //sd sp, PREG_SP*8(a0)
     sd s0, PREG_S0*8(a0)
     sd s1, PREG_S1*8(a0)
     sd s2, PREG_S2*8(a0)
@@ -55,7 +55,7 @@ ctxsw:
     ld a7, PREG_A7*8(t1)
 
     ld ra, PREG_RA*8(t1)
-    ld sp, PREG_SP*8(t1)
+    //ld sp, PREG_SP*8(t1)
     ld s0, PREG_S0*8(t1)
     ld s1, PREG_S1*8(t1)
     ld s2, PREG_S2*8(t1)
@@ -69,6 +69,8 @@ ctxsw:
     ld s10, PREG_S10*8(t1)
     ld s11, PREG_S11*8(t1)
 
+    //ld t0, PREG_PC*8(t1)
+	
     csrw sscratch, t1
 
     li t0, RISCV_SPP_TO_U_MODE
@@ -79,13 +81,13 @@ ctxsw:
     ld t0, PREG_PC*8(t1)
 	csrw sepc, t0
 
-	sfence.vma zero, zero
+    sfence.vma zero, zero
     csrw satp, t2
     //call loop
 	sfence.vma zero, zero
 
-    call loop
-
     sret
+
+    //jalr x0, 0(t0)
 
 	.end ctxsw

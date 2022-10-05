@@ -13,7 +13,4 @@
 process main(void)
 {
     kprintf("MAIN\r\n");
-    while(1) {
-        
-    }
 }

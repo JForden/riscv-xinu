@@ -57,36 +57,6 @@ int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong len
     return OK;
 }
 
-int mapVAddress(pgtbl pagetable, pgtbl toppage, ulong virtualaddr, ulong length, int attr){
-    ulong *pte = NULL;
-    ulong addr, end, numofpages;
-
-    if(length==0){ 
-        return SYSERR;
-    }
-
-    length = roundpage(length);
-    addr = (ulong)truncpage(virtualaddr);
-    end = addr + length;
-    numofpages = length / PAGE_SIZE;
-
-    //kprintf("Start: 0x%08X End: 0x%08X\r\n", addr, end);
-    
-    for (int i = 0; addr < end; addr += PAGE_SIZE)
-    {
-        if((pte = pgTraverseAndCreate(pagetable, addr)) == (ulong *)SYSERR){
-            return SYSERR;
-        }
-        if(*pte & PTE_V) {
-            kprintf("REMAPPED 0x%08X!!!\r\n", addr);
-        }
-        *pte = PA2PTE(toppage) | attr | PTE_V;
-    }
-
-    return OK;
-}
-
-
 // Virtual Address:
 // +--------+----+----+----+--------+
 // | Extra  | L2 | L1 | L0 | Offset |

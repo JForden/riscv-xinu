@@ -46,8 +46,6 @@ volatile ulong promote_low[NCORES];
 void nulluser(void)
 {
     int hartid = gethartid();
-    char pname[PNMLEN];
-    char *data = &_binary_data_elf_start;
 
     if (hartid == 0) {
         /* Platform-specific initialization */
@@ -186,10 +184,4 @@ static int sysinit(void)
     }
 
     return OK;
-}
-
-int generic_dtb_handler(char *nname, char *pname, uchar *pval, uint plen){
-    if(strcmp(nname, "")){
-        //kprintf("%s\r\n", pname);
-    }
 }

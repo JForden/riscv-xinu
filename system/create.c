@@ -94,12 +94,14 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
         }
     }
 
-    vmcreate(pagetable, saddr);     /* allocate new stack and pid   */
+    vmcreate(pagetable);     /* allocate new stack and pid   */
 
     ppcb->regs[PREG_PC] = (ulong)funcaddr;
     ppcb->regs[PREG_RA] = (ulong)userret;
-    ppcb->regs[PREG_SPP] = (ulong)RISCV_SPP_TO_U_MODE;
-    ppcb->regs[PREG_SP] = (ulong)0x300000500;
+    //ppcb->regs[PREG_SPP] = (ulong)RISCV_SPP_TO_U_MODE;
+    //ppcb->regs[PREG_SP] = (ulong)0x100000000;
+
+    //printPageTable(pagetable, 0);
 
     va_end(ap);
 

@@ -8,7 +8,7 @@
 
 #include <xinu.h>
 
-extern void ctxsw(void *, void *, void *);
+extern void ctxsw(void *, void *, ulong);
 /**
  * Reschedule processor to next ready process.
  * Upon entry, currpid gives current process id.  Proctab[currpid].pstate 
@@ -86,11 +86,7 @@ syscall resched(void)
 	//kprintf("Old process is %d\r\n", currpid[cpuid]);
 	int i = 0;
 
-
-
 	i = dequeue(readylist[cpuid][highest_prio]);
-	//kprintf("Prio is %d\r\n", highest_prio);
-	//kprintf("I %d\r\n", i);
 	kprintf("SWITCHING from %d to %d", currpid[cpuid], i);
 	currpid[cpuid] = i;
 	newproc = &proctab[currpid[cpuid]];
@@ -104,6 +100,8 @@ syscall resched(void)
 #endif
 
 	kprintf("Page table 0x%016X\r\n", MAKE_SATP(newproc->pagetable));
+	//printPageTable(newproc->pagetable, 0);
+
     ctxsw(&oldproc->regs, &newproc->regs, MAKE_SATP(newproc->pagetable));
 
     /* The OLD process returns here when resumed. */
