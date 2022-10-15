@@ -64,8 +64,8 @@ void nulluser(void)
     }
 
     /* Call the main program */
-    //ready(create((void *)main, INITSTK, INITPRIO, "main", 0),
-    //      RESCHED_NO);
+    ready(create((void *)main, INITSTK, INITPRIO, "main", 0),
+          RESCHED_NO);
 
     //parseDtb();
 
@@ -73,7 +73,7 @@ void nulluser(void)
 
     while (1)
     {
-        //resched();
+        resched();
     }
 }
 

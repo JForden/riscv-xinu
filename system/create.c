@@ -25,6 +25,7 @@ void *getstk(ulong);
 syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
                ulong nargs, ...)
 {
+    ulong *saddr;               /* stack address                */
     ulong pid;                  /* stores new process id        */
     pcb *ppcb;                  /* pointer to proc control blk  */
     ulong i;
@@ -35,10 +36,7 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     if (ssize < MINSTK)
         ssize = MINSTK;
     ssize = (ulong)(ssize + 3) & 0xFFFFFFFC;
-    pgtbl saddr = pgalloc();
-    pgtbl pagetable = pgalloc();
-
-    saddr = (ulong)saddr + PAGE_SIZE;
+    saddr = (ulong *)getstk(ssize);     /* allocate new stack and pid   */
     /* round up to even boundary    */
     pid = newpid();
     /* a little error checking      */
@@ -57,7 +55,6 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     ppcb->stklen = ssize;
     strncpy(ppcb->name, name, PNMLEN);
     ppcb->core = -1;            // this will be set in ready()
-    ppcb->pagetable = pagetable;
     ppcb->priority = priority;
 
     /* Initialize stack with accounting block. */
@@ -94,14 +91,9 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
         }
     }
 
-    vmcreate(pagetable);     /* allocate new stack and pid   */
-
     ppcb->regs[PREG_PC] = (ulong)funcaddr;
     ppcb->regs[PREG_RA] = (ulong)userret;
-    //ppcb->regs[PREG_SPP] = (ulong)RISCV_SPP_TO_U_MODE;
-    //ppcb->regs[PREG_SP] = (ulong)0x100000000;
-
-    //printPageTable(pagetable, 0);
+    ppcb->regs[PREG_SP] = (int) saddr;
 
     va_end(ap);
 
