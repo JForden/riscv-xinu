@@ -56,11 +56,11 @@ void *vmcreate(pgtbl pagetable){
 
     // Map kernel code
     //kprintf("HERE: vmcreate 3\r\n");
-    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)_datas - (ulong)_start), PTE_R | PTE_W | PTE_X );
+    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)_datas - (ulong)_start), PTE_R | PTE_X );
     //kprintf("HERE: vmcreate 4\r\n");
 
     // Map global kernel structures and stack
-    mapAddress(pagetable, (ulong)_datas, (ulong)_datas, ((ulong)memheap - (ulong)_datas), PTE_R | PTE_X | PTE_W );
+    mapAddress(pagetable, (ulong)_datas, (ulong)_datas, ((ulong)memheap - (ulong)_datas), PTE_R | PTE_W );
     //kprintf("HERE: vmcreate 5\r\n");
 
     return NULL;

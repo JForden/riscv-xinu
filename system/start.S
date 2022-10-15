@@ -50,7 +50,7 @@ reset_handler:
 	csrw stvec, t1
 
 	la a1, _end
-	li a3, 8196
+	li a3, 8192
 	add sp, a1, a3
 
 	la a4, memheap

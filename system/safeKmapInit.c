@@ -16,12 +16,13 @@ void safeKmapInit(void)
     mapAddress(pagetable, UART_BASE, UART_BASE, 0x100, PTE_R | PTE_W);
 
     // Map kernel code
-    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)_datas - (ulong)_start), PTE_R | PTE_X | PTE_W);
+    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)&_datas - (ulong)&_start), PTE_R | PTE_X );
 
     // Map global kernel structures and stack
-    mapAddress(pagetable, (ulong)_datas, (ulong)_datas, ((ulong)memheap - (ulong)_datas), PTE_R | PTE_X | PTE_W);
+    mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas, ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_W);
 
     // Map entirety of RAM
+    kprintf("Mapping all of RAM\r\n");
     mapAddress(pagetable, (ulong)memheap, (ulong)memheap, ((ulong)platform.maxaddr - (ulong)memheap), PTE_R | PTE_W);
 
     ppcb = &proctab[currpid[gethartid()]];
@@ -33,16 +34,18 @@ void safeKmapInit(void)
 int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong length, int attr){
     ulong *pte = NULL;
     ulong addr, end;
+    ulong nlength;
 
 
     if(length==0){ 
         return SYSERR;
     }
 
-    length = roundpage(length);
+    nlength = roundpage(length);
     addr = (ulong)truncpage(virtualaddr);
-    end = addr + length;
-    
+    end = addr + nlength;
+    kprintf("Mapping from 0x%08X to 0x%08X (original len = %d, new len = %d)\r\n", addr, end, length, nlength);
+
     for (; addr < end; addr += PAGE_SIZE, physicaladdr += PAGE_SIZE)
     {
         if((pte = pgTraverseAndCreate(pagetable, addr)) == (ulong *)SYSERR){
