@@ -47,6 +47,8 @@ void nulluser(void)
 {
     int hartid = gethartid();
 
+    parseDtb();
+
     if (hartid == 0) {
         /* Platform-specific initialization */
         platforminit();
