@@ -87,10 +87,10 @@ syscall resched(void)
 	int i = 0;
 
 	i = dequeue(readylist[cpuid][highest_prio]);
-	kprintf("SWITCHING from %d to %d", currpid[cpuid], i);
+	//kprintf("SWITCHING from %d to %d", currpid[cpuid], i);
 	currpid[cpuid] = i;
 	newproc = &proctab[currpid[cpuid]];
-	kprintf("(%s)\r\n", newproc->name);
+	//kprintf("(%s)\r\n", newproc->name);
 	newproc->state = PRCURR;    /* mark it currently running    */
 
 #if PREEMPT

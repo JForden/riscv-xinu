@@ -41,6 +41,6 @@ syscall user_none(void);
 syscall user_yield(void);
 syscall user_getc(int descrp);
 syscall user_putc(int descrp, char character);
-syscall user_kill(void);
+syscall user_kill(int pid);
 
 #endif                          /* __SYSCALL_H__ */

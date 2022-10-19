@@ -30,7 +30,7 @@ const struct syscall_info syscall_table[] = {
     { 5, (void *)sc_none },     /* SYSCALL_NONE      = 0  */
     { 0, (void *)sc_yield },    /* SYSCALL_YIELD     = 1  */
     { 1, (void *)sc_none },     /* SYSCALL_SLEEP     = 2  */
-    { 0, (void *)sc_kill },     /* SYSCALL_KILL      = 3  */
+    { 1, (void *)sc_kill },     /* SYSCALL_KILL      = 3  */
     { 2, (void *)sc_none },     /* SYSCALL_OPEN      = 4  */
     { 1, (void *)sc_none },     /* SYSCALL_CLOSE     = 5  */
     { 3, (void *)sc_none },     /* SYSCALL_READ      = 6  */
@@ -129,15 +129,14 @@ syscall sc_putc(ulong *args)
     return SYSERR;
 }
 
-syscall user_kill(void)
+syscall user_kill(int pid)
 {
     SYSCALL(KILL);
 }
 
 syscall sc_kill(ulong *args) {
-    uint cpuid = gethartid();
-    
-    return kill(currpid[cpuid]);
+    int pid = SCARG(int, args);
+    return kill(pid);
 }
 
 syscall user_putc(int descrp, char character)

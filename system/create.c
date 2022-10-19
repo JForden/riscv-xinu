@@ -60,6 +60,7 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     ppcb->core = -1;            // this will be set in ready()
     ppcb->priority = priority;
     ppcb->pagetable = vmcreate();
+    ppcb->privilege = USER_MODE;
 
     /* Initialize stack with accounting block. */
     *saddr = STACKMAGIC;
@@ -128,5 +129,6 @@ static pid_typ newpid(void)
  */
 void userret(void)
 {
-    user_kill();
+    uint cpuid = gethartid();
+    user_kill(currpid[cpuid]);
 }

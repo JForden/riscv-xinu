@@ -67,6 +67,7 @@ typedef struct pentry
     uint joinq;          /**< JoinQ stuff                             */
     char name[PNMLEN];   /**< process name                            */
     pgtbl pagetable;
+    ulong privilege;
     ulong regs[PREGS];     /**< stored process registers                */
 } pcb;
 
@@ -82,6 +83,8 @@ typedef struct pentry
 #define MINSTK   4096       /**< minimum process stack size              */
 #define NULLSTK  MINSTK     /**< null process stack size                 */
 
+#define USER_MODE 0L
+#define SUP_MODE  1L << 8
 
 extern struct pentry proctab[];
 extern int numproc;         /**< currently active processes              */
