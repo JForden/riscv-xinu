@@ -70,6 +70,9 @@ ctxsw:
     ld s11, PREG_S11*8(t1)
 
     ld t0, PREG_PC*8(t1)
+
+    csrw satp, a2
+	sfence.vma zero, zero
 	
     jalr x0, 0(t0)
 

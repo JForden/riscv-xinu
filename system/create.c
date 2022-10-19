@@ -36,7 +36,10 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     if (ssize < MINSTK)
         ssize = MINSTK;
     ssize = (ulong)(ssize + 3) & 0xFFFFFFFC;
-    saddr = (ulong *)getstk(ssize);     /* allocate new stack and pid   */
+
+    saddr = (ulong *)pgalloc();
+    saddr = (ulong *)((ulong)saddr + PAGE_SIZE);
+    //saddr = (ulong *)getstk(ssize);     /* allocate new stack and pid   */
     /* round up to even boundary    */
     pid = newpid();
     /* a little error checking      */
@@ -56,6 +59,7 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     strncpy(ppcb->name, name, PNMLEN);
     ppcb->core = -1;            // this will be set in ready()
     ppcb->priority = priority;
+    ppcb->pagetable = vmcreate();
 
     /* Initialize stack with accounting block. */
     *saddr = STACKMAGIC;

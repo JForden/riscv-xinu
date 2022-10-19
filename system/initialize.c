@@ -67,8 +67,6 @@ void nulluser(void)
     ready(create((void *)main, INITSTK, INITPRIO, "main", 0),
           RESCHED_NO);
 
-    //parseDtb();
-
     /* null process has nothing else to do but cannot exit  */
 
     while (1)

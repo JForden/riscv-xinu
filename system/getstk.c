@@ -16,6 +16,27 @@ extern void *end;
  * @param nbytes amount of memory to allocate, in bytes
  * @return address of the topmost word
  */
+
+pgtbl vmcreate() {
+    pgtbl pagetable = pgalloc();
+
+    // Map the following ranges
+    // https://github.com/qemu/qemu/blob/master/hw/riscv/virt.c
+    mapAddress(pagetable, UART_BASE, UART_BASE, 0x100, PTE_R | PTE_W);
+
+    // Map kernel code
+    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)&_datas - (ulong)&_start), PTE_R | PTE_X );
+
+    // Map global kernel structures and stack
+    mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas, ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_W);
+
+    // Map entirety of RAM
+    kprintf("Mapping all of RAM\r\n");
+    mapAddress(pagetable, (ulong)memheap, (ulong)memheap, ((ulong)platform.maxaddr - (ulong)memheap), PTE_R | PTE_W);
+
+    return pagetable;
+}
+
 void *getstk(ulong nbytes)
 {
     /* NOTE: This is a completely broken implementation of getstk(),      */

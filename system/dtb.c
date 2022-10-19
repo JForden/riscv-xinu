@@ -38,8 +38,6 @@ int uartHandler(char *name, char *pname, char *prop_val, uint plen) {
         ulong addr = dtb_read_long(data);
         platform.uart_addr = (struct ns16550_uart_csreg *)addr;
 
-        kprintf("ADDRESS: 0x%08X\r\n", platform.uart_addr);
-
         return OK;
     } else if (!strcmp(pname, "clock-frequency")) {
         uint *clock_freq_ptr = (uint *)prop_val;
@@ -95,7 +93,7 @@ int parseDtbNodes(struct fdt_header *dtb_addr) {
         {
         case FDT_BEGIN_NODE:
             name = (char *)(tokptr + 1);
-            kprintf("Node: %s\r\n", name);
+            //kprintf("Node: %s\r\n", name);
             index += 1 + c2ioff(1 + strlen((char*)(tokptr+1)));
             break;
         case FDT_PROP:
@@ -105,7 +103,7 @@ int parseDtbNodes(struct fdt_header *dtb_addr) {
             char *prop_val = (((char *)prop) + sizeof(struct fdt_prop));
             index += 1 + c2ioff(sizeof(struct fdt_prop) + plen);
             handleProp(name, pname, prop_val, plen);
-            kprintf("  %s (%d) = %s\r\n", pname, plen, prop_val);
+            //kprintf("  %s (%d) = %s\r\n", pname, plen, prop_val);
             break;
         case FDT_END_NODE:
             name = NULL;
@@ -133,8 +131,6 @@ int parseDtb(void) {
 
     parseRsvMap((struct fdt_reserve_entry *)((ulong)dtb_addr + be32_to_cpu(header->off_mem_rsvmap)));
     parseDtbNodes(header);
-
-    kprintf("MAGIC: 0x%08X\r\n", cpu_to_be32(header->magic));
 
     return OK;
 }
