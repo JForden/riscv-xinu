@@ -23,13 +23,14 @@ syscall sc_none(ulong *);
 syscall sc_yield(ulong *);
 syscall sc_getc(ulong *);
 syscall sc_putc(ulong *);
+syscall sc_kill(ulong *);
 
 /* table for determining how to call syscalls */
 const struct syscall_info syscall_table[] = {
     { 5, (void *)sc_none },     /* SYSCALL_NONE      = 0  */
     { 0, (void *)sc_yield },    /* SYSCALL_YIELD     = 1  */
     { 1, (void *)sc_none },     /* SYSCALL_SLEEP     = 2  */
-    { 1, (void *)sc_none },     /* SYSCALL_KILL      = 3  */
+    { 0, (void *)sc_kill },     /* SYSCALL_KILL      = 3  */
     { 2, (void *)sc_none },     /* SYSCALL_OPEN      = 4  */
     { 1, (void *)sc_none },     /* SYSCALL_CLOSE     = 5  */
     { 3, (void *)sc_none },     /* SYSCALL_READ      = 6  */
@@ -126,6 +127,17 @@ syscall sc_putc(ulong *args)
     if (0 == descrp)
         return kputc(character);
     return SYSERR;
+}
+
+syscall user_kill(void)
+{
+    SYSCALL(KILL);
+}
+
+syscall sc_kill(ulong *args) {
+    uint cpuid = gethartid();
+    
+    return kill(currpid[cpuid]);
 }
 
 syscall user_putc(int descrp, char character)

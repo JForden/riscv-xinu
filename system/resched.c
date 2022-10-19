@@ -97,7 +97,7 @@ syscall resched(void)
 	preempt[cpuid] = QUANTUM;
 #endif
 
-    ctxsw(&oldproc->regs, &newproc->regs, MAKE_SATP(newproc->pagetable));
+    ctxsw(&oldproc->regs, &newproc->regs, (void *)MAKE_SATP(newproc->pagetable));
 
     /* The OLD process returns here when resumed. */
     return OK;

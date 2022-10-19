@@ -97,7 +97,7 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
 
     ppcb->regs[PREG_PC] = (ulong)funcaddr;
     ppcb->regs[PREG_RA] = (ulong)userret;
-    ppcb->regs[PREG_SP] = (int) saddr;
+    ppcb->regs[PREG_SP] = (ulong)saddr;
 
     va_end(ap);
 
@@ -128,6 +128,5 @@ static pid_typ newpid(void)
  */
 void userret(void)
 {
-    uint cpuid = gethartid();
-    kill(currpid[cpuid]);
+    user_kill();
 }
