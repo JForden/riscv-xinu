@@ -15,7 +15,7 @@
 #define FDT_END_NODE 0x00000002
 #define FDT_PROP 0x00000003
 #define FDT_NOP 0x00000004
-#define FDT_END 0x00000005
+#define FDT_END 0x00000009
 
 
 struct fdt_header {
