@@ -5,6 +5,8 @@
 
 #include <riscv.h>  /* Needed for ARM_MODE_SYS definition.  */
 
+.section .text
+.align 4
 .globl interrupt
 
 /**

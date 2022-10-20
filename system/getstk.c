@@ -22,17 +22,24 @@ pgtbl vmcreate() {
 
     // Map the following ranges
     // https://github.com/qemu/qemu/blob/master/hw/riscv/virt.c
-    mapAddress(pagetable, UART_BASE, UART_BASE, 0x100, PTE_R | PTE_W);
+    mapAddress(pagetable, UART_BASE, UART_BASE, 0x100, PTE_R | PTE_W | PTE_U);
 
     // Map kernel code
-    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)&_datas - (ulong)&_start), PTE_R | PTE_X );
+    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)&_ctxsws - (ulong)&_start), PTE_R | PTE_W | PTE_X | PTE_U);
+
+    // Map ctxsw
+    mapAddress(pagetable, (ulong)&_ctxsws, CTXSWADDR, ((ulong)&_ctxswe - (ulong)&_ctxsws), PTE_R | PTE_X | PTE_G);
+
+    // Map rest of kernel code
+    mapAddress(pagetable, (ulong)&_ctxswe, (ulong)&_ctxswe, ((ulong)&_datas - (ulong)&_ctxswe), PTE_R | PTE_X | PTE_W | PTE_U);
 
     // Map global kernel structures and stack
-    mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas, ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_W);
+    mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas, ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_W | PTE_U);
 
     // Map entirety of RAM
     kprintf("Mapping all of RAM\r\n");
-    mapAddress(pagetable, (ulong)memheap, (ulong)memheap, ((ulong)platform.maxaddr - (ulong)memheap), PTE_R | PTE_W);
+    kprintf("CTXSW is at 0x%08X\r\n", &_ctxsws);
+    mapAddress(pagetable, (ulong)memheap, (ulong)memheap, ((ulong)platform.maxaddr - (ulong)memheap), PTE_R | PTE_W | PTE_U);
 
     return pagetable;
 }

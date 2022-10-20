@@ -46,9 +46,15 @@ extern void *_end;              /* linker provides end of image       */
 extern void *_bss;              /* linker provides start of bss       */
 extern void *_datas;            /* linker provides start of data       */
 extern void *memheap;           /* bottom of heap                     */
+extern void *_ctxsws;           /* start of ctxsw                     */
+extern void *_ctxswe;           /* end of ctxsw                       */
 
 /* Memory function prototypes */
 void *getmem(uint nbytes);
 syscall freemem(void *pmem, uint nbytes);
+
+#define MAXVIRTADDR (1L << 38)
+#define CTXSWADDR   (0x80004000)
+//(MAXVIRTADDR - 4096)
 
 #endif                          /* _MEMORY_H_ */

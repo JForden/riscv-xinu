@@ -1,12 +1,6 @@
 #include <riscv.h>
 
-loop:
-	.func loop
-    call loop
-    .endfunc
-
-
-.text
+.section .ctxswsec
 	.align 4
 	.globl	ctxsw
 
@@ -71,10 +65,13 @@ ctxsw:
     ld s11, PREG_S11*8(t1)
 
     ld t0, PREG_PC*8(t1)
-
+    sfence.vma zero, zero
     csrw satp, t2
 	sfence.vma zero, zero
-	
-    jalr x0, 0(t0)
 
+    csrrs x0, sstatus, t3
+
+    csrw sepc, t0
+	
+    sret
 	.end ctxsw
