@@ -37,6 +37,23 @@ void safeKmapInit(void)
     set_satp(MAKE_SATP(pagetable));
 }
 
+int mapPage(pgtbl pagetable, pgtbl page, ulong virtualaddr, int attr){
+    ulong *pte = NULL;
+    ulong addr;
+
+    addr = (ulong)truncpage(virtualaddr);
+
+    if((pte = pgTraverseAndCreate(pagetable, addr)) == (ulong *)SYSERR){
+        return SYSERR;
+    }
+    if(*pte & PTE_V) {
+        kprintf("REMAPPED 0x%08X!!!\r\n", addr);
+    }
+    *pte = PA2PTE(page) | attr | PTE_V;
+
+    return OK;
+}
+
 int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong length, int attr){
     ulong *pte = NULL;
     ulong addr, end;
@@ -60,6 +77,7 @@ int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong len
         if(*pte & PTE_V) {
             kprintf("REMAPPED 0x%16X!!!\r\n", addr);
         }
+
         *pte = PA2PTE(physicaladdr) | attr | PTE_V;
     }
 
@@ -90,15 +108,11 @@ ulong *pgTraverseAndCreate(pgtbl pagetable,  ulong virtualaddr){
     ulong *pte = NULL;
 
     for(int level = 2; level > 0; level--){
-        //kprintf("VAL is %d\r\n", PX(level, virtualaddr));
-        //kprintf("PTE ADDR IS 0x%08X\r\n", &pagetable);
         pte = &pagetable[PX(level, virtualaddr)];
-        //kprintf("HERE 5555\r\n");
         if(*pte & PTE_V){
             pagetable = (pgtbl)PTE2PA(*pte);
         }
         else {
-            //kprintf("HERE 4444");
             if((pagetable = (ulong *)pgalloc()) == (ulong *)SYSERR)
                 return (ulong *)SYSERR;
             *pte = PA2PTE(pagetable) | PTE_V; 

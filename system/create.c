@@ -16,16 +16,14 @@ void *getstk(ulong);
  * @ingroup process
  * Create a new process to start running a function.
  * @param funcaddr address of function that will begin in new process
- * @param ssize    stack size in bytes
  * @param priority The priority given to the process(high,medium,low)
  * @param name     name of the process, used for debugging
  * @param nargs    number of arguments that follow
  * @return the new process id
  */
-syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
-               ulong nargs, ...)
+syscall create(void *funcaddr, ulong priority, char *name, ulong nargs, ...)
 {
-    ulong *saddr;               /* stack address                */
+    ulong *saddr, *top;               /* stack address                */
     ulong pid;                  /* stores new process id        */
     pcb *ppcb;                  /* pointer to proc control blk  */
     ulong i;
@@ -33,13 +31,7 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     ulong pads = 0;             /* padding entries in record.   */
     void INITRET(void);
 
-    if (ssize < MINSTK)
-        ssize = MINSTK;
-    ssize = (ulong)(ssize + 3) & 0xFFFFFFFC;
-
     saddr = (ulong *)pgalloc();
-    saddr = (ulong *)((ulong)saddr + PAGE_SIZE);
-    //saddr = (ulong *)getstk(ssize);     /* allocate new stack and pid   */
     /* round up to even boundary    */
     pid = newpid();
     /* a little error checking      */
@@ -55,14 +47,16 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     ppcb->state = PRSUSP;//  NOTE: concurrent newpid() sets state already.
 
     ppcb->stkbase = saddr;
-    ppcb->stklen = ssize;
+    ppcb->stklen = PAGE_SIZE;
     strncpy(ppcb->name, name, PNMLEN);
     ppcb->core = -1;            // this will be set in ready()
     ppcb->priority = priority;
-    ppcb->pagetable = vmcreate();
+    ppcb->pagetable = vmcreate(saddr);
     ppcb->privilege = USER_MODE;
 
     /* Initialize stack with accounting block. */
+    saddr = (ulong *)((ulong)saddr + PAGE_SIZE);
+    top = saddr;
     *saddr = STACKMAGIC;
     *--saddr = pid;
     *--saddr = ppcb->stklen;
@@ -98,7 +92,7 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
 
     ppcb->regs[PREG_PC] = (ulong)funcaddr;
     ppcb->regs[PREG_RA] = (ulong)userret;
-    ppcb->regs[PREG_SP] = (ulong)saddr;
+    ppcb->regs[PREG_SP] = (ulong)(PROCSTACKADDR + PAGE_SIZE - ((ulong)top - (ulong)saddr));
 
     va_end(ap);
 

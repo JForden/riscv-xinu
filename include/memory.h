@@ -55,6 +55,7 @@ syscall freemem(void *pmem, uint nbytes);
 
 #define MAXVIRTADDR (1L << 38)
 #define CTXSWADDR   (0x80004000)
+#define PROCSTACKADDR   truncpage((MAXVIRTADDR - PAGE_SIZE))
 //(MAXVIRTADDR - 4096)
 
 #endif                          /* _MEMORY_H_ */
