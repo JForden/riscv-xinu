@@ -59,4 +59,9 @@
 #define PREG_SATP 32
 #define PREG_SPP 33
 
+#define MAXVIRTADDR 0x4000000000 //(1L << 38)
+#define CTXSWADDR   (0x80004000)
+#define SWAPAREAADDR    0x3FFFFFF000 // truncpage((MAXVIRTADDR - PAGE_SIZE))
+#define PROCSTACKADDR   0x3FFFFFE000 // truncpage((MAXVIRTADDR - PAGE_SIZE - PAGE_SIZE))
+
 #endif                          /* _RISCV_H_ */
