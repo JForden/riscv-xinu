@@ -34,6 +34,8 @@ void safeKmapInit(void)
     ppcb = &proctab[currpid[gethartid()]];
     ppcb->pagetable = pagetable;
 
+    _kernpgtbl = MAKE_SATP(pagetable);
+
     set_satp(MAKE_SATP(pagetable));
 }
 

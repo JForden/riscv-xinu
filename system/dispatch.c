@@ -19,7 +19,12 @@
  * @param program_counter  The value of the sepc register 
  */
 
-void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
+ulong *dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
+    pcb *proc;
+    uint cpuid = gethartid();
+
+    proc = &proctab[currpid[cpuid]];
+
     if((long)cause > 0) {
         cause = cause << 1;
         cause = cause >> 1;
@@ -39,4 +44,6 @@ void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
         cause = cause >> 1;
         //TODO
     }
+
+    return proc->pagetable;
 }

@@ -25,6 +25,7 @@ int currpid[NCORES];			/* Id of currently running proccesses  */
 void *memheap;                  /* Bottom of heap (top of O/S stack)     */
 ulong cpuid;                    /* Processor id                          */
 void *dtb_addr;
+ulong _kernpgtbl;
 
 struct platform platform;       /* Platform specific configuration       */
 

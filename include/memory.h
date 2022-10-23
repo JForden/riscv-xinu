@@ -48,6 +48,7 @@ extern void *_datas;            /* linker provides start of data       */
 extern void *memheap;           /* bottom of heap                     */
 extern void *_ctxsws;           /* start of ctxsw                     */
 extern void *_ctxswe;           /* end of ctxsw                       */
+extern ulong _kernpgtbl;
 
 /* Memory function prototypes */
 void *getmem(uint nbytes);

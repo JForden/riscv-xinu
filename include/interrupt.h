@@ -41,16 +41,7 @@ void disable_irq(irqmask);
 #define E_LOAD_PAGEFAULT 13
 #define E_STORE_AMO_PAGEFAULT 15
 
-
-
-
-
-
-
-
-
-
-void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter);
+ulong *dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter);
 
 static inline void
 setpc(ulong x)
