@@ -18,6 +18,7 @@ extern void *end;
  */
 
 pgtbl vmcreate(pgtbl stack) {
+	kprintf("\r\n\r\nCreating virtual memory\r\n");
     pgtbl pagetable = pgalloc();
 
     // Map the following ranges
@@ -30,16 +31,28 @@ pgtbl vmcreate(pgtbl stack) {
     // Map ctxsw
     mapAddress(pagetable, (ulong)&_ctxsws, CTXSWADDR, ((ulong)&_ctxswe - (ulong)&_ctxsws), PTE_R | PTE_X | PTE_G);
 
+    // Map interrupt
+    mapAddress(pagetable, (ulong)&_interrupts, INTERRUPTADDR, PAGE_SIZE, PTE_R | PTE_X);
+
     // Map rest of kernel code
-    mapAddress(pagetable, (ulong)&_ctxswe, (ulong)&_ctxswe, ((ulong)&_datas - (ulong)&_ctxswe), PTE_R | PTE_X | PTE_U);
+    mapAddress(pagetable, (ulong)&_interrupte, (ulong)&_interrupte, ((ulong)&_datas - (ulong)&_interrupte), PTE_R | PTE_X | PTE_U);
 
     // Map global kernel structures and stack
-    mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas, ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_W | PTE_U);
+    int x = mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas, ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_W | PTE_U);
 
-    // Map entirety of RAM
-    kprintf("Mapping all of RAM\r\n");
-    kprintf("CTXSW is at 0x%08X\r\n", &_ctxsws);
+    if (x == 10392) {
+        interrupth();
+    }
+
+	// Map process stack
     mapPage(pagetable, stack, PROCSTACKADDR, PTE_R | PTE_W | PTE_U);
+
+	// Map context swap area
+	pgtbl swaparea = pgalloc();
+	kprintf("Swap Area is at 0x%08X\r\n", swaparea);
+    mapPage(pagetable, swaparea, SWAPAREAADDR, PTE_R | PTE_W);
+
+    printPageTable(pagetable, 0);
 
     return pagetable;
 }

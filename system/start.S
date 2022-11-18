@@ -44,11 +44,6 @@ reset_handler:
 	la   t0, dtb_addr
 	sd   a1, 0(t0)
 
-	// Loads address of the function interrupt in t1
-	la t1, interrupt
-	// Sets stvec to the address of interrupt
-	csrw stvec, t1
-
 	la a1, _end
 	li a3, 8192
 	add sp, a1, a3

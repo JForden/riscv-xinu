@@ -71,6 +71,11 @@ ctxsw:
 
     csrrs x0, sstatus, t3
 
+	// Loads address of the function interrupt in t1
+	li t1, INTERRUPTADDR
+	// Sets stvec to the address of interrupt
+	csrw stvec, t1
+
     csrw sepc, t0
 	
     sret

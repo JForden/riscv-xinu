@@ -29,7 +29,7 @@ ulong *dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
         cause = cause << 1;
         cause = cause >> 1;
 
-        if (cause == E_ENVCALL_FROM_SMODE){
+        if (cause == E_ENVCALL_FROM_UMODE){
             ulong swi_opcode;
             swi_opcode = frame[PREG_A7];
             setpc((ulong)program_counter + 4);

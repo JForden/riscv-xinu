@@ -36,6 +36,12 @@ SECTIONS {
         *(.ctxswsec)
         . = ALIGN(4096);
         _ctxswe = .;
+
+        . = ALIGN(4096);
+        _interrupts = .;
+        *(.interruptsec)
+        . = ALIGN(4096);
+        _interrupte = .;
     }
 
     .data ALIGN(4096): {

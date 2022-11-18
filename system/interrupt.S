@@ -5,15 +5,15 @@
 
 #include <riscv.h>  /* Needed for ARM_MODE_SYS definition.  */
 
-.section .text
-.align 4
-.globl interrupt
+.section .interruptsec
+    .align 4
+    .globl interrupth
 
 /**
  * Entry point for Xinu's interrupt handler (RISV version). 
  */
-interrupt:
-	.func interrupt
+interrupth:
+	.func interrupth
 
     csrw sscratch, a0
 
@@ -112,5 +112,4 @@ interrupt:
     
     sret
 
-.endfunc
-
+    .endfunc

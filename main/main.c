@@ -25,6 +25,6 @@ process main(int one, int two, int three, int four, int five, int six, int seven
     kprintf("10: %d\r\n", ten);
 
     kprintf("MAXADDR: 0x%16lX\r\n", MAXVIRTADDR);
-    kprintf("SWAPAREAADDR: 0x%016lX\r\n", SWAPAREAADDR);
-    kprintf("PROCSTACKADDR: 0x%016lX\r\n", PROCSTACKADDR);
+    kprintf("INT S: 0x%016lX\r\n", (ulong)&_interrupts);
+    kprintf("INT E: 0x%016lX\r\n", (ulong)&_interrupte);
 }

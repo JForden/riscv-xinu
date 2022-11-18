@@ -21,8 +21,11 @@ void safeKmapInit(void)
     // Map ctxsw
     mapAddress(pagetable, (ulong)&_ctxsws, CTXSWADDR, ((ulong)&_ctxswe - (ulong)&_ctxsws), PTE_R | PTE_X | PTE_G);
 
+    // Map interrupt
+    mapAddress(pagetable, (ulong)&_interrupts, INTERRUPTADDR, PAGE_SIZE, PTE_R | PTE_X | PTE_G);
+    
     // Map rest of kernel code
-    mapAddress(pagetable, (ulong)&_ctxswe, (ulong)&_ctxswe, ((ulong)&_datas - (ulong)&_ctxswe), PTE_R | PTE_X | PTE_W);
+    mapAddress(pagetable, (ulong)&_interrupte, (ulong)&_interrupte, ((ulong)&_datas - (ulong)&_interrupte), PTE_R | PTE_X);
 
     // Map global kernel structures and stack
     mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas, ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_W);
@@ -137,10 +140,10 @@ void printPageTable(pgtbl pagetable, int spaces){
         if(pagetable[i] & PTE_V) {
             printSpaces(spaces + 2);
             if(!(pagetable[i] & (PTE_R | PTE_W | PTE_X))){
-                kprintf("Link PTE (0x%08X)| Address 0x%08X\r\n", pagetable[i], (pgtbl)PTE2PA(pagetable[i]));
+                kprintf("Link PTE (0x%016lX)| Address 0x%016lX\r\n", pagetable[i], (pgtbl)PTE2PA(pagetable[i]));
                 printPageTable((pgtbl)PTE2PA(pagetable[i]), spaces + 2);
             } else {
-                kprintf("Leaf PTE (0x%08X)| Address 0x%08X\r\n", pagetable[i], (pgtbl)PTE2PA(pagetable[i]));
+                kprintf("Leaf PTE (0x%016lX)| Address 0x%016lX\r\n", pagetable[i], (pgtbl)PTE2PA(pagetable[i]));
             }
         }
     }
