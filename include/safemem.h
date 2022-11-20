@@ -83,7 +83,7 @@ typedef ulong *pgtbl;
 //This disables SATP by setting mode to 0000(0 in decimal)
 #define SATP_SV39_OFF (0x0L <<60)
 
-#define MAKE_SATP(pagetable) (SATP_SV39_ON | (((ulong)pagetable) >> 12))
+#define MAKE_SATP(asid, pagetable) (SATP_SV39_ON | ((ulong)asid << 44) | (((ulong)pagetable) >> 12))
 
 #define PTE2PA(pte)  ((pte >> 10) * PAGE_SIZE) // Remove the first 10 bits (the flags and RSW).  Then multiply it by 4096 (page size)
 #define PA2PTE(pa)   (((ulong)pa / PAGE_SIZE) << 10) // Opposite of PTE2PA. Divide by the page size and then make room for flags
@@ -107,6 +107,6 @@ int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong len
 int mapPage(pgtbl pagetable, pgtbl page, ulong virtualaddr, int attr);
 ulong *pgTraverseAndCreate(pgtbl pagetable,  ulong virtualaddr);
 void printPageTable(pgtbl pagetable, int spaces);
-pgtbl vmcreate(pgtbl stack);
+pgtbl vmcreate(int pid, pgtbl stack);
 
 #endif                          /* _SAFEMEM_H_ */

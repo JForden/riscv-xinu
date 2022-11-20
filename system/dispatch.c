@@ -19,11 +19,12 @@
  * @param program_counter  The value of the sepc register 
  */
 
-ulong *dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
+ulong dispatch(ulong cause, ulong val, ulong program_counter) {
     pcb *proc;
     uint cpuid = gethartid();
+    uint pid = currpid[cpuid];
 
-    proc = &proctab[currpid[cpuid]];
+    proc = &proctab[pid];
 
     if((long)cause > 0) {
         cause = cause << 1;
@@ -31,11 +32,12 @@ ulong *dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
 
         if (cause == E_ENVCALL_FROM_UMODE){
             ulong swi_opcode;
-            swi_opcode = frame[PREG_A7];
+
+            swi_opcode = proc->swaparea[PREG_A7];
             setpc((ulong)program_counter + 4);
-            frame[PREG_A0] = syscall_dispatch(swi_opcode, (ulong *)&frame[PREG_A0]);        
+            proc->swaparea[PREG_A0] = syscall_dispatch(swi_opcode, (ulong *)&(proc->swaparea[PREG_A0]));        
         } else {
-            xtrap(frame, cause, val, program_counter);
+            xtrap(proc->swaparea, cause, val, program_counter);
         }
     } else {
         // Handle interrupts
@@ -45,5 +47,5 @@ ulong *dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
         //TODO
     }
 
-    return proc->pagetable;
+    return MAKE_SATP(pid, proc->pagetable);
 }

@@ -51,8 +51,7 @@ syscall create(void *funcaddr, ulong priority, char *name, ulong nargs, ...)
     strncpy(ppcb->name, name, PNMLEN);
     ppcb->core = -1;            // this will be set in ready()
     ppcb->priority = priority;
-    ppcb->pagetable = vmcreate(saddr);
-    ppcb->privilege = USER_MODE;
+    ppcb->pagetable = vmcreate(pid, saddr);
 
     /* Initialize stack with accounting block. */
     saddr = (ulong *)((ulong)saddr + PAGE_SIZE);

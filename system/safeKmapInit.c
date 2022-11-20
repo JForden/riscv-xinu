@@ -37,9 +37,10 @@ void safeKmapInit(void)
     ppcb = &proctab[currpid[gethartid()]];
     ppcb->pagetable = pagetable;
 
-    _kernpgtbl = MAKE_SATP(pagetable);
+    _kernpgtbl = MAKE_SATP(0, pagetable);
+    kprintf("Kernel pagetable is 0x%016lX\t\n", _kernpgtbl);
 
-    set_satp(MAKE_SATP(pagetable));
+    set_satp(MAKE_SATP(0, pagetable));
 }
 
 int mapPage(pgtbl pagetable, pgtbl page, ulong virtualaddr, int attr){
@@ -72,7 +73,7 @@ int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong len
     nlength = roundpage(length);
     addr = (ulong)truncpage(virtualaddr);
     end = addr + nlength;
-    kprintf("Mapping from 0x%08X to 0x%08X (original len = %d, new len = %d)\r\n", addr, end, length, nlength);
+    kprintf("Mapping from 0x%016lX to 0x%016lX (original len = %d, new len = %d)\r\n", addr, end, length, nlength);
 
     for (; addr < end; addr += PAGE_SIZE, physicaladdr += PAGE_SIZE)
     {

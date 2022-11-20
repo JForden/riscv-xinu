@@ -67,7 +67,7 @@ typedef struct pentry
     uint joinq;          /**< JoinQ stuff                             */
     char name[PNMLEN];   /**< process name                            */
     pgtbl pagetable;
-    ulong privilege;
+    ulong *swaparea;
     ulong regs[PREGS];     /**< stored process registers                */
 } pcb;
 

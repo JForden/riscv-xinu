@@ -55,16 +55,17 @@ interrupth:
     sd t6, PREG_T6*8(t0)
 
     // Load kernel page table
-    sfence.vma zero, zero
     la a0, _kernpgtbl
     ld a1, 0(a0)
+    la sp, memheap
+
+    sfence.vma zero, zero
 	csrw satp, a1
 	sfence.vma zero, zero
 
     csrr a0, scause
     csrr a1, stval
-    csrr a3, sepc
-    mv a2, sp
+    csrr a2, sepc
     call dispatch
 
     // Load user page table

@@ -26,6 +26,7 @@ void *memheap;                  /* Bottom of heap (top of O/S stack)     */
 ulong cpuid;                    /* Processor id                          */
 void *dtb_addr;
 ulong _kernpgtbl;
+ulong _kernstkptr;
 
 struct platform platform;       /* Platform specific configuration       */
 
@@ -156,7 +157,6 @@ static int sysinit(void)
     ppcb->stkbase       = (void *)&_end;
     ppcb->stklen = (ulong)memheap - (ulong)&_end;
     ppcb->priority = INITPRIO;
-    ppcb->privilege = SUP_MODE;
     currpid[0] = NULLPROC;
 
     /* Initialize ready lists */

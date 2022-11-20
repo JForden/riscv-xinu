@@ -17,13 +17,14 @@ extern void *end;
  * @return address of the topmost word
  */
 
-pgtbl vmcreate(pgtbl stack) {
+pgtbl vmcreate(int pid, pgtbl stack) {
 	kprintf("\r\n\r\nCreating virtual memory\r\n");
+    pcb *ppcb = &proctab[pid];
     pgtbl pagetable = pgalloc();
 
     // Map the following ranges
     // https://github.com/qemu/qemu/blob/master/hw/riscv/virt.c
-    mapAddress(pagetable, UART_BASE, UART_BASE, 0x100, PTE_R | PTE_W | PTE_U);
+    //mapAddress(pagetable, UART_BASE, UART_BASE, 0x100, PTE_R | PTE_W | PTE_U);
 
     // Map kernel code
     mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)&_ctxsws - (ulong)&_start), PTE_R | PTE_X | PTE_U);
@@ -49,10 +50,10 @@ pgtbl vmcreate(pgtbl stack) {
 
 	// Map context swap area
 	pgtbl swaparea = pgalloc();
-	kprintf("Swap Area is at 0x%08X\r\n", swaparea);
+	ppcb->swaparea = swaparea;
     mapPage(pagetable, swaparea, SWAPAREAADDR, PTE_R | PTE_W);
 
-    printPageTable(pagetable, 0);
+    //printPageTable(pagetable, 0);
 
     return pagetable;
 }
