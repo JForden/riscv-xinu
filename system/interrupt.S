@@ -7,13 +7,13 @@
 
 .section .interruptsec
     .align 4
-    .globl interrupth
+    .globl kernenter
 
 /**
  * Entry point for Xinu's interrupt handler (RISV version). 
  */
-interrupth:
-	.func interrupth
+kernenter:
+	.func kernenter
 
     csrw sscratch, a0
 
@@ -66,11 +66,16 @@ interrupth:
     csrr a0, scause
     csrr a1, stval
     csrr a2, sepc
-    call dispatch
+    j dispatch
 
-    // Load user page table
+    .endfunc
+
+.global kernexit
+kernexit:
+    .func kernexit
     sfence.vma zero, zero
-	csrw satp, a0
+    mv a1, a0
+	csrw satp, a1
 	sfence.vma zero, zero
 
     li a0, SWAPAREAADDR

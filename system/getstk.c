@@ -22,15 +22,8 @@ pgtbl vmcreate(int pid, pgtbl stack) {
     pcb *ppcb = &proctab[pid];
     pgtbl pagetable = pgalloc();
 
-    // Map the following ranges
-    // https://github.com/qemu/qemu/blob/master/hw/riscv/virt.c
-    //mapAddress(pagetable, UART_BASE, UART_BASE, 0x100, PTE_R | PTE_W | PTE_U);
-
     // Map kernel code
     mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)&_ctxsws - (ulong)&_start), PTE_R | PTE_X | PTE_U);
-
-    // Map ctxsw
-    mapAddress(pagetable, (ulong)&_ctxsws, CTXSWADDR, ((ulong)&_ctxswe - (ulong)&_ctxsws), PTE_R | PTE_X | PTE_G);
 
     // Map interrupt
     mapAddress(pagetable, (ulong)&_interrupts, INTERRUPTADDR, PAGE_SIZE, PTE_R | PTE_X);
@@ -39,11 +32,7 @@ pgtbl vmcreate(int pid, pgtbl stack) {
     mapAddress(pagetable, (ulong)&_interrupte, (ulong)&_interrupte, ((ulong)&_datas - (ulong)&_interrupte), PTE_R | PTE_X | PTE_U);
 
     // Map global kernel structures and stack
-    int x = mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas, ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_W | PTE_U);
-
-    if (x == 10392) {
-        interrupth();
-    }
+    int x = mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas, ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_U);
 
 	// Map process stack
     mapPage(pagetable, stack, PROCSTACKADDR, PTE_R | PTE_W | PTE_U);

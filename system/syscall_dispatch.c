@@ -87,8 +87,8 @@ syscall sc_yield(ulong *args)
 {
     /* this may change thread of execution, allow exceptions */
     // exlreset();
-
-    return resched();
+    resched();
+    return OK;
 }
 
 syscall user_yield(void)

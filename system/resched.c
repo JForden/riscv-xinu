@@ -15,7 +15,7 @@ extern void ctxsw(void *, void *, void *, ulong);
  * gives correct NEXT state for current process if other than PRREADY.
  * @return OK when the process is context switched back
  */
-syscall resched(void)
+void resched(void)
 {
     pcb *oldproc;               /* pointer to old process entry */
     pcb *newproc;               /* pointer to new process entry */
@@ -97,8 +97,13 @@ syscall resched(void)
 	preempt[cpuid] = QUANTUM;
 #endif
 
-    ctxsw(&oldproc->regs, &newproc->regs, (void *)MAKE_SATP(currpid[cpuid], newproc->pagetable), USER_MODE);
+    //ctxsw(&oldproc->regs, &newproc->regs, (void *)MAKE_SATP(currpid[cpuid], newproc->pagetable), USER_MODE);
+	setpc(newproc->swaparea[PREG_PC]);
+    
+	ulong virt_trapret = INTERRUPTADDR + ((ulong)kernexit - (ulong)kernenter);
+	kprintf("VIRT is 0x%08X\r\n", virt_trapret);
+	((void (*)(ulong))virt_trapret)(MAKE_SATP(i, newproc->pagetable));
 
     /* The OLD process returns here when resumed. */
-    return OK;
+    //return OK;
 }

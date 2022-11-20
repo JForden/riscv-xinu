@@ -81,7 +81,7 @@ syscall create(void *funcaddr, ulong priority, char *name, ulong nargs, ...)
         for (i = 0; i < nargs; i++)
         {
             if(i <= 7){
-			    ppcb->regs[i] = va_arg(ap, ulong);
+			    ppcb->swaparea[i] = va_arg(ap, ulong);
 		    } else {
 			    //Add to stack
 			    *(saddr + (i - 8)) = va_arg(ap, ulong);
@@ -89,9 +89,9 @@ syscall create(void *funcaddr, ulong priority, char *name, ulong nargs, ...)
         }
     }
 
-    ppcb->regs[PREG_PC] = (ulong)funcaddr;
-    ppcb->regs[PREG_RA] = (ulong)userret;
-    ppcb->regs[PREG_SP] = (ulong)(PROCSTACKADDR + PAGE_SIZE - ((ulong)top - (ulong)saddr));
+    ppcb->swaparea[PREG_PC] = (ulong)funcaddr;
+    ppcb->swaparea[PREG_RA] = (ulong)userret;
+    ppcb->swaparea[PREG_SP] = (ulong)(PROCSTACKADDR + PAGE_SIZE - ((ulong)top - (ulong)saddr));
 
     va_end(ap);
 

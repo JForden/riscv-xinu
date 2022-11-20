@@ -78,6 +78,11 @@ reset_handler:
 	li t1, RISCV_MSTATUS_SUM
 	csrrs x0, mstatus, t1
 
+	// Loads address of the function interrupt in t1
+	li t1, INTERRUPTADDR
+	// Sets stvec to the address of interrupt
+	csrw stvec, t1
+
 	// Set the program counter to nulluser so when we run mret, it runs nulluser
 	la t1, nulluser
 	csrw mepc, t1

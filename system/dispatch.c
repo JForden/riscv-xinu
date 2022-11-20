@@ -47,5 +47,5 @@ ulong dispatch(ulong cause, ulong val, ulong program_counter) {
         //TODO
     }
 
-    return MAKE_SATP(pid, proc->pagetable);
+    kernexit(MAKE_SATP(pid, proc->pagetable));
 }
