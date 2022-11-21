@@ -131,7 +131,6 @@ syscall sc_putc(ulong *args)
 
 syscall user_kill(int pid)
 {
-    kprintf("Calling user_kill\r\n");
     SYSCALL(KILL);
 }
 

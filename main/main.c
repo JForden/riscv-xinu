@@ -17,13 +17,5 @@ process main(int one, int two, int three, int four, int five, int six, int seven
     user_putc(0, 'l');
     user_putc(0, 'l');
     user_putc(0, 'o');
-    user_putc(0, ' ');
-    user_putc(0, 'W');
-    user_putc(0, 'o');
-    user_putc(0, 'r');
-    user_putc(0, 'l');
-    user_putc(0, 'd');
     user_putc(0, '!');
-
-    while(1) { }
 }

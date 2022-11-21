@@ -45,6 +45,15 @@ volatile ulong promote_low[NCORES];
  * for a semaphore, or put to sleep, or exit.  In particular, it must not
  * do I/O unless it uses kprintf for synchronous output.
  */
+void nullproc(void) {
+    /* null process has nothing else to do but cannot exit  */
+
+    while (1)
+    {
+        user_yield();
+    }
+}
+
 void nulluser(void)
 {
     int hartid = gethartid();
@@ -67,13 +76,7 @@ void nulluser(void)
 
     /* Call the main program */
     ready(create((void *)main, INITPRIO, "main", 10, 11111, 22222, 33333, 44444, 55555, 66666, 77777, 88888, 99999, 00000), RESCHED_NO);
-
-    /* null process has nothing else to do but cannot exit  */
-
-    while (1)
-    {
-        resched();
-    }
+    ready(create((void *)nullproc, INITPRIO, "prnull", 0), RESCHED_YES);
 }
 
 static void welcome(void)

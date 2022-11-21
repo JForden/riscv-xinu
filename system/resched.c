@@ -98,10 +98,10 @@ void resched(void)
 #endif
 
     //ctxsw(&oldproc->regs, &newproc->regs, (void *)MAKE_SATP(currpid[cpuid], newproc->pagetable), USER_MODE);
+	kprintf("SELECTED %d\r\n", i);
 	setpc(newproc->swaparea[PREG_PC]);
     
 	ulong virt_trapret = INTERRUPTADDR + ((ulong)kernexit - (ulong)kernenter);
-	kprintf("VIRT is 0x%08X\r\n", virt_trapret);
 	((void (*)(ulong))virt_trapret)(MAKE_SATP(i, newproc->pagetable));
 
     /* The OLD process returns here when resumed. */
