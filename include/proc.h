@@ -68,7 +68,6 @@ typedef struct pentry
     char name[PNMLEN];   /**< process name                            */
     pgtbl pagetable;
     ulong *swaparea;
-    ulong regs[PREGS];     /**< stored process registers                */
 } pcb;
 
 

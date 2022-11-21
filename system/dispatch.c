@@ -19,7 +19,7 @@
  * @param program_counter  The value of the sepc register 
  */
 
-ulong dispatch(ulong cause, ulong val, ulong program_counter) {
+void dispatch(ulong cause, ulong val, ulong program_counter) {
     pcb *proc;
     uint cpuid = gethartid();
     uint pid = currpid[cpuid];

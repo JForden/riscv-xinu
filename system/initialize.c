@@ -141,7 +141,6 @@ static int sysinit(void)
 {
     int i = 0;
     int j = 0;
-    pcb *ppcb = NULL;           /* process control block pointer */
 
     /* Initialize process table */
     for (i = 0; i < NPROC; i++)

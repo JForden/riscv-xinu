@@ -20,7 +20,7 @@ char *trap_names[] = {
     "Store/AMO page fault"
 };
 
-void xtrap(long *frame, ulong cause, ulong address, ulong pc)
+void xtrap(ulong *frame, ulong cause, ulong address, ulong pc)
 {
     /* If not an interrupt or syscall, fall through to generic exception handler */
     kprintf("\r\n\r\nXINU Exception [%s]\r\n", trap_names[cause]);

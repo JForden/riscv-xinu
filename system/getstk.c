@@ -32,7 +32,7 @@ pgtbl vmcreate(int pid, pgtbl stack) {
     mapAddress(pagetable, (ulong)&_interrupte, (ulong)&_interrupte, ((ulong)&_datas - (ulong)&_interrupte), PTE_R | PTE_X | PTE_U);
 
     // Map global kernel structures and stack
-    int x = mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas, ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_U);
+    mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas, ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_U);
 
 	// Map process stack
     mapPage(pagetable, stack, PROCSTACKADDR, PTE_R | PTE_W | PTE_U);
