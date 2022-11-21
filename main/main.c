@@ -12,6 +12,8 @@
  */
 process main(int one, int two, int three, int four, int five, int six, int seven, int eight, int nine, int ten)
 {
+	//pcb *ppcb = NULL;
+	//ppcb->state = 0;
     user_putc(0, 'H');
     user_putc(0, 'e');
     user_putc(0, 'l');
