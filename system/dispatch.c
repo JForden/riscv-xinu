@@ -34,6 +34,7 @@ ulong dispatch(ulong cause, ulong val, ulong program_counter) {
             ulong swi_opcode;
 
             swi_opcode = proc->swaparea[PREG_A7];
+			proc->swaparea[PREG_PC] = (ulong)program_counter + 4;
             setpc((ulong)program_counter + 4);
             proc->swaparea[PREG_A0] = syscall_dispatch(swi_opcode, (ulong *)&(proc->swaparea[PREG_A0]));        
         } else {

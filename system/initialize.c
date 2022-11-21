@@ -143,10 +143,6 @@ static int sysinit(void)
     int j = 0;
     pcb *ppcb = NULL;           /* process control block pointer */
 
-    /* Initialize system variables */
-    /* Count this NULLPROC as the first process in the system. */
-    numproc = 1;
-
     /* Initialize process table */
     for (i = 0; i < NPROC; i++)
     {
@@ -154,13 +150,7 @@ static int sysinit(void)
     }
 
     /* initialize null process entry */
-    ppcb = &proctab[NULLPROC];
-    ppcb->state = PRCURR;
-    strncpy(ppcb->name, "prnull", 7);
-    ppcb->stkbase       = (void *)&_end;
-    ppcb->stklen = (ulong)memheap - (ulong)&_end;
-    ppcb->priority = INITPRIO;
-    currpid[0] = NULLPROC;
+    currpid[0] = 0;
 
     /* Initialize ready lists */
     for (i = 0; i < NCORES; i++)

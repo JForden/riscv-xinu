@@ -28,7 +28,7 @@ syscall kvprintf(const char *fmt, va_list va);
 syscall create(void *, ulong, char *, ulong, ...);
 syscall kill(pid_typ);
 syscall ready(pid_typ, bool);
-void resched(void);
+syscall resched(void);
 
 extern void _start(void);
 
