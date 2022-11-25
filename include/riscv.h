@@ -21,7 +21,7 @@
 #define RISCV_MAX_ADDR 0x3FFFFFFFFFFFFFull
 #define RISCV_ALL_PERM 0xF
 
-#define PREGS   34
+#define PREGS   35
 
 #define PREG_A0 0
 #define PREG_A1 1
@@ -56,11 +56,12 @@
 #define PREG_T4 29
 #define PREG_T5 30
 #define PREG_T6 31
-#define PREG_SATP 32
-#define PREG_SPP 33
+#define PREG_KERNSATP 32
+#define PREG_KERNSP 33
+#define PREG_DISPATCH_ADDR 34
 
 #define MAXVIRTADDR 0x4000000000 //(1L << 38)
-#define INTERRUPTADDR   0x80004000 // truncpage((MAXVIRTADDR - PAGE_SIZE))
+#define INTERRUPTADDR   0x3FFFFFC000 // truncpage((MAXVIRTADDR - PAGE_SIZE))
 #define SWAPAREAADDR    0x3FFFFFE000 // truncpage((MAXVIRTADDR - PAGE_SIZE))
 #define PROCSTACKADDR   0x3FFFFFD000 // truncpage((MAXVIRTADDR - PAGE_SIZE - PAGE_SIZE))
 

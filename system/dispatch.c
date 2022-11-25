@@ -48,5 +48,6 @@ void dispatch(ulong cause, ulong val, ulong program_counter) {
         //TODO
     }
 
-    kernexit(MAKE_SATP(pid, proc->pagetable));
+	ulong virt_trapret = INTERRUPTADDR + ((ulong)kernexit - (ulong)kernenter);
+	((void (*)(ulong))virt_trapret)(MAKE_SATP(pid, proc->pagetable));
 }

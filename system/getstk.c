@@ -18,7 +18,7 @@ extern void *end;
  */
 
 pgtbl vmcreate(int pid, pgtbl stack) {
-	kprintf("\r\n\r\nCreating virtual memory\r\n");
+	//kprintf("\r\n\r\nCreating virtual memory\r\n");
     pcb *ppcb = &proctab[pid];
     pgtbl pagetable = pgalloc();
 
@@ -26,7 +26,7 @@ pgtbl vmcreate(int pid, pgtbl stack) {
     mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)&_ctxsws - (ulong)&_start), PTE_R | PTE_X | PTE_U);
 
     // Map interrupt
-    mapAddress(pagetable, (ulong)&_interrupts, INTERRUPTADDR, PAGE_SIZE, PTE_R | PTE_X);
+    mapAddress(pagetable, INTERRUPTADDR, (ulong)&_interrupts, PAGE_SIZE, PTE_R | PTE_X | PTE_G);
 
     // Map rest of kernel code
     mapAddress(pagetable, (ulong)&_interrupte, (ulong)&_interrupte, ((ulong)&_datas - (ulong)&_interrupte), PTE_R | PTE_X | PTE_U);

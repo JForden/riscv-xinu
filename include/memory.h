@@ -50,7 +50,7 @@ extern void *_ctxsws;           /* start of ctxsw                     */
 extern void *_ctxswe;           /* end of ctxsw                       */
 extern void *_interrupts;           /* start of ctxsw                     */
 extern void *_interrupte;           /* end of ctxsw                       */
-extern ulong _kernpgtbl;
+extern ulong *_kernpgtbl;
 
 /* Memory function prototypes */
 void *getmem(uint nbytes);

@@ -55,10 +55,10 @@ kernenter:
     sd t6, PREG_T6*8(t0)
 
     // Load kernel page table
-    la a0, _kernpgtbl
-    ld a1, 0(a0)
-    la sp, memheap
+	ld a1, PREG_KERNSATP*8(t0)
+    ld sp, PREG_KERNSP*8(t0)
 
+	ld t1, PREG_DISPATCH_ADDR*8(t0)
     sfence.vma zero, zero
 	csrw satp, a1
 	sfence.vma zero, zero
@@ -66,7 +66,7 @@ kernenter:
     csrr a0, scause
     csrr a1, stval
     csrr a2, sepc
-    j dispatch
+    jr t1
 
     .endfunc
 

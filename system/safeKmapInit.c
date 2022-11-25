@@ -19,7 +19,7 @@ void safeKmapInit(void)
     mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)&_ctxsws - (ulong)&_start), PTE_R | PTE_X );
 
     // Map interrupt
-    mapAddress(pagetable, (ulong)&_interrupts, INTERRUPTADDR, PAGE_SIZE, PTE_R | PTE_X | PTE_G);
+    mapAddress(pagetable, INTERRUPTADDR, (ulong)&_interrupts, PAGE_SIZE, PTE_R | PTE_X | PTE_G);
     
     // Map rest of kernel code
     mapAddress(pagetable, (ulong)&_interrupte, (ulong)&_interrupte, ((ulong)&_datas - (ulong)&_interrupte), PTE_R | PTE_X);
@@ -28,14 +28,14 @@ void safeKmapInit(void)
     mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas, ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_W);
 
     // Map entirety of RAM
-    kprintf("Mapping all of RAM\r\n");
+    //kprintf("Mapping all of RAM\r\n");
     mapAddress(pagetable, (ulong)memheap, (ulong)memheap, ((ulong)platform.maxaddr - (ulong)memheap), PTE_R | PTE_W);
 
     ppcb = &proctab[currpid[gethartid()]];
     ppcb->pagetable = pagetable;
 
-    _kernpgtbl = MAKE_SATP(0, pagetable);
-    kprintf("Kernel pagetable is 0x%016lX\t\n", _kernpgtbl);
+    _kernpgtbl = pagetable;
+    //kprintf("Kernel pagetable is 0x%016lX\t\n", _kernpgtbl);
 
     set_satp(MAKE_SATP(0, pagetable));
 }
@@ -70,7 +70,7 @@ int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong len
     nlength = roundpage(length);
     addr = (ulong)truncpage(virtualaddr);
     end = addr + nlength;
-    kprintf("Mapping from 0x%016lX to 0x%016lX (original len = %d, new len = %d)\r\n", addr, end, length, nlength);
+    //kprintf("Mapping from 0x%016lX to 0x%016lX with physical address 0x%016lX\r\n", addr, end, physicaladdr);
 
     for (; addr < end; addr += PAGE_SIZE, physicaladdr += PAGE_SIZE)
     {

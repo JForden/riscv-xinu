@@ -93,6 +93,10 @@ syscall create(void *funcaddr, ulong priority, char *name, ulong nargs, ...)
     ppcb->swaparea[PREG_RA] = (ulong)userret;
     ppcb->swaparea[PREG_SP] = (ulong)(PROCSTACKADDR + PAGE_SIZE - ((ulong)top - (ulong)saddr));
 
+	ppcb->swaparea[PREG_KERNSATP] = (ulong)MAKE_SATP(0, _kernpgtbl);
+	ppcb->swaparea[PREG_KERNSP] = (ulong)memheap;
+	ppcb->swaparea[PREG_DISPATCH_ADDR] = (ulong)&dispatch;
+
     va_end(ap);
 
     // XXX
