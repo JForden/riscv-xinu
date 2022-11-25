@@ -19,12 +19,7 @@ int platforminit(void)
     extern spinlock_t serial_lock;
     serial_lock = lock_create();
 
-    strlcpy(platform.manufacturer, "QEMU", PLT_STRMAX);
-    strlcpy(platform.family, "Virt", PLT_STRMAX);
-    platform.revision = 7;
-
-    platform.maxaddr = (void *)((ulong)QEMU_START_ADDR + 0x8000000);
-    platform.minaddr = (void *)((ulong)QEMU_START_ADDR);
+    parseDtb();
 
     //set_extensions();
 

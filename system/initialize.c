@@ -11,7 +11,7 @@
 /* Function prototypes */
 static int sysinit(void);       /* intializes system structures          */
 static void welcome(void);      /* Print inital O/S data                 */
-extern process main(void);      /* main is the first process created     */
+extern process main(int one, int two, int three, int four, int five, int six, int seven, int eight, int nine, int ten);      /* main is the first process created     */
 
 /* Declarations of major kernel variables */
 pcb proctab[NPROC];             /* Process table                         */
@@ -24,6 +24,8 @@ int currpid[NCORES];            /* Id of currently running proccesses  */
 /* Params set by startup.S */
 void *memheap;                  /* Bottom of heap (top of O/S stack)     */
 ulong cpuid;                    /* Processor id                          */
+void *dtb_addr;
+ulong *_kernpgtbl;
 
 struct platform platform;       /* Platform specific configuration       */
 
@@ -42,11 +44,18 @@ volatile ulong promote_low[NCORES];
  * for a semaphore, or put to sleep, or exit.  In particular, it must not
  * do I/O unless it uses kprintf for synchronous output.
  */
+void nullproc(void) {
+    /* null process has nothing else to do but cannot exit  */
+
+    while (1)
+    {
+        user_yield();
+    }
+}
+
 void nulluser(void)
 {
     int hartid = gethartid();
-    char pname[PNMLEN];
-    char *data = &_binary_data_elf_start;
 
     if (hartid == 0)
     {
@@ -60,51 +69,14 @@ void nulluser(void)
         welcome();
 
         // Initialize memory protection
-        // safeInit();
+        safeInit();
 
-        // safeKmapInit();
+        safeKmapInit();
     }
 
     /* Call the main program */
-    // ready(create((void *)main, INITSTK, INITPRIO, pname, 0),
-    //       RESCHED_NO);
-
-    kprintf("Data starts at 0x%016lX\r\n", &_binary_data_elf_start);
-
-    Elf64_Ehdr *e_header = (Elf64_Ehdr *) & _binary_data_elf_start;
-    kprintf("0x%02X\r\n", e_header->e_ident[0]);
-
-    if (e_header->e_ident[EI_MAG0] != 0x7F ||
-        e_header->e_ident[EI_MAG1] != 'E' ||
-        e_header->e_ident[EI_MAG2] != 'L' ||
-        e_header->e_ident[EI_MAG3] != 'F' ||
-        e_header->e_ident[EI_VERSION] != 1)
-    {
-        kprintf("Invalid ELF header!\r\n");
-    }
-
-    if(e_header->e_ident[EI_CLASS] != ELFCLASS64) {
-        kprintf("This ELF file is not compiled for 64-bit!\r\n");
-    }
-
-    if(e_header->e_type != 2) {
-        kprintf("This ELF file is not an executable!\r\n");
-    }
-
-    for (int i = 0; i < 16; i++)
-    {
-        kprintf("0x%02X ", data[i]);
-        if ((i + 1) % 8 == 0)
-            kprintf("\r\n");
-    }
-
-    kprintf("POFF: %d\r\n", e_header->e_phoff);
-
-    /* null process has nothing else to do but cannot exit  */
-    while (1)
-    {
-        resched();
-    }
+    ready(create((void *)main, INITPRIO, "main", 10, 11111, 22222, 33333, 44444, 55555, 66666, 77777, 88888, 99999, 00000), RESCHED_NO);
+    ready(create((void *)nullproc, INITPRIO, "prnull", 0), RESCHED_YES);
 }
 
 static void welcome(void)
@@ -170,11 +142,6 @@ static int sysinit(void)
 {
     int i = 0;
     int j = 0;
-    pcb *ppcb = NULL;           /* process control block pointer */
-
-    /* Initialize system variables */
-    /* Count this NULLPROC as the first process in the system. */
-    numproc = 1;
 
     /* Initialize process table */
     for (i = 0; i < NPROC; i++)
@@ -183,13 +150,7 @@ static int sysinit(void)
     }
 
     /* initialize null process entry */
-    ppcb = &proctab[NULLPROC];
-    ppcb->state = PRCURR;
-    strncpy(ppcb->name, "prnull", 7);
-    ppcb->stkbase = (void *)&_end;
-    ppcb->stklen = (ulong)memheap - (ulong)&_end;
-    ppcb->priority = INITPRIO;
-    currpid[0] = NULLPROC;
+    currpid[0] = 0;
 
     /* Initialize ready lists */
     for (i = 0; i < NCORES; i++)

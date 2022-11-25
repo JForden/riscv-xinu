@@ -23,13 +23,14 @@ syscall sc_none(ulong *);
 syscall sc_yield(ulong *);
 syscall sc_getc(ulong *);
 syscall sc_putc(ulong *);
+syscall sc_kill(ulong *);
 
 /* table for determining how to call syscalls */
 const struct syscall_info syscall_table[] = {
     { 5, (void *)sc_none },     /* SYSCALL_NONE      = 0  */
     { 0, (void *)sc_yield },    /* SYSCALL_YIELD     = 1  */
     { 1, (void *)sc_none },     /* SYSCALL_SLEEP     = 2  */
-    { 1, (void *)sc_none },     /* SYSCALL_KILL      = 3  */
+    { 1, (void *)sc_kill },     /* SYSCALL_KILL      = 3  */
     { 2, (void *)sc_none },     /* SYSCALL_OPEN      = 4  */
     { 1, (void *)sc_none },     /* SYSCALL_CLOSE     = 5  */
     { 3, (void *)sc_none },     /* SYSCALL_READ      = 6  */
@@ -39,10 +40,10 @@ const struct syscall_info syscall_table[] = {
     { 2, (void *)sc_none },     /* SYSCALL_SEEK      = 10 */
     { 4, (void *)sc_none },     /* SYSCALL_CONTROL   = 11 */
     { 1, (void *)sc_none },     /* SYSCALL_GETDEV    = 12 */
-    { 4, (void *)sc_create },   /* SYSCALL_CREATE    = 13 */
-    { 2, (void *)sc_join },     /* SYSCALL_JOIN      = 14 */
-    { 1, (void *)sc_lock },     /* SYSCALL_LOCK      = 15 */
-    { 1, (void *)sc_unlock },   /* SYSCALL_UNLOCK    = 16 */
+    { 4, (void *)sc_none },   /* SYSCALL_CREATE    = 13 */
+    { 2, (void *)sc_none },     /* SYSCALL_JOIN      = 14 */
+    { 1, (void *)sc_none },     /* SYSCALL_LOCK      = 15 */
+    { 1, (void *)sc_none },   /* SYSCALL_UNLOCK    = 16 */
 };
 
 int nsyscall = sizeof(syscall_table) / sizeof(struct syscall_info);
@@ -86,8 +87,8 @@ syscall sc_yield(ulong *args)
 {
     /* this may change thread of execution, allow exceptions */
     // exlreset();
-
-    return resched();
+    resched();
+    return OK;
 }
 
 syscall user_yield(void)
@@ -126,6 +127,16 @@ syscall sc_putc(ulong *args)
     if (0 == descrp)
         return kputc(character);
     return SYSERR;
+}
+
+syscall user_kill(int pid)
+{
+    SYSCALL(KILL);
+}
+
+syscall sc_kill(ulong *args) {
+    int pid = SCARG(int, args);
+    return kill(pid);
 }
 
 syscall user_putc(int descrp, char character)

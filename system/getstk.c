@@ -16,28 +16,33 @@ extern void *end;
  * @param nbytes amount of memory to allocate, in bytes
  * @return address of the topmost word
  */
-void *getstk(ulong nbytes)
-{
-    /* NOTE: This is a completely broken implementation of getstk(),      */
-    /*  intended only for introductory assignments before implementing    */
-    /*  proper dynamic heap allocation.                                   */
 
-    ulong newstk;
+pgtbl vmcreate(int pid, pgtbl stack) {
+	//kprintf("\r\n\r\nCreating virtual memory\r\n");
+    pcb *ppcb = &proctab[pid];
+    pgtbl pagetable = pgalloc();
 
-    if (nbytes == 0)
-    {
-        return ((void *)SYSERR);
-    }
+    // Map kernel code
+    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)&_ctxsws - (ulong)&_start), PTE_R | PTE_X | PTE_U);
 
-    nbytes = (nbytes + 15) & ~0x0F;
+    // Map interrupt
+    mapAddress(pagetable, INTERRUPTADDR, (ulong)&_interrupts, PAGE_SIZE, PTE_R | PTE_X | PTE_G);
 
-    if ((ulong)platform.maxaddr - nbytes < (ulong)&_end)
-    {
-        return ((void *)SYSERR);
-    }
+    // Map rest of kernel code
+    mapAddress(pagetable, (ulong)&_interrupte, (ulong)&_interrupte, ((ulong)&_datas - (ulong)&_interrupte), PTE_R | PTE_X | PTE_U);
 
-    newstk = ((ulong)platform.maxaddr - 4) & 0xFFFFFFF0;
-    platform.maxaddr = (char *)(((ulong)platform.maxaddr) - nbytes);
+    // Map global kernel structures and stack
+    mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas, ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_U);
 
-    return ((void *)newstk);
+	// Map process stack
+    mapPage(pagetable, stack, PROCSTACKADDR, PTE_R | PTE_W | PTE_U);
+
+	// Map context swap area
+	pgtbl swaparea = pgalloc();
+	ppcb->swaparea = swaparea;
+    mapPage(pagetable, swaparea, SWAPAREAADDR, PTE_R | PTE_W);
+
+    //printPageTable(pagetable, 0);
+
+    return pagetable;
 }

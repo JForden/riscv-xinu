@@ -23,3 +23,5 @@
 #include <atomic.h>
 #include <safemem.h>
 #include <elf.h>
+#include <endianness.h>
+#include <dtb.h>

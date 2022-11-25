@@ -20,7 +20,7 @@ char *trap_names[] = {
     "Store/AMO page fault"
 };
 
-void xtrap(long *frame, ulong cause, ulong address, ulong pc)
+void xtrap(ulong *frame, ulong cause, ulong address, ulong pc)
 {
     /* If not an interrupt or syscall, fall through to generic exception handler */
     kprintf("\r\n\r\nXINU Exception [%s]\r\n", trap_names[cause]);
@@ -29,7 +29,9 @@ void xtrap(long *frame, ulong cause, ulong address, ulong pc)
     if (address != 0)
     {
         kprintf("Faulting address: 0x%016lX\r\n", address);
-    }
+    } else {
+		kprintf("Null Pointer Exception\r\n");
+	}
 
     kprintf("[0x%016lX]  t4:0x%016lX   t5:0x%016lX  t6:0x%016lX\r\n",
             frame + PREG_T4,

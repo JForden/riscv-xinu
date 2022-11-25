@@ -28,28 +28,33 @@ SECTIONS {
     *(.init .init.*)
   }
 
-  . = ALIGN(64);
-
-  .text : {
+  .text ALIGN(4096): {
     *(.txt .text.*)
         *(.rodata .rodata.*)
+        . = ALIGN(4096);
+        _ctxsws = .;
+        *(.ctxswsec)
+        . = ALIGN(4096);
+        _ctxswe = .;
+
+        . = ALIGN(4096);
+        _interrupts = .;
+        *(.interruptsec)
+        . = ALIGN(4096);
+        _interrupte = .;
     }
 
-    . = ALIGN(64);
-
-    _datas = .;
-    .data : {
+    .data ALIGN(4096): {
+        _datas = .;
         *(.data .data.*)
     }
 
-    . = ALIGN(64);
-
-    _bss = . ;
-    .bss : {
+    .bss ALIGN(4096): {
+        _bss = . ;
         *(.bss .bss.*)
     }
 
-    . = ALIGN(64);
+    . = ALIGN(4096);
     _end = . ;
 
     /* Discard comment and note (but not debugging) sections.  Some

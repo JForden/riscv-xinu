@@ -40,14 +40,12 @@ reset_handler:
 	//la a1, _end
 	//li a2, 0
 	//jal clear_bss
-
-	// Loads address of the function interrupt in t1
-	la t1, interrupt
-	// Sets stvec to the address of interrupt
-	csrw stvec, t1
+	// save dtb arrdess from a1
+	la   t0, dtb_addr
+	sd   a1, 0(t0)
 
 	la a1, _end
-	li a3, 8196
+	li a3, 8192
 	add sp, a1, a3
 
 	la a4, memheap
@@ -75,6 +73,15 @@ reset_handler:
 
 	li t1, RISCV_ALL_PERM
 	csrw pmpcfg0, t1
+
+	// Allow S mode to access U mode pages
+	li t1, RISCV_MSTATUS_SUM
+	csrrs x0, mstatus, t1
+
+	// Loads address of the function interrupt in t1
+	li t1, INTERRUPTADDR
+	// Sets stvec to the address of interrupt
+	csrw stvec, t1
 
 	// Set the program counter to nulluser so when we run mret, it runs nulluser
 	la t1, nulluser

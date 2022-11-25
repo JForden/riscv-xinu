@@ -16,16 +16,14 @@ void *getstk(ulong);
  * @ingroup process
  * Create a new process to start running a function.
  * @param funcaddr address of function that will begin in new process
- * @param ssize    stack size in bytes
  * @param priority The priority given to the process(high,medium,low)
  * @param name     name of the process, used for debugging
  * @param nargs    number of arguments that follow
  * @return the new process id
  */
-syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
-               ulong nargs, ...)
+syscall create(void *funcaddr, ulong priority, char *name, ulong nargs, ...)
 {
-    ulong *saddr;               /* stack address                */
+    ulong *saddr, *top;               /* stack address                */
     ulong pid;                  /* stores new process id        */
     pcb *ppcb;                  /* pointer to proc control blk  */
     ulong i;
@@ -33,11 +31,8 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     ulong pads = 0;             /* padding entries in record.   */
     void INITRET(void);
 
-    if (ssize < MINSTK)
-        ssize = MINSTK;
-    ssize = (ulong)(ssize + 3) & 0xFFFFFFFC;
+    saddr = (ulong *)pgalloc();
     /* round up to even boundary    */
-    saddr = (ulong *)getstk(ssize);     /* allocate new stack and pid   */
     pid = newpid();
     /* a little error checking      */
     if ((((ulong *)SYSERR) == saddr) || (SYSERR == pid))
@@ -52,12 +47,15 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     ppcb->state = PRSUSP;       //  NOTE: concurrent newpid() sets state already.
 
     ppcb->stkbase = saddr;
-    ppcb->stklen = ssize;
+    ppcb->stklen = PAGE_SIZE;
     strncpy(ppcb->name, name, PNMLEN);
     ppcb->core = -1;            // this will be set in ready()
     ppcb->priority = priority;
+    ppcb->pagetable = vmcreate(pid, saddr);
 
     /* Initialize stack with accounting block. */
+    saddr = (ulong *)((ulong)saddr + PAGE_SIZE);
+    top = saddr;
     *saddr = STACKMAGIC;
     *--saddr = pid;
     *--saddr = ppcb->stklen;
@@ -82,21 +80,22 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name,
     {
         for (i = 0; i < nargs; i++)
         {
-            if (i <= 7)
-            {
-                ppcb->regs[i] = va_arg(ap, ulong);
-            }
-            else
-            {
-                //Add to stack
-                *(saddr + (i - 8)) = va_arg(ap, ulong);
-            }
+            if(i <= 7){
+			    ppcb->swaparea[i] = va_arg(ap, ulong);
+		    } else {
+			    //Add to stack
+			    *(saddr + (i - 8)) = va_arg(ap, ulong);
+		    }
         }
     }
 
-    ppcb->regs[PREG_PC] = (ulong)funcaddr;
-    ppcb->regs[PREG_RA] = (ulong)userret;
-    ppcb->regs[PREG_SP] = (ulong)saddr;
+    ppcb->swaparea[PREG_PC] = (ulong)funcaddr;
+    ppcb->swaparea[PREG_RA] = (ulong)userret;
+    ppcb->swaparea[PREG_SP] = (ulong)(PROCSTACKADDR + PAGE_SIZE - ((ulong)top - (ulong)saddr));
+
+	ppcb->swaparea[PREG_KERNSATP] = (ulong)MAKE_SATP(0, _kernpgtbl);
+	ppcb->swaparea[PREG_KERNSP] = (ulong)memheap;
+	ppcb->swaparea[PREG_DISPATCH_ADDR] = (ulong)&dispatch;
 
     va_end(ap);
 
@@ -129,5 +128,5 @@ static pid_typ newpid(void)
 void userret(void)
 {
     uint cpuid = gethartid();
-    kill(currpid[cpuid]);
+    user_kill(currpid[cpuid]);
 }

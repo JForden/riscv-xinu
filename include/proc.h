@@ -10,6 +10,7 @@
 #define _PROC_H_
 
 #include <hart.h>
+#include <safemem.h>
 
 /* process table declarations and defined constants                      */
 
@@ -65,7 +66,8 @@ typedef struct pentry
     int core;            /**< core affinity                           */
     uint joinq;          /**< JoinQ stuff                             */
     char name[PNMLEN];   /**< process name                            */
-    ulong regs[PREGS];     /**< stored process registers                */
+    pgtbl pagetable;
+    ulong *swaparea;
 } pcb;
 
 
@@ -80,6 +82,8 @@ typedef struct pentry
 #define MINSTK   4096       /**< minimum process stack size              */
 #define NULLSTK  MINSTK     /**< null process stack size                 */
 
+#define USER_MODE 0L
+#define SUP_MODE  1L << 8
 
 extern struct pentry proctab[];
 extern int numproc;         /**< currently active processes              */

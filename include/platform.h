@@ -14,8 +14,6 @@
  * null-terminator.  */
 #define PLT_STRMAX 18
 
-#define QEMU_START_ADDR 0x80000000
-
 #define PERIPHERALS_BASE 0x0
 #define NCORES 1
 
@@ -49,6 +47,9 @@ struct platform
      * platforminit() if RTCLOCK is enabled.  This is the frequency at which the
      * values returned by clkcount() change.  */
     ulong clkfreq;
+
+    /** UART base address  */
+    volatile struct ns16550_uart_csreg *uart_addr;
 
     /** UART Clock frequency.  platforminit() only needs to set this if
      * required by the UART driver.  */

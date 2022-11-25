@@ -10,7 +10,6 @@ extern interrupt_handler_t interruptVector[];
 
 typedef unsigned long irqmask;  /**< machine status for disable/restore  */
 
-
 void enable(void);
 irqmask disable(void);
 irqmask restore(irqmask);
@@ -42,17 +41,11 @@ void disable_irq(irqmask);
 #define E_LOAD_PAGEFAULT 13
 #define E_STORE_AMO_PAGEFAULT 15
 
-
-
-
-
-
-
-
-
-
-void dispatch(ulong cause, ulong val, ulong *frame,
-              ulong *program_counter);
+void dispatch(ulong cause, ulong val, ulong program_counter);
+void xtrap(ulong *swaparea, ulong cause, ulong address, ulong program_counter);
+void trapret(ulong satp);
+extern void kernenter(void);
+extern void kernexit(ulong);
 
 static inline void setpc(ulong x)
 {

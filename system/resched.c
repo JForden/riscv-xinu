@@ -8,7 +8,7 @@
 
 #include <xinu.h>
 
-extern void ctxsw(void *, void *);
+extern void ctxsw(void *, void *, void *, ulong);
 /**
  * Reschedule processor to next ready process.
  * Upon entry, currpid gives current process id.  Proctab[currpid].pstate 
@@ -60,15 +60,12 @@ syscall resched(void)
     }
 #endif
 
-    /* place current process at end of ready queue */
-    if (PRCURR == oldproc->state)
-    {
-        //kprintf("ADDING OLD PROC BACK\r\n");
-        oldproc->state = PRREADY;
-        //kprintf("HERE 1\r\n");
-        enqueue(currpid[cpuid], readylist[cpuid][oldproc->priority]);
-        //kprintf("HERE 2\r\n");
-    }
+	/* place current process at end of ready queue */
+	if (PRCURR == oldproc->state)
+	{
+		oldproc->state = PRREADY;
+		enqueue(currpid[cpuid], readylist[cpuid][oldproc->priority]); 
+	}
 
     /* remove first process in highest priority ready queue */
     // determine queue to pick from
@@ -85,25 +82,21 @@ syscall resched(void)
         highest_prio = PRIO_LOW;
     }
 
-    //kprintf("Old process is %d\r\n", currpid[cpuid]);
-    int i = 0;
+	int i = 0;
 
-
-
-    i = dequeue(readylist[cpuid][highest_prio]);
-    //kprintf("Prio is %d\r\n", highest_prio);
-    //kprintf("I %d\r\n", i);
-    currpid[cpuid] = i;
-    newproc = &proctab[currpid[cpuid]];
-    newproc->state = PRCURR;    /* mark it currently running    */
-
-    //kprintf("New process is %d\r\n", currpid[cpuid]);
+	i = dequeue(readylist[cpuid][highest_prio]);
+	currpid[cpuid] = i;
+	newproc = &proctab[currpid[cpuid]];
+	newproc->state = PRCURR;    /* mark it currently running    */
 
 #if PREEMPT
     preempt[cpuid] = QUANTUM;
 #endif
 
-    ctxsw(&oldproc->regs, &newproc->regs);
+	setpc(newproc->swaparea[PREG_PC]);
+    
+	ulong virt_trapret = INTERRUPTADDR + ((ulong)kernexit - (ulong)kernenter);
+	((void (*)(ulong))virt_trapret)(MAKE_SATP(i, newproc->pagetable));
 
     /* The OLD process returns here when resumed. */
     return OK;
