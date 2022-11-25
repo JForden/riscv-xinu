@@ -76,10 +76,10 @@ void nulluser(void)
     }
 
     /* Call the main program */
+    ready(create((void *)nullproc, INITPRIO, "prnull", 0), RESCHED_NO);
     ready(create
           ((void *)main, INITPRIO, "main", 10, 11111, 22222, 33333, 44444,
-           55555, 66666, 77777, 88888, 99999, 00000), RESCHED_NO);
-    ready(create((void *)nullproc, INITPRIO, "prnull", 0), RESCHED_YES);
+           55555, 66666, 77777, 88888, 99999, 00000), RESCHED_YES);
 }
 
 static void welcome(void)
