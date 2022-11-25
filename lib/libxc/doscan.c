@@ -21,15 +21,15 @@ enum integer_size
 
 static int scan_string(char *ptr, int type, uint maxlen,
                        const uchar *stopchar_tab,
-                       int (*getch)(long, long), int(*ungetch)(long,
-                                                               long),
+                       int (*getch)(long, long), int (*ungetch)(long,
+                                                                long),
                        long arg1, long arg2, bool *eofptr);
 
 static int scan_number_or_string(void *ptr, uchar type, uint maxlen,
                                  enum integer_size size,
                                  const uchar *stopchar_tab,
                                  int (*getch)(long, long),
-                                 int(*ungetch)(long, long),
+                                 int (*ungetch)(long, long),
                                  long arg1, long arg2, bool *eofptr);
 
 static const uchar *build_stopchar_tab(const uchar *ufmt,
@@ -84,7 +84,7 @@ static const uchar *build_stopchar_tab(const uchar *ufmt,
  *      returned.
  */
 int _doscan(const char *fmt, va_list ap,
-            int (*getch)(long, long), int(*ungetch)(long, long),
+            int (*getch)(long, long), int (*ungetch)(long, long),
             long arg1, long arg2)
 {
     int nmatch;
@@ -242,7 +242,7 @@ int _doscan(const char *fmt, va_list ap,
 static int scan_string(char *ptr, int type, uint maxlen,
                        const uchar *stopchar_tab, int (*getch)(long,
                                                                long),
-                       int(*ungetch)(long, long), long arg1, long arg2,
+                       int (*ungetch)(long, long), long arg1, long arg2,
                        bool *eofptr)
 {
     uint len;
@@ -298,7 +298,7 @@ static int scan_number_or_string(void *ptr, uchar type, uint maxlen,
                                  enum integer_size size,
                                  const uchar *stopchar_tab,
                                  int (*getch)(long, long),
-                                 int(*ungetch)(long, long),
+                                 int (*ungetch)(long, long),
                                  long arg1, long arg2, bool *eofptr)
 {
     int c = EOF;

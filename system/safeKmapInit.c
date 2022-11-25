@@ -16,20 +16,25 @@ void safeKmapInit(void)
     mapAddress(pagetable, UART_BASE, UART_BASE, 0x100, PTE_R | PTE_W);
 
     // Map kernel code
-    mapAddress(pagetable, (ulong)&_start, (ulong)&_start, ((ulong)&_ctxsws - (ulong)&_start), PTE_R | PTE_X );
+    mapAddress(pagetable, (ulong)&_start, (ulong)&_start,
+               ((ulong)&_ctxsws - (ulong)&_start), PTE_R | PTE_X);
 
     // Map interrupt
-    mapAddress(pagetable, INTERRUPTADDR, (ulong)&_interrupts, PAGE_SIZE, PTE_R | PTE_X | PTE_G);
-    
+    mapAddress(pagetable, INTERRUPTADDR, (ulong)&_interrupts, PAGE_SIZE,
+               PTE_R | PTE_X | PTE_G);
+
     // Map rest of kernel code
-    mapAddress(pagetable, (ulong)&_interrupte, (ulong)&_interrupte, ((ulong)&_datas - (ulong)&_interrupte), PTE_R | PTE_X);
+    mapAddress(pagetable, (ulong)&_interrupte, (ulong)&_interrupte,
+               ((ulong)&_datas - (ulong)&_interrupte), PTE_R | PTE_X);
 
     // Map global kernel structures and stack
-    mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas, ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_W);
+    mapAddress(pagetable, (ulong)&_datas, (ulong)&_datas,
+               ((ulong)memheap - (ulong)&_datas), PTE_R | PTE_W);
 
     // Map entirety of RAM
     //kprintf("Mapping all of RAM\r\n");
-    mapAddress(pagetable, (ulong)memheap, (ulong)memheap, ((ulong)platform.maxaddr - (ulong)memheap), PTE_R | PTE_W);
+    mapAddress(pagetable, (ulong)memheap, (ulong)memheap,
+               ((ulong)platform.maxaddr - (ulong)memheap), PTE_R | PTE_W);
 
     ppcb = &proctab[currpid[gethartid()]];
     ppcb->pagetable = pagetable;
@@ -40,16 +45,19 @@ void safeKmapInit(void)
     set_satp(MAKE_SATP(0, pagetable));
 }
 
-int mapPage(pgtbl pagetable, pgtbl page, ulong virtualaddr, int attr){
+int mapPage(pgtbl pagetable, pgtbl page, ulong virtualaddr, int attr)
+{
     ulong *pte = NULL;
     ulong addr;
 
     addr = (ulong)truncpage(virtualaddr);
 
-    if((pte = pgTraverseAndCreate(pagetable, addr)) == (ulong *)SYSERR){
+    if ((pte = pgTraverseAndCreate(pagetable, addr)) == (ulong *)SYSERR)
+    {
         return SYSERR;
     }
-    if(*pte & PTE_V) {
+    if (*pte & PTE_V)
+    {
         kprintf("REMAPPED 0x%08X!!!\r\n", addr);
     }
     *pte = PA2PTE(page) | attr | PTE_V;
@@ -82,7 +90,8 @@ int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr,
         {
             return SYSERR;
         }
-        if(*pte & PTE_V) {
+        if (*pte & PTE_V)
+        {
             kprintf("REMAPPED 0x%16X!!!\r\n", addr);
         }
 
@@ -151,11 +160,16 @@ void printPageTable(pgtbl pagetable, int spaces)
         if (pagetable[i] & PTE_V)
         {
             printSpaces(spaces + 2);
-            if(!(pagetable[i] & (PTE_R | PTE_W | PTE_X))){
-                kprintf("Link PTE (0x%016lX)| Address 0x%016lX\r\n", pagetable[i], (pgtbl)PTE2PA(pagetable[i]));
-                printPageTable((pgtbl)PTE2PA(pagetable[i]), spaces + 2);
-            } else {
-                kprintf("Leaf PTE (0x%016lX)| Address 0x%016lX\r\n", pagetable[i], (pgtbl)PTE2PA(pagetable[i]));
+            if (!(pagetable[i] & (PTE_R | PTE_W | PTE_X)))
+            {
+                kprintf("Link PTE (0x%016lX)| Address 0x%016lX\r\n",
+                        pagetable[i], (pgtbl) PTE2PA(pagetable[i]));
+                printPageTable((pgtbl) PTE2PA(pagetable[i]), spaces + 2);
+            }
+            else
+            {
+                kprintf("Leaf PTE (0x%016lX)| Address 0x%016lX\r\n",
+                        pagetable[i], (pgtbl) PTE2PA(pagetable[i]));
             }
         }
     }

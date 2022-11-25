@@ -21,9 +21,10 @@ void *getstk(ulong);
  * @param nargs    number of arguments that follow
  * @return the new process id
  */
-syscall create(void *funcaddr, ulong priority, char *name, ulong nargs, ...)
+syscall create(void *funcaddr, ulong priority, char *name, ulong nargs,
+               ...)
 {
-    ulong *saddr, *top;               /* stack address                */
+    ulong *saddr, *top;         /* stack address                */
     ulong pid;                  /* stores new process id        */
     pcb *ppcb;                  /* pointer to proc control blk  */
     ulong i;
@@ -80,22 +81,26 @@ syscall create(void *funcaddr, ulong priority, char *name, ulong nargs, ...)
     {
         for (i = 0; i < nargs; i++)
         {
-            if(i <= 7){
-			    ppcb->swaparea[i] = va_arg(ap, ulong);
-		    } else {
-			    //Add to stack
-			    *(saddr + (i - 8)) = va_arg(ap, ulong);
-		    }
+            if (i <= 7)
+            {
+                ppcb->swaparea[i] = va_arg(ap, ulong);
+            }
+            else
+            {
+                //Add to stack
+                *(saddr + (i - 8)) = va_arg(ap, ulong);
+            }
         }
     }
 
     ppcb->swaparea[PREG_PC] = (ulong)funcaddr;
     ppcb->swaparea[PREG_RA] = (ulong)userret;
-    ppcb->swaparea[PREG_SP] = (ulong)(PROCSTACKADDR + PAGE_SIZE - ((ulong)top - (ulong)saddr));
+    ppcb->swaparea[PREG_SP] =
+        (ulong)(PROCSTACKADDR + PAGE_SIZE - ((ulong)top - (ulong)saddr));
 
-	ppcb->swaparea[PREG_KERNSATP] = (ulong)MAKE_SATP(0, _kernpgtbl);
-	ppcb->swaparea[PREG_KERNSP] = (ulong)memheap;
-	ppcb->swaparea[PREG_DISPATCH_ADDR] = (ulong)&dispatch;
+    ppcb->swaparea[PREG_KERNSATP] = (ulong)MAKE_SATP(0, _kernpgtbl);
+    ppcb->swaparea[PREG_KERNSP] = (ulong)memheap;
+    ppcb->swaparea[PREG_DISPATCH_ADDR] = (ulong)&dispatch;
 
     va_end(ap);
 

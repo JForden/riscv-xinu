@@ -29,9 +29,11 @@ void xtrap(ulong *frame, ulong cause, ulong address, ulong pc)
     if (address != 0)
     {
         kprintf("Faulting address: 0x%016lX\r\n", address);
-    } else {
-		kprintf("Null Pointer Exception\r\n");
-	}
+    }
+    else
+    {
+        kprintf("Null Pointer Exception\r\n");
+    }
 
     kprintf("[0x%016lX]  t4:0x%016lX   t5:0x%016lX  t6:0x%016lX\r\n",
             frame + PREG_T4,

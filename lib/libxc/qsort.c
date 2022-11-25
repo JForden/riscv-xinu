@@ -31,7 +31,7 @@ static void swap_elements(void *p1, void *p2, size_t size);
 void qsort(void *base, size_t nmemb, size_t size,
            int (*compar)(const void *, const void *))
 {
-    if(nmemb > 1)
+    if (nmemb > 1)
     {
         /* Partition the array around a pivot element, then recurse on parts of
          * the array before and after the pivot.  */

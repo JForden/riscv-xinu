@@ -71,7 +71,8 @@ void *pgalloc(void)
 {
     struct pgmemblk *page;
 
-    if(pgfreelist == NULL){
+    if (pgfreelist == NULL)
+    {
         kprintf("Returning SYSERR");
         return (void *)SYSERR;
     }

@@ -102,10 +102,11 @@ void safeKmapInit(void);
 
 int pgfree(void *);
 void *pgalloc(void);
-int pgfreerange(void *start, void* end);
-int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr, ulong length, int attr);
+int pgfreerange(void *start, void *end);
+int mapAddress(pgtbl pagetable, ulong virtualaddr, ulong physicaladdr,
+               ulong length, int attr);
 int mapPage(pgtbl pagetable, pgtbl page, ulong virtualaddr, int attr);
-ulong *pgTraverseAndCreate(pgtbl pagetable,  ulong virtualaddr);
+ulong *pgTraverseAndCreate(pgtbl pagetable, ulong virtualaddr);
 void printPageTable(pgtbl pagetable, int spaces);
 pgtbl vmcreate(int pid, pgtbl stack);
 

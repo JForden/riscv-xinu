@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "stddef.h": "c",
-        "xinu.h": "c"
-    }
+		"stddef.h": "c",
+		"xinu.h": "c",
+		"endianness.h": "c"
+	}
 }

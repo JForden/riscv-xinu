@@ -60,12 +60,12 @@ syscall resched(void)
     }
 #endif
 
-	/* place current process at end of ready queue */
-	if (PRCURR == oldproc->state)
-	{
-		oldproc->state = PRREADY;
-		enqueue(currpid[cpuid], readylist[cpuid][oldproc->priority]); 
-	}
+    /* place current process at end of ready queue */
+    if (PRCURR == oldproc->state)
+    {
+        oldproc->state = PRREADY;
+        enqueue(currpid[cpuid], readylist[cpuid][oldproc->priority]);
+    }
 
     /* remove first process in highest priority ready queue */
     // determine queue to pick from
@@ -82,21 +82,22 @@ syscall resched(void)
         highest_prio = PRIO_LOW;
     }
 
-	int i = 0;
+    int i = 0;
 
-	i = dequeue(readylist[cpuid][highest_prio]);
-	currpid[cpuid] = i;
-	newproc = &proctab[currpid[cpuid]];
-	newproc->state = PRCURR;    /* mark it currently running    */
+    i = dequeue(readylist[cpuid][highest_prio]);
+    currpid[cpuid] = i;
+    newproc = &proctab[currpid[cpuid]];
+    newproc->state = PRCURR;    /* mark it currently running    */
 
 #if PREEMPT
     preempt[cpuid] = QUANTUM;
 #endif
 
-	setpc(newproc->swaparea[PREG_PC]);
-    
-	ulong virt_trapret = INTERRUPTADDR + ((ulong)kernexit - (ulong)kernenter);
-	((void (*)(ulong))virt_trapret)(MAKE_SATP(i, newproc->pagetable));
+    setpc(newproc->swaparea[PREG_PC]);
+
+    ulong virt_trapret =
+        INTERRUPTADDR + ((ulong)kernexit - (ulong)kernenter);
+    ((void (*)(ulong))virt_trapret) (MAKE_SATP(i, newproc->pagetable));
 
     /* The OLD process returns here when resumed. */
     return OK;

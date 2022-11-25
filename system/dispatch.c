@@ -19,25 +19,32 @@
  * @param program_counter  The value of the sepc register 
  */
 
-void dispatch(ulong cause, ulong val, ulong program_counter) {
+void dispatch(ulong cause, ulong val, ulong program_counter)
+{
     pcb *proc;
     uint cpuid = gethartid();
     uint pid = currpid[cpuid];
 
     proc = &proctab[pid];
 
-    if((long)cause > 0) {
+    if ((long)cause > 0)
+    {
         cause = cause << 1;
         cause = cause >> 1;
 
-        if (cause == E_ENVCALL_FROM_UMODE){
+        if (cause == E_ENVCALL_FROM_UMODE)
+        {
             ulong swi_opcode;
 
             swi_opcode = proc->swaparea[PREG_A7];
-			proc->swaparea[PREG_PC] = (ulong)program_counter + 4;
+            proc->swaparea[PREG_PC] = (ulong)program_counter + 4;
             setpc((ulong)program_counter + 4);
-            proc->swaparea[PREG_A0] = syscall_dispatch(swi_opcode, (ulong *)&(proc->swaparea[PREG_A0]));        
-        } else {
+            proc->swaparea[PREG_A0] =
+                syscall_dispatch(swi_opcode,
+                                 (ulong *)&(proc->swaparea[PREG_A0]));
+        }
+        else
+        {
             xtrap(proc->swaparea, cause, val, program_counter);
         }
     }
@@ -50,6 +57,7 @@ void dispatch(ulong cause, ulong val, ulong program_counter) {
         //TODO
     }
 
-	ulong virt_trapret = INTERRUPTADDR + ((ulong)kernexit - (ulong)kernenter);
-	((void (*)(ulong))virt_trapret)(MAKE_SATP(pid, proc->pagetable));
+    ulong virt_trapret =
+        INTERRUPTADDR + ((ulong)kernexit - (ulong)kernenter);
+    ((void (*)(ulong))virt_trapret) (MAKE_SATP(pid, proc->pagetable));
 }

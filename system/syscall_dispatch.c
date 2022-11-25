@@ -40,10 +40,10 @@ const struct syscall_info syscall_table[] = {
     { 2, (void *)sc_none },     /* SYSCALL_SEEK      = 10 */
     { 4, (void *)sc_none },     /* SYSCALL_CONTROL   = 11 */
     { 1, (void *)sc_none },     /* SYSCALL_GETDEV    = 12 */
-    { 4, (void *)sc_none },   /* SYSCALL_CREATE    = 13 */
+    { 4, (void *)sc_none },     /* SYSCALL_CREATE    = 13 */
     { 2, (void *)sc_none },     /* SYSCALL_JOIN      = 14 */
     { 1, (void *)sc_none },     /* SYSCALL_LOCK      = 15 */
-    { 1, (void *)sc_none },   /* SYSCALL_UNLOCK    = 16 */
+    { 1, (void *)sc_none },     /* SYSCALL_UNLOCK    = 16 */
 };
 
 int nsyscall = sizeof(syscall_table) / sizeof(struct syscall_info);
@@ -134,7 +134,8 @@ syscall user_kill(int pid)
     SYSCALL(KILL);
 }
 
-syscall sc_kill(ulong *args) {
+syscall sc_kill(ulong *args)
+{
     int pid = SCARG(int, args);
     return kill(pid);
 }

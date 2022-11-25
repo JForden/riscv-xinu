@@ -11,7 +11,7 @@
 /* Function prototypes */
 static int sysinit(void);       /* intializes system structures          */
 static void welcome(void);      /* Print inital O/S data                 */
-extern process main(int one, int two, int three, int four, int five, int six, int seven, int eight, int nine, int ten);      /* main is the first process created     */
+extern process main(int one, int two, int three, int four, int five, int six, int seven, int eight, int nine, int ten); /* main is the first process created     */
 
 /* Declarations of major kernel variables */
 pcb proctab[NPROC];             /* Process table                         */
@@ -44,7 +44,8 @@ volatile ulong promote_low[NCORES];
  * for a semaphore, or put to sleep, or exit.  In particular, it must not
  * do I/O unless it uses kprintf for synchronous output.
  */
-void nullproc(void) {
+void nullproc(void)
+{
     /* null process has nothing else to do but cannot exit  */
 
     while (1)
@@ -75,7 +76,9 @@ void nulluser(void)
     }
 
     /* Call the main program */
-    ready(create((void *)main, INITPRIO, "main", 10, 11111, 22222, 33333, 44444, 55555, 66666, 77777, 88888, 99999, 00000), RESCHED_NO);
+    ready(create
+          ((void *)main, INITPRIO, "main", 10, 11111, 22222, 33333, 44444,
+           55555, 66666, 77777, 88888, 99999, 00000), RESCHED_NO);
     ready(create((void *)nullproc, INITPRIO, "prnull", 0), RESCHED_YES);
 }
 

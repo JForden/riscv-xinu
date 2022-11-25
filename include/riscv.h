@@ -2,9 +2,9 @@
 #define  _RISCV_H_
 
 #define RISCV_MSTATUS_SUM       1L<<18
-#define RISCV_MSTATUS_MEI_BIT   1<<3 /* IRQs globally disabled on all privilege levels when set to 1. */
-#define RISCV_MPP_TO_S_MODE     1<<11 /* Set the previous mode to S-mode so XINU can switch to S-Mode when completed. */
-#define RISCV_SPP_TO_U_MODE     1<<8  /* Set the previous mode to U-mode so XINU can switch to U-Mode when completed. */
+#define RISCV_MSTATUS_MEI_BIT   1<<3    /* IRQs globally disabled on all privilege levels when set to 1. */
+#define RISCV_MPP_TO_S_MODE     1<<11   /* Set the previous mode to S-mode so XINU can switch to S-Mode when completed. */
+#define RISCV_SPP_TO_U_MODE     1<<8    /* Set the previous mode to U-mode so XINU can switch to U-Mode when completed. */
 #define RISCV_SIE_ENABLE        1<<1
 #define RISCV_SIE_DISABLE       0<<1
 #define RISCV_MDELEG_ALL_S_MODE 0xFFFFFFFFFFFFFFFF
@@ -60,9 +60,9 @@
 #define PREG_KERNSP 33
 #define PREG_DISPATCH_ADDR 34
 
-#define MAXVIRTADDR 0x4000000000 //(1L << 38)
-#define INTERRUPTADDR   0x3FFFFFC000 // truncpage((MAXVIRTADDR - PAGE_SIZE))
-#define SWAPAREAADDR    0x3FFFFFE000 // truncpage((MAXVIRTADDR - PAGE_SIZE))
-#define PROCSTACKADDR   0x3FFFFFD000 // truncpage((MAXVIRTADDR - PAGE_SIZE - PAGE_SIZE))
+#define MAXVIRTADDR 0x4000000000        //(1L << 38)
+#define INTERRUPTADDR   0x3FFFFFC000    // truncpage((MAXVIRTADDR - PAGE_SIZE))
+#define SWAPAREAADDR    0x3FFFFFE000    // truncpage((MAXVIRTADDR - PAGE_SIZE))
+#define PROCSTACKADDR   0x3FFFFFD000    // truncpage((MAXVIRTADDR - PAGE_SIZE - PAGE_SIZE))
 
 #endif                          /* _RISCV_H_ */
