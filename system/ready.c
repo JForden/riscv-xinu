@@ -2,7 +2,7 @@
  * @file ready.c
  * @provides ready
  *
- * COSC 3250 Assignment 4
+ * COSC 3250 / COEN 4820 Assignment 4
  */
 /* Embedded XINU, Copyright (C) 2008.  All rights reserved. */
 
@@ -14,26 +14,32 @@
  * @param resch if TRUE, reschedule will be called
  * @return OK if the process has been added to the ready list, else SYSERR
  */
-syscall ready(pid_typ pid, bool resch)
+syscall ready(pid_typ pid, bool resch, uint core)
 {
     register pcb *ppcb;
+	irqmask	im;
+	uint cpuid = getcpuid();
+
     ASSERT(!isbadpid(pid));
 
-    uint hart = gethartid();
+	im = disable();
 
     ppcb = &proctab[pid];
     ppcb->state = PRREADY;
+	
+	if (-1 == ppcb->core_affinity)
+	{
+		ppcb->core_affinity = core;
+	}
 
-    if (-1 == ppcb->core)
-    {
-        ppcb->core = hart;
-    }
-
-    enqueue(pid, readylist[ppcb->core][ppcb->priority]);
-
-    if (resch)
+    enqueue(pid, readylist[ppcb->core_affinity][ppcb->priority]);
+	/* resched if flag is set and if the */
+	/* processes affinity is the same as the */
+	/* current processor (cpuid)...      */
+    if (resch && (cpuid == ppcb->core_affinity))
     {
         resched();
     }
+	restore(im);
     return OK;
 }

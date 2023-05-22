@@ -1,94 +1,217 @@
 /**
  * @file start.S
  *
- * Initialization code for Embedded Xinu on the RISC-V Virt device.
+ * Initialization code for Embedded Xinu on the Raspberry Pi.
  *
- * Embedded Xinu, Copyright (C) 2022.  All rights reserved.
+ * Embedded Xinu, Copyright (C) 2013.  All rights reserved.
  *
+ * -----------------------------------------------------------------------------------------
+ * 
+ * Specific for Raspberry Pi 3 (BCM2837) - Memory Layout (Not to scale)
+ * 1GB OF RAM (PHYSICAL MEMORY) AVAILABLE. 1GB == 0x3FFFFFFF
+ * +----------+
+ * |	      |
+ * | IO SPACE | -> 0x3F000000 to 0x3FFFFFFF reserved for IO (GPIO, UART, SYS TIMER, USB CORE)
+ * |          |
+ * +----------+
+ * |          |
+ * |          |
+ * |   HEAP   | -> getmem allocates from here
+ * |          |
+ * |          |
+ * +----------+
+ * | OS STACK | -> becomes the null process' stack
+ * +----------+
+ * |   BSS    | -> needed for C environment
+ * +----------+
+ * |   TEXT   | -> XINU code
+ * |          |
+ * +----------+
+ * | RESERVED | -> interrupt handler and vectors go here
+ * +----------+
  */
-#include <riscv.h>
+
+#include <arm.h>     /* For ARM_MODE_SYS */
+
+#define NULLSTK 8192
 
 .section .init
 	.globl _start
 
 	/* _start:  Entry point of the Xinu kernel.  This will be the very first
-	/* byte of the kernel image and on the will be loaded at address 0x80000000.  */
+	/* byte of the kernel image and on the Raspberry Pi 3 (32-bit mode) will be loaded by
+	/* the GPU at address 0x8000.  */
 
 	.func _start
 _start:
+	/* Save the pointer to the atags (ARM boot tags). The Pi 3 *does* pass atags,
+	 * and does so into address 0x100. We access it there, just like the Pi 1.
+	 * The standard protocol for Aarch32 (ARMv8-A) is to pass the atags pointer
+	 * into register r2. We then store it in r3, to be accessed by C code which
+	 * parses the atags. */
+	ldr 	r3, =atags_ptr
+	cmp	r2, #0
+	moveq   r2, #0x100
+	str 	r2, [r3]
+
+	/* Check if processor is already in SYSTEM mode,
+	 * if it is, jump to reset handler. */
+	mrs	r0, cpsr
+	and	r0, r0, #0b11111
+	cmp	r0, #ARM_MODE_SYS
+	beq	reset_handler
+	
+
+       /* Upon boot, the device loads into HYP (hypervisor) mode, which does not have permission to
+	* access the CPS opcode. Therefore, to enter the most privelaged mode,
+	* SYSTEM mode (11111), we first need to enter SUPERVISOR mode. This allows more privelage,
+	* so that the "cps" opcode may be used to switch to SYSTEM mode.
+	* First clear bits of CPSR, then enter supervisor mode. Increment the program counter
+        * by four to skip a 32-bit word. Upon exception return, the CPSR is changed, and
+	* we are in SUPERVISOR mode. This continues at reset handler, where SYSTEM mode is set. */
+	
+	
+	/* Go from hypervisor mode to system mode */
+	/* Required to use exception return method */
+	/* Continues execution at line "b reset_handler" */
+	mrs	r0, cpsr
+//	bic	r0, r0, #ARM_MODE_SYS
+	orr	r0, r0, #ARM_MODE_SYS
+	msr	spsr_cxsf, r0
+	add	r0, pc, #4
+	msr	ELR_hyp, r0
+	eret
+        
 	/* Continue at reset handler. */
-	j reset_handler
+	b reset_handler
 	.endfunc
+
+/* ARM exception vector table.  This is copied to VBAR register. */
+/* Vector table has to be 32-byte aligned. */
+.balign	0x20
+.globl _vectors
+_vectors:
+	ldr pc, reset_addr    /* Reset handler */
+	ldr pc, undef_addr	  /* Undefined instruction handler */
+	ldr pc, swi_addr	  /* Software interrupt handler */
+	ldr pc, prefetch_addr /* Prefetch abort handler */
+	ldr pc, abort_addr	  /* Data abort handler */
+	ldr pc, reserved_addr /* Reserved */
+	ldr pc, irq_addr	  /* IRQ (Interrupt request) handler */
+	ldr pc, fiq_addr	  /* FIQ (Fast interrupt request) handler */
+
+reset_addr:     .word reset_handler
+undef_addr:     .word reset_handler
+swi_addr:       .word reset_handler
+prefetch_addr:  .word reset_handler
+abort_addr:     .word reset_handler
+reserved_addr:  .word reset_handler
+irq_addr:       .word irq_handler
+fiq_addr:       .word reset_handler
+
+_endvectors:
 
 .section .text
-    .func clear_bss
-clear_bss: // block starting symbol
-	sw t0, 0(t2) // store word, dereferences t0, stores into t2+0    (t0 is temp/alt link reg) (t2 is a temp reg)
-	addi t0, t0, 1 // adds value of t0, to 1 and stores in t0
-	bltu t0, t1, clear_bss //branch if less then, if t0>t1 
-	.endfunc
 
 	/* reset_handler: Reset handler routine executed to start up the kernel,
-	 * when the processor is reset, or (currently) when an unhandled
+	 * when the ARM processor is reset, or (currently) when an unhandled
 	 * exception occurs.  */
-    .func reset_handler
+	.func reset_handler
 reset_handler:
-    // Enables interrupts
-    csrrsi x0, mstatus, RISCV_MSTATUS_MEI_BIT  
-    // Clear bss
-	//la a0, _bss
-	//la a1, _end
-	//li a2, 0
-	//jal clear_bss
-	// save dtb arrdess from a1
-	la   t0, dtb_addr
-	sd   a1, 0(t0)
 
-	la a1, _end
-	li a3, 8192
-	add sp, a1, a3
+	/* After entering SUPERVISOR mode, enter SYSTEM mode with all interrupts
+	 * disabled so the ARM processor is in a known state. */
+//	cpsid	if, #ARM_MODE_SYS
+	cpsid	if
+	/* Copy the ARM exception table from .init section to address 0,
+	 * including the absolute address table.  Here we assume it is exactly
+	 * 16 words.  */
+	mov	r0, #0
+	ldr	r1, =_vectors
+	ldmia	r1!, {r2-r9}
+	stmia	r0!, {r2-r9}
+	ldmia	r1!, {r2-r9}
+	stmia	r0!, {r2-r9}
 
-	la a4, memheap
-	sw sp, 0(a4)
+	mov	r1, #0
+	mcr	p15, 0, r1, c12, c0, 0	/* Write to VBAR */
+					/* Vectors are at address 0x0 */
 
-	// Set the previous mode to S-Mode
-	li t1, RISCV_MPP_TO_S_MODE
-	csrrs x0, mstatus, t1
+	/* Enable the following features by modifying the ARM processor's
+	 * Control Register:
+	 *
+	 * - unaligned memory accesses   (bit 22)
+	 *
+	 * Note: Xinu shouldn't do any unaligned memory accesses on purpose, but
+	 * we found that gcc can still generate unaligned memory accesses for
+	 * tasks such as copying character strings.  (An alternative would be to
+	 * pass -mno-unaligned-access to gcc to prevent it from doing so.)  */
+	mrc p15, 0, r0, c1, c0, 0
+	orr r0, #1 << 22
+	mcr p15, 0, r0, c1, c0, 0
 
-	// Tell the CPU to handle all exceptions in S-Mode 
-	li t1, RISCV_MDELEG_ALL_S_MODE
-	csrrs x0, medeleg, t1
+	/* Clear the .bss section of the kernel.  */
+	ldr r0, =_bss
+	ldr r1, =_end
+  	mov r2, #0
+    mov r3, #0
+	mov r4, #0
+	mov r5, #0
+  	b bssloopa
+
+bssloopb:
+	stmia r0!, {r2-r5}
+
+bssloopa:
+	cmp r0, r1 	/* check that we still haven't hit the end of bss yet */
+	blo bssloopb	/* if still below, go backwards and loop */
+
+	ldr	r3, =core_init_sp
+
+	/* Put the null thread's stack directly after the kernel image.  */
+	add sp, r1, #NULLSTK	/* Core 0 stack pointer */
+	str	sp, [r3, #0]	
 	
-	// Tell the CPU to handle all interrupts in S-Mode
-	li t1, RISCV_MDELEG_ALL_S_MODE
-	csrrs x0, mideleg, t1
+	add	r0, sp, #NULLSTK	/* Core 1 stack pointer */
+	str	r0, [r3, #4]
 
-	// Tell the CPU to handle all exceptions in S-Mode
-	li t1, RISCV_ENABLE_ALL_SMODE_INTR
-	csrrs x0, sie, t1
+	add	r1, r0, #NULLSTK	/* Core 2 stack pointer */
+	str	r1, [r3, #8]
 
-	// Allow S-Mode to access all of memory
-	li t1, RISCV_MAX_ADDR	
-	csrw pmpaddr0, t1
+	add	r2, r1, #NULLSTK	/* Core 3 stack pointer */
+	str	r2, [r3, #12]
 
-	li t1, RISCV_ALL_PERM
-	csrw pmpcfg0, t1
 
-	// Allow S mode to access U mode pages
-	li t1, RISCV_MSTATUS_SUM
-	csrrs x0, mstatus, t1
+	/* The remaining memory available to the ARM will be Xinu's "memheap"
+	 * region, which is used for dynamic memory allocation.  Set its
+	 * starting address.  */
+	ldr r0, =memheap
+	str r2, [r0]		/* use r2 because this is the last stack allocated for core 3 */
 
-	// Loads address of the function interrupt in t1
-	li t1, INTERRUPTADDR
-	// Sets stvec to the address of interrupt
-	csrw stvec, t1
 
-	// Set the program counter to nulluser so when we run mret, it runs nulluser
-	la t1, nulluser
-	csrw mepc, t1
+	/* Branch to nulluser function, located in xinu/system/initialize.c
+	/* The function will initialize the system and become the null thread. */
+	b	nulluser
+	.endfunc
 
-	csrr gp, mhartid
 
-	// Jump to null user
-	mret
+.globl dmb
+dmb:
+	.func dmb
+	dmb
+	mov	pc, lr
+	.endfunc
+
+.globl pld
+pld:
+	.func pld
+	pld	[r0]
+	bx	lr
+	.endfunc
+
+.globl pldw
+pldw:
+	.func pldw
+	pldw [r0]
+	bx	lr
 	.endfunc

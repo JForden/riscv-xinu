@@ -68,9 +68,10 @@ syscall lock_acquire(spinlock_t lock)
     }
 
     _lock_acquire(&(locktab[lock].lock));
-    locktab[lock].core = gethartid();
+    locktab[lock].core = getcpuid();
 
     return OK;
+
 }
 
 /**
@@ -98,13 +99,22 @@ syscall lock_release(spinlock_t lock)
 static spinlock_t lock_alloc(void)
 {
     int i;
+    static spinlock_t nextlock = 0;
 
     /* check all entries */
     for (i = 0; i < NLOCK; i++)
     {
-        if (_atomic_compareAndSwapWeak
-            (&(locktab[i].state), SPINLOCK_FREE, SPINLOCK_USED))
-            return i;
+//              nextlock = (nextlock + 1) % NLOCK;
+        _atomic_increment_mod((int *)&nextlock, NLOCK);
+//              if (0 == _atomic_lock_check((unsigned int *)&(locktab[nextlock].state)))
+//              {
+//                      return nextlock;
+//              }
+        if (SPINLOCK_FREE == locktab[nextlock].state)
+        {
+            locktab[nextlock].state = SPINLOCK_USED;
+            return nextlock;
+        }
     }
     return SYSERR;
 };
