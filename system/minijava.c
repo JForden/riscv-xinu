@@ -114,15 +114,17 @@ int *_new(int n, int init)
 void _BADPTR(void)
 {
     kprintf("FATAL ERROR: Null Pointer Exception!\n");
-	unsigned int cpuid;
-	cpuid = getcpuid();
-	kill(currpid[cpuid]);
+	// unsigned int cpuid;
+	// cpuid = getcpuid();
+	// kill(currpid[cpuid]);
+	kill(currpid);
 }
 
 void _BADSUB(void)
 {
     kprintf("FATAL ERROR: Index Out Of Bounds Exception!\n");	
-	unsigned int cpuid;
-	cpuid = getcpuid();
-	kill(currpid[cpuid]);
+	// unsigned int cpuid;
+	// cpuid = getcpuid();
+	// kill(currpid[cpuid]);
+	kill(currpid);
 }
