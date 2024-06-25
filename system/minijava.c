@@ -5,15 +5,15 @@
 /* Embedded Xinu, Copyright (C) 2008.  All rights reserved. */
 
 #include <xinu.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <device.h>
-#include <tty.h>
-#include <memory.h>
-#include <proc.h>
-#include <monitor.h>
-#include <yield.h>
+// #include <stdio.h>
+// #include <stdarg.h>
+// #include <stdlib.h>
+// #include <device.h>
+// #include <tty.h>
+// #include <memory.h>
+// #include <proc.h>
+// #include <monitor.h>
+// #include <yield.h>
 
 syscall _readint(void)
 {
@@ -61,54 +61,54 @@ syscall _println(void)
     return kprintf("\r\n");
 }
 
-syscall _yield(void)
-{
-    return yield();
+// syscall _yield(void)
+// {
+//     return yield();
 	
-}
+// }
 
-syscall _sleep(int time)
-{
-    return sleep(time);
-}
+// syscall _sleep(int time)
+// {
+//     return sleep(time);
+// }
 
 int *_new(int n, int init)
 {
     int size = (n + 2) * 4;
     int *p = (int *)getmem(size);
     bzero(p, size);
-	p[0] = moncreate();
+	//p[0] = moncreate();
 	p[1] = init;
 	return p + 2;
 }
 
-syscall _lock(int *objAdder)
-{
-    int *A = objAdder - 2;
-    monitor m = (monitor) * A;
-    return lock(m);
-}
+// syscall _lock(int *objAdder)
+// {
+//     int *A = objAdder - 2;
+//     monitor m = (monitor) * A;
+//     return lock(m);
+// }
 
-syscall _unlock(int *objAdder)
-{
-	int *A = objAdder - 2;
-    monitor m = (monitor) * A;
-    return unlock(m);
-}
+// syscall _unlock(int *objAdder)
+// {
+// 	int *A = objAdder - 2;
+//     monitor m = (monitor) * A;
+//     return unlock(m);
+// }
 
-syscall _threadCreate(int *threadObjAdder)
-{
-    int *A = threadObjAdder - 1; // back up one word to point to vtable pointer
-    int *B = (int *)*A;			 // point to first entry of vtable
-    int *C = (int *)*B;			 // point to first method's actual code
-    void *procadder = (void *)C;
-	static int nextcore = 0;
-	nextcore = (nextcore + 1) % 4; 
-    return
-        ready(create
-              (procadder, INITSTK, INITPRIO, "MiniJavaThread", 1,
-               threadObjAdder), RESCHED_NO, nextcore);
-}
+// syscall _threadCreate(int *threadObjAdder)
+// {
+//     int *A = threadObjAdder - 1; // back up one word to point to vtable pointer
+//     int *B = (int *)*A;			 // point to first entry of vtable
+//     int *C = (int *)*B;			 // point to first method's actual code
+//     void *procadder = (void *)C;
+// 	static int nextcore = 0;
+// 	nextcore = (nextcore + 1) % 4; 
+//     return
+//         ready(create
+//               (procadder, INITSTK, INITPRIO, "MiniJavaThread", 1,
+//                threadObjAdder), RESCHED_NO, nextcore);
+// }
 
 
 void _BADPTR(void)
